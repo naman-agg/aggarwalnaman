@@ -12,7 +12,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Allow toggle with Enter key for accessibility
     themeToggle.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault();
@@ -21,25 +20,39 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // 2. Scroll Reveal Animations (Intersection Observer)
-    // This looks for anything with the class 'fade-up'
+    // Removed the internal root, it now watches the browser viewport natively
     const observerOptions = {
-        root: document.querySelector('.app-container'), // We observe scrolling INSIDE our container
+        root: null, 
         rootMargin: '0px',
-        threshold: 0.1 // Triggers when 10% of the element is visible
+        threshold: 0.1
     };
 
     const observer = new IntersectionObserver((entries, observer) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('in-view');
-                // Optional: Stop observing once it has animated in
                 observer.unobserve(entry.target); 
             }
         });
     }, observerOptions);
 
-    // Select all elements that need to animate and observe them
     const animatedElements = document.querySelectorAll('.fade-up');
     animatedElements.forEach(el => observer.observe(el));
+
+    // 3. Live Clock (HH:MM:SS)
+    const clockElement = document.getElementById('live-clock');
+    
+    function updateClock() {
+        const now = new Date();
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const seconds = String(now.getSeconds()).padStart(2, '0');
+        
+        clockElement.textContent = `${hours}:${minutes}:${seconds}`;
+    }
+
+    // Initialise the clock immediately, then update every 1000ms
+    updateClock();
+    setInterval(updateClock, 1000);
 
 });
