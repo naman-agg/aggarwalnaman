@@ -20,18 +20,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- 2. Word-by-Word Paragraph Setup ---
     const manifestoTextEl = document.getElementById('manifesto-text');
-    // Split the text into an array of words
     const words = manifestoTextEl.innerText.trim().split(/\s+/);
-    manifestoTextEl.innerHTML = ''; // Clear original text
+    manifestoTextEl.innerHTML = ''; 
     
-    // Wrap each word in a span and append back to the element
     words.forEach(word => {
         const span = document.createElement('span');
-        span.innerText = word + ' ';
+        span.innerText = word;
         manifestoTextEl.appendChild(span);
+        // Add a space after each word (outside the span so the space doesn't animate)
+        manifestoTextEl.appendChild(document.createTextNode(' '));
     });
     
-    // Store all the spans for quick access during scrolling
     const wordSpans = manifestoTextEl.querySelectorAll('span');
 
     // --- 3. Standard Scroll Reveals ---
@@ -42,20 +41,15 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }, { threshold: 0.1 });
-
     document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
 
-
     // --- 4. Cinematic Scroll Logic Engine ---
-    
-    // Hero Elements
     const dynamicHero = document.getElementById('dynamic-hero');
     const heroL1 = document.getElementById('hero-l1');
     const heroL2 = document.getElementById('hero-l2');
     const heroL3 = document.getElementById('hero-l3');
     const headerBg = document.getElementById('header-bg');
     
-    // Manifesto & Workshop Elements
     const manifestoTrigger = document.getElementById('manifesto-trigger');
     const workshopTrigger = document.getElementById('workshop-trigger');
     const aiText = document.getElementById('ai-text');
@@ -71,49 +65,62 @@ document.addEventListener('DOMContentLoaded', () => {
         const scrollY = window.scrollY;
         const windowHeight = window.innerHeight;
 
-        // A. Hero to Header Transition (Happens over the first 500px of scroll)
-        const transitionDistance = 500;
+        // A. Hero to Header Transition
+        // We use windowHeight as the transition distance so it finishes exactly as the first screen clears
+        const transitionDistance = windowHeight; 
         const heroProgress = Math.max(0, Math.min(scrollY / transitionDistance, 1));
 
-        // Fade out Line 1 and Line 3, and move them slightly
-        heroL1.style.opacity = 1 - (heroProgress * 1.5);
-        heroL1.style.transform = `translateY(-${heroProgress * 30}px)`;
+        heroL1.style.opacity = 1 - (heroProgress * 2); // Fades out twice as fast
+        heroL1.style.transform = `translateY(-${heroProgress * 40}px)`;
         
-        heroL3.style.opacity = 1 - (heroProgress * 1.5);
-        heroL3.style.transform = `translateY(${heroProgress * 30}px)`;
+        heroL3.style.opacity = 1 - (heroProgress * 2);
+        heroL3.style.transform = `translateY(${heroProgress * 40}px)`;
 
-        // Move the entire container up to the header position
+        // Calculate exact centring
+        // 40px is the exact vertical centre of the 80px header
         const startTop = windowHeight / 2;
-        const endTop = 40; // Center of the 80px header
+        const endTop = 40; 
         const currentTop = startTop - ((startTop - endTop) * heroProgress);
         dynamicHero.style.top = `${currentTop}px`;
 
-        // Scale down your name (Line 2)
-        const startScale = 1;
-        const endScale = 0.3; // Shrinks down to fit nicely in the header
-        const currentScale = startScale - ((startScale - endScale) * heroProgress);
+        // Scale name down
+        const isMobile = window.innerWidth <= 768;
+        const endScale = isMobile ? 0.4 : 0.3; // Adjusts scale slightly for mobile
+        const currentScale = 1 - ((1 - endScale) * heroProgress);
         heroL2.style.transform = `scale(${currentScale})`;
 
-        // Fade in the frosted glass header background
+        // Fade in header bg
         headerBg.style.opacity = heroProgress;
+        
+        // Trigger neon line only when transition is 90% complete
+        if (heroProgress > 0.9) {
+            headerBg.classList.add('show-neon');
+        } else {
+            headerBg.classList.remove('show-neon');
+        }
 
-
-        // B. Word-by-Word Scrubbing
+        // B. Word-by-Word Scrubbing (With visibility gate)
         const manifestoRect = manifestoTrigger.getBoundingClientRect();
+        
+        // Gate: Only make paragraph visible once the hero transition is complete
+        if (heroProgress >= 1) {
+            manifestoTextEl.style.opacity = 1;
+        } else {
+            manifestoTextEl.style.opacity = 0;
+        }
+
         if (manifestoRect.top < windowHeight && manifestoRect.bottom > 0) {
-            // Calculate progress strictly within the sticky section
+            // Slower, smoother pacing mapped across the taller manifesto section
             let progress = -manifestoRect.top / (manifestoRect.height - windowHeight);
             progress = Math.max(0, Math.min(progress, 1));
             
-            // Calculate how many words should be highlighted based on progress
             let activeWordIndex = Math.floor(progress * wordSpans.length);
 
-            // Loop through spans and apply the colour
             wordSpans.forEach((span, index) => {
                 if (index <= activeWordIndex) {
-                    span.style.color = 'var(--text-primary)';
+                    span.classList.add('active-word');
                 } else {
-                    span.style.color = 'var(--text-muted)';
+                    span.classList.remove('active-word');
                 }
             });
         }
@@ -136,5 +143,6 @@ document.addEventListener('DOMContentLoaded', () => {
         requestAnimationFrame(onScroll);
     }
 
+    // Start loop
     requestAnimationFrame(onScroll);
 });
