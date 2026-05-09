@@ -1,6 +1,13 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    // --- 1. Theme Toggle & Clock ---
+    // --- 1. Cursor Glow Tracking ---
+    const cursorGlow = document.getElementById('cursor-glow');
+    document.addEventListener('mousemove', (e) => {
+        // Hardware accelerated translate for 60fps performance
+        cursorGlow.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
+    });
+
+    // --- 2. Theme Toggle & Clock ---
     const themeToggle = document.getElementById('themeToggle');
     const body = document.body;
 
@@ -18,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
         clockElement.textContent = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
     }, 1000);
 
-    // --- 2. Word-by-Word Paragraph Setup ---
+    // --- 3. Word-by-Word Paragraph Setup ---
     const manifestoTextEl = document.getElementById('manifesto-text');
     const words = manifestoTextEl.innerText.trim().split(/\s+/);
     manifestoTextEl.innerHTML = ''; 
@@ -32,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const wordSpans = manifestoTextEl.querySelectorAll('span');
 
-    // --- 3. Standard Scroll Reveals ---
+    // --- 4. Standard Scroll Reveals ---
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
@@ -42,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }, { threshold: 0.1 });
     document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
 
-    // --- 4. Cinematic Scroll Logic Engine ---
+    // --- 5. Cinematic Scroll Logic Engine ---
     const ambientAurora = document.getElementById('ambient-aurora');
     const dynamicHero = document.getElementById('dynamic-hero');
     const heroL1 = document.getElementById('hero-l1');
@@ -66,10 +73,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const windowHeight = window.innerHeight;
 
         // A. Hero to Header Transition
-        const transitionDistance = windowHeight; 
+        // Slashed distance by 40% to kill the empty scroll delay
+        const transitionDistance = windowHeight * 0.6; 
         const heroProgress = Math.max(0, Math.min(scrollY / transitionDistance, 1));
 
-        // Fade out the Aurora as we scroll
         ambientAurora.style.opacity = 1 - (heroProgress * 1.5); 
 
         heroL1.style.opacity = 1 - (heroProgress * 2); 
