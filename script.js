@@ -7,11 +7,8 @@ document.addEventListener('DOMContentLoaded', () => {
     themeToggle.addEventListener('click', () => {
         if (body.classList.contains('dark-mode')) {
             body.classList.replace('dark-mode', 'light-mode');
-            // Hack to make text highlighting work in light mode
-            document.getElementById('manifesto-text').style.backgroundImage = 'linear-gradient(90deg, #111 50%, transparent 50%)';
         } else {
             body.classList.replace('light-mode', 'dark-mode');
-            document.getElementById('manifesto-text').style.backgroundImage = 'linear-gradient(90deg, #f8fafc 50%, transparent 50%)';
         }
     });
 
@@ -21,7 +18,23 @@ document.addEventListener('DOMContentLoaded', () => {
         clockElement.textContent = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
     }, 1000);
 
-    // --- 2. Standard Scroll Reveals (Intersection Observer) ---
+    // --- 2. Word-by-Word Paragraph Setup ---
+    const manifestoTextEl = document.getElementById('manifesto-text');
+    // Split the text into an array of words
+    const words = manifestoTextEl.innerText.trim().split(/\s+/);
+    manifestoTextEl.innerHTML = ''; // Clear original text
+    
+    // Wrap each word in a span and append back to the element
+    words.forEach(word => {
+        const span = document.createElement('span');
+        span.innerText = word + ' ';
+        manifestoTextEl.appendChild(span);
+    });
+    
+    // Store all the spans for quick access during scrolling
+    const wordSpans = manifestoTextEl.querySelectorAll('span');
+
+    // --- 3. Standard Scroll Reveals ---
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
@@ -33,56 +46,76 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
 
 
-    // --- 3. Cinematic Scroll Logic (The Core Engine) ---
+    // --- 4. Cinematic Scroll Logic Engine ---
     
-    // Elements we need to animate
-    const heroTrigger = document.getElementById('hero-trigger');
-    const heroTitle = document.querySelector('.hero-text-wrapper');
+    // Hero Elements
+    const dynamicHero = document.getElementById('dynamic-hero');
+    const heroL1 = document.getElementById('hero-l1');
+    const heroL2 = document.getElementById('hero-l2');
+    const heroL3 = document.getElementById('hero-l3');
+    const headerBg = document.getElementById('header-bg');
     
+    // Manifesto & Workshop Elements
     const manifestoTrigger = document.getElementById('manifesto-trigger');
-    const manifestoText = document.getElementById('manifesto-text');
-    
     const workshopTrigger = document.getElementById('workshop-trigger');
     const aiText = document.getElementById('ai-text');
     const aiImage = document.getElementById('ai-image');
     const printSolid = document.getElementById('print-solid');
 
-    // Utility mapping function (like Arduino's map function)
     function mapRange(value, inMin, inMax, outMin, outMax) {
-        value = Math.max(inMin, Math.min(value, inMax)); // Clamp value
+        value = Math.max(inMin, Math.min(value, inMax)); 
         return (value - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
     }
 
-    // The main render loop using requestAnimationFrame for 60fps performance
     function onScroll() {
         const scrollY = window.scrollY;
         const windowHeight = window.innerHeight;
 
-        // A. Hero Animation: Scale and fade out as user scrolls down the first section
-        const heroRect = heroTrigger.getBoundingClientRect();
-        if (heroRect.top < windowHeight && heroRect.bottom > 0) {
-            // Calculate progress from 0 (top) to 1 (scrolled past 100vh)
-            let progress = -heroRect.top / (heroRect.height - windowHeight);
-            progress = Math.max(0, Math.min(progress, 1));
-            
-            const scale = mapRange(progress, 0, 0.8, 1, 0.8);
-            const opacity = mapRange(progress, 0.4, 0.8, 1, 0);
-            
-            heroTitle.style.transform = `scale(${scale})`;
-            heroTitle.style.opacity = opacity;
-        }
+        // A. Hero to Header Transition (Happens over the first 500px of scroll)
+        const transitionDistance = 500;
+        const heroProgress = Math.max(0, Math.min(scrollY / transitionDistance, 1));
 
-        // B. Manifesto Text Scrubbing
+        // Fade out Line 1 and Line 3, and move them slightly
+        heroL1.style.opacity = 1 - (heroProgress * 1.5);
+        heroL1.style.transform = `translateY(-${heroProgress * 30}px)`;
+        
+        heroL3.style.opacity = 1 - (heroProgress * 1.5);
+        heroL3.style.transform = `translateY(${heroProgress * 30}px)`;
+
+        // Move the entire container up to the header position
+        const startTop = windowHeight / 2;
+        const endTop = 40; // Center of the 80px header
+        const currentTop = startTop - ((startTop - endTop) * heroProgress);
+        dynamicHero.style.top = `${currentTop}px`;
+
+        // Scale down your name (Line 2)
+        const startScale = 1;
+        const endScale = 0.3; // Shrinks down to fit nicely in the header
+        const currentScale = startScale - ((startScale - endScale) * heroProgress);
+        heroL2.style.transform = `scale(${currentScale})`;
+
+        // Fade in the frosted glass header background
+        headerBg.style.opacity = heroProgress;
+
+
+        // B. Word-by-Word Scrubbing
         const manifestoRect = manifestoTrigger.getBoundingClientRect();
         if (manifestoRect.top < windowHeight && manifestoRect.bottom > 0) {
-            // Calculate progress purely within the sticky phase
+            // Calculate progress strictly within the sticky section
             let progress = -manifestoRect.top / (manifestoRect.height - windowHeight);
             progress = Math.max(0, Math.min(progress, 1));
             
-            // Map progress to background position to reveal text
-            // 100% is fully hidden (transparent), 0% is fully revealed
-            const bgPosition = mapRange(progress, 0.1, 0.9, 100, 0);
-            manifestoText.style.backgroundPosition = `${bgPosition}% 0`;
+            // Calculate how many words should be highlighted based on progress
+            let activeWordIndex = Math.floor(progress * wordSpans.length);
+
+            // Loop through spans and apply the colour
+            wordSpans.forEach((span, index) => {
+                if (index <= activeWordIndex) {
+                    span.style.color = 'var(--text-primary)';
+                } else {
+                    span.style.color = 'var(--text-muted)';
+                }
+            });
         }
 
         // C. The Workshop Animations
@@ -91,14 +124,11 @@ document.addEventListener('DOMContentLoaded', () => {
             let progress = -workshopRect.top / (workshopRect.height - windowHeight);
             progress = Math.max(0, Math.min(progress, 1));
 
-            // 1. AI Card: Text fades out, Image fades in
             const textOpacity = mapRange(progress, 0.2, 0.5, 1, 0);
             const imageOpacity = mapRange(progress, 0.5, 0.8, 0, 1);
             aiText.style.opacity = textOpacity;
             aiImage.style.opacity = imageOpacity;
 
-            // 2. 3D Print Card: Clip-path reveals from bottom to top
-            // 100% inset means hidden, 0% inset means fully visible
             const clipInset = mapRange(progress, 0.3, 0.9, 100, 0);
             printSolid.style.clipPath = `inset(${clipInset}% 0 0 0)`;
         }
@@ -106,6 +136,5 @@ document.addEventListener('DOMContentLoaded', () => {
         requestAnimationFrame(onScroll);
     }
 
-    // Start the render loop
     requestAnimationFrame(onScroll);
 });

@@ -15,28 +15,26 @@
 <body class="dark-mode">
     <div class="static-background"></div>
 
-    <header class="glass-header">
-        <div class="logo">NAMAN</div>
-        <div class="header-controls">
-            <button class="search-btn" aria-label="Search">
-                <span class="material-symbols-outlined">search</span>
-            </button>
-            <div class="theme-toggle" id="themeToggle" role="button" tabindex="0">
-                <div class="toggle-circle"></div>
-            </div>
+    <div class="global-controls">
+        <button class="search-btn" aria-label="Search">
+            <span class="material-symbols-outlined">search</span>
+        </button>
+        <div class="theme-toggle" id="themeToggle" role="button" tabindex="0">
+            <div class="toggle-circle"></div>
         </div>
-    </header>
+    </div>
+
+    <div class="header-bg" id="header-bg"></div>
+
+    <div class="dynamic-hero" id="dynamic-hero">
+        <div class="hero-l1" id="hero-l1">Hello! I am</div>
+        <div class="hero-l2" id="hero-l2">Naman Aggarwal</div>
+        <div class="hero-l3" id="hero-l3">PRODUCT MANAGER. DESIGNER. INVENTOR.</div>
+    </div>
+
+    <div class="hero-scroll-spacer"></div>
 
     <main class="cinematic-container">
-        
-        <section class="scroll-section hero-section" id="hero-trigger">
-            <div class="sticky-content flex-center">
-                <div class="hero-text-wrapper">
-                    <h1 class="hero-name" id="hero-title">Hello! I am Naman Aggarwal</h1>
-                    <h2 class="hero-titles">PRODUCT MANAGER. DESIGNER. INVENTOR.</h2>
-                </div>
-            </div>
-        </section>
 
         <section class="scroll-section manifesto-section" id="manifesto-trigger">
             <div class="sticky-content flex-center">
@@ -78,7 +76,7 @@
                 <div class="workshop-grid">
                     <div class="workshop-card" id="ai-card">
                         <div class="card-layer text-layer" id="ai-text">
-                            &gt; System prompt initialized.<br/>
+                            &gt; System prompt initialised.<br/>
                             &gt; Generating Liquid UI components.<br/>
                             &gt; Applying glassmorphism aesthetic...<br/>
                             <span class="blink-cursor">_</span>
