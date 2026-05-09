@@ -1,0 +1,232 @@
+/* Base Variables & Theming */
+:root {
+    --font-main: 'Inter', sans-serif;
+    --transition-smooth: 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    --border-radius-xl: 32px;
+    --border-radius-lg: 16px;
+}
+
+/* Light Mode Variables */
+.light-mode {
+    --bg-static: linear-gradient(135deg, #f0f0f5, #e0e0ea);
+    --bg-glass: rgba(255, 255, 255, 0.75);
+    --bg-card: rgba(255, 255, 255, 0.5);
+    --text-primary: #111111;
+    --text-secondary: #666666;
+    --border-glass: rgba(255, 255, 255, 0.4);
+    --border-card: rgba(0, 0, 0, 0.05);
+    --toggle-bg: #e0e0e0;
+    --toggle-circle: #111111;
+}
+
+/* Dark Mode Variables */
+.dark-mode {
+    --bg-static: linear-gradient(135deg, #0a0a0c, #1a1a20);
+    --bg-glass: rgba(20, 20, 25, 0.75);
+    --bg-card: rgba(30, 30, 35, 0.5);
+    --text-primary: #ffffff;
+    --text-secondary: #a0a0a0;
+    --border-glass: rgba(255, 255, 255, 0.08);
+    --border-card: rgba(255, 255, 255, 0.05);
+    --toggle-bg: #333333;
+    --toggle-circle: #ffffff;
+}
+
+/* Global Reset & Layout */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-main);
+    color: var(--text-primary);
+    height: 100vh;
+    overflow: hidden; /* Prevents the whole page from scrolling */
+    transition: background var(--transition-smooth), color var(--transition-smooth);
+}
+
+.static-background {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: var(--bg-static);
+    z-index: -1;
+    transition: background var(--transition-smooth);
+}
+
+/* Typography */
+h1, h2, h3 { font-weight: 600; letter-spacing: -0.02em; }
+p, li { line-height: 1.6; }
+
+/* Fixed Header */
+.glass-header {
+    position: fixed;
+    top: 0; left: 0; width: 100%;
+    height: 80px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 40px;
+    background: var(--bg-glass);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border-glass);
+    z-index: 100;
+    transition: all var(--transition-smooth);
+}
+
+.logo {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+}
+
+.header-controls {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.search-btn {
+    background: none;
+    border: none;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+}
+
+.search-btn:hover { opacity: 0.6; }
+
+/* The Toggle Switch */
+.theme-toggle {
+    width: 52px;
+    height: 28px;
+    background: var(--toggle-bg);
+    border-radius: 30px;
+    cursor: pointer;
+    position: relative;
+    transition: background var(--transition-smooth);
+}
+
+.toggle-circle {
+    width: 20px;
+    height: 20px;
+    background: var(--toggle-circle);
+    border-radius: 50%;
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    transition: transform var(--transition-smooth);
+}
+
+.dark-mode .toggle-circle {
+    transform: translateX(24px);
+}
+
+/* App-Like Scrollable Container */
+.app-container {
+    margin: 100px auto 20px auto; /* Sits below header */
+    width: calc(100% - 40px);
+    max-width: 1200px;
+    height: calc(100vh - 120px);
+    background: var(--bg-glass);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    border: 1px solid var(--border-glass);
+    border-radius: var(--border-radius-xl);
+    padding: 60px;
+    overflow-y: auto;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+    transition: all var(--transition-smooth);
+}
+
+/* Custom Scrollbar for the App Container */
+.custom-scroll::-webkit-scrollbar { width: 8px; }
+.custom-scroll::-webkit-scrollbar-track { background: transparent; }
+.custom-scroll::-webkit-scrollbar-thumb {
+    background: var(--border-glass);
+    border-radius: 10px;
+}
+
+/* Hero Section */
+.hero-title { font-size: 64px; line-height: 1.1; margin-bottom: 24px; }
+.hero-subtitle { font-size: 20px; color: var(--text-secondary); max-width: 700px; }
+.mt-large { margin-top: 60px; }
+
+/* Reusable Glass Cards */
+.glass-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-card);
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.image-placeholder {
+    width: 100%;
+    height: 500px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(128, 128, 128, 0.1);
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+.image-placeholder.small { height: 250px; }
+
+/* Sections & Grids */
+.section-heading {
+    font-size: 32px;
+    margin-bottom: 40px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border-glass);
+}
+.projects-section, .experience-section { margin-top: 80px; }
+.projects-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+}
+
+.project-card { padding: 24px; cursor: pointer; }
+.project-card:hover { transform: translateY(-4px); box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
+.category-label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; color: var(--text-secondary); display: block; margin: 20px 0 8px 0; }
+.card-title { font-size: 24px; margin-bottom: 12px; }
+.card-desc { color: var(--text-secondary); font-size: 15px; }
+
+/* Timeline */
+.timeline { border-left: 2px solid var(--border-glass); padding-left: 32px; margin-left: 16px; }
+.timeline-item { position: relative; margin-bottom: 48px; }
+.timeline-dot {
+    position: absolute;
+    left: -41px;
+    top: 6px;
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    background: var(--bg-glass);
+    border: 3px solid var(--text-secondary);
+}
+.timeline-dot.active { border-color: var(--text-primary); background: var(--text-primary); }
+.timeline-header { display: flex; align-items: baseline; gap: 16px; margin-bottom: 8px; }
+.job-title { font-size: 22px; }
+.job-date { font-size: 12px; color: var(--text-secondary); letter-spacing: 0.05em; }
+.company-name { font-weight: 600; margin-bottom: 16px; color: var(--text-secondary); }
+.job-details { list-style-type: disc; margin-left: 20px; color: var(--text-secondary); }
+.job-details li { margin-bottom: 8px; }
+
+/* --- JavaScript Scroll Animations --- */
+.fade-up {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1), transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.fade-up.in-view {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.delay-1 { transition-delay: 0.1s; }
+.delay-2 { transition-delay: 0.2s; }
