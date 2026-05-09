@@ -27,7 +27,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const span = document.createElement('span');
         span.innerText = word;
         manifestoTextEl.appendChild(span);
-        // Add a space after each word (outside the span so the space doesn't animate)
         manifestoTextEl.appendChild(document.createTextNode(' '));
     });
     
@@ -44,6 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
 
     // --- 4. Cinematic Scroll Logic Engine ---
+    const ambientAurora = document.getElementById('ambient-aurora');
     const dynamicHero = document.getElementById('dynamic-hero');
     const heroL1 = document.getElementById('hero-l1');
     const heroL2 = document.getElementById('hero-l2');
@@ -66,43 +66,39 @@ document.addEventListener('DOMContentLoaded', () => {
         const windowHeight = window.innerHeight;
 
         // A. Hero to Header Transition
-        // We use windowHeight as the transition distance so it finishes exactly as the first screen clears
         const transitionDistance = windowHeight; 
         const heroProgress = Math.max(0, Math.min(scrollY / transitionDistance, 1));
 
-        heroL1.style.opacity = 1 - (heroProgress * 2); // Fades out twice as fast
+        // Fade out the Aurora as we scroll
+        ambientAurora.style.opacity = 1 - (heroProgress * 1.5); 
+
+        heroL1.style.opacity = 1 - (heroProgress * 2); 
         heroL1.style.transform = `translateY(-${heroProgress * 40}px)`;
         
         heroL3.style.opacity = 1 - (heroProgress * 2);
         heroL3.style.transform = `translateY(${heroProgress * 40}px)`;
 
-        // Calculate exact centring
-        // 40px is the exact vertical centre of the 80px header
         const startTop = windowHeight / 2;
         const endTop = 40; 
         const currentTop = startTop - ((startTop - endTop) * heroProgress);
         dynamicHero.style.top = `${currentTop}px`;
 
-        // Scale name down
         const isMobile = window.innerWidth <= 768;
-        const endScale = isMobile ? 0.4 : 0.3; // Adjusts scale slightly for mobile
+        const endScale = isMobile ? 0.4 : 0.3; 
         const currentScale = 1 - ((1 - endScale) * heroProgress);
         heroL2.style.transform = `scale(${currentScale})`;
 
-        // Fade in header bg
         headerBg.style.opacity = heroProgress;
         
-        // Trigger neon line only when transition is 90% complete
         if (heroProgress > 0.9) {
             headerBg.classList.add('show-neon');
         } else {
             headerBg.classList.remove('show-neon');
         }
 
-        // B. Word-by-Word Scrubbing (With visibility gate)
+        // B. Word-by-Word Scrubbing
         const manifestoRect = manifestoTrigger.getBoundingClientRect();
         
-        // Gate: Only make paragraph visible once the hero transition is complete
         if (heroProgress >= 1) {
             manifestoTextEl.style.opacity = 1;
         } else {
@@ -110,7 +106,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (manifestoRect.top < windowHeight && manifestoRect.bottom > 0) {
-            // Slower, smoother pacing mapped across the taller manifesto section
             let progress = -manifestoRect.top / (manifestoRect.height - windowHeight);
             progress = Math.max(0, Math.min(progress, 1));
             
@@ -143,6 +138,5 @@ document.addEventListener('DOMContentLoaded', () => {
         requestAnimationFrame(onScroll);
     }
 
-    // Start loop
     requestAnimationFrame(onScroll);
 });
