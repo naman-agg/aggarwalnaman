@@ -83,9 +83,9 @@ body {
     text-align: center; z-index: 101; width: 100%; pointer-events: none;
 }
 
-.hero-l1 { font-size: clamp(16px, 2vw, 24px); font-weight: 500; color: var(--text-secondary); margin-bottom: 16px; }
-.hero-l2 { font-size: clamp(40px, 7vw, 90px); font-weight: 900; letter-spacing: -0.04em; margin-bottom: 16px; white-space: nowrap; transform-origin: center center; }
-.hero-l3 { font-size: clamp(10px, 1.2vw, 14px); font-weight: 700; letter-spacing: 0.3em; color: var(--text-secondary); }
+.hero-l1 { font-size: clamp(16px, 2vw, 24px); font-weight: 700; color: var(--text-secondary); margin-bottom: 16px; }
+.hero-l2 { font-size: clamp(40px, 7vw, 90px); font-weight: 1200; letter-spacing: -0.04em; margin-bottom: 16px; white-space: nowrap; transform-origin: center center; }
+.hero-l3 { font-size: clamp(10px, 1.2vw, 14px); font-weight: 900; letter-spacing: 0.3em; color: var(--text-secondary); }
 
 /* Spacer creates the scroll room for the hero animation */
 .hero-scroll-spacer { height: 100vh; } 
