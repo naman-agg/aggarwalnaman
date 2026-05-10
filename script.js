@@ -21,15 +21,11 @@ document.addEventListener('DOMContentLoaded', () => {
     renderCursor();
 
     document.querySelectorAll('.interactive-element').forEach(el => {
-        el.addEventListener('mouseenter', () => {
-            cursorTrail.classList.add('hovering');
-        });
-        el.addEventListener('mouseleave', () => {
-            cursorTrail.classList.remove('hovering');
-        });
+        el.addEventListener('mouseenter', () => { cursorTrail.classList.add('hovering'); });
+        el.addEventListener('mouseleave', () => { cursorTrail.classList.remove('hovering'); });
     });
 
-    // --- 2. Canvas Tech Grid (Nearest Neighbour Logic) ---
+    // --- 2. Canvas Tech Grid ---
     const canvas = document.getElementById('tech-canvas');
     const ctx = canvas.getContext('2d');
     let width, height;
@@ -53,7 +49,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function drawGrid() {
         ctx.clearRect(0, 0, width, height);
         
-        // Static dots
         ctx.fillStyle = 'rgba(148, 163, 184, 0.4)'; 
         dots.forEach(dot => {
             ctx.beginPath();
@@ -61,7 +56,6 @@ document.addEventListener('DOMContentLoaded', () => {
             ctx.fill();
         });
 
-        // Gather all dots within interaction radius
         const interactionRadius = 250;
         let nearbyDots = [];
         
@@ -72,7 +66,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // Sort by distance and connect only to the 4 closest dots
         nearbyDots.sort((a, b) => a.dist - b.dist);
         const dotsToConnect = nearbyDots.slice(0, 4);
 
@@ -112,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
         clockElement.textContent = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
     }, 1000);
 
-    // --- 4. Word-by-Word Paragraph Setup ---
+    // --- 4. Word-by-Word Setup ---
     const manifestoTextEl = document.getElementById('manifesto-text');
     const words = manifestoTextEl.innerText.trim().split(/\s+/);
     manifestoTextEl.innerHTML = ''; 
@@ -123,27 +116,29 @@ document.addEventListener('DOMContentLoaded', () => {
         manifestoTextEl.appendChild(span);
         manifestoTextEl.appendChild(document.createTextNode(' '));
     });
-    
     const wordSpans = manifestoTextEl.querySelectorAll('span');
 
-    // --- 5. Standard Scroll Reveals ---
+    // --- 5. Intersection Observers (Attached to Capsule) ---
+    const capsule = document.getElementById('capsule-container');
+    
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('in-view');
             }
         });
-    }, { threshold: 0.1 });
+    }, { root: capsule, threshold: 0.1 });
+    
     document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
 
-    // --- 6. Cinematic Scroll Logic Engine ---
+    // --- 6. Scroll Jacking Engine ---
     const dynamicHero = document.getElementById('dynamic-hero');
     const heroL1 = document.getElementById('hero-l1');
     const heroL2 = document.getElementById('hero-l2');
     const heroL3 = document.getElementById('hero-l3');
     const headerBg = document.getElementById('header-bg');
-    const manifestoTrigger = document.getElementById('manifesto-trigger');
     const techCanvasEl = document.getElementById('tech-canvas');
+    const siteFooter = document.getElementById('site-footer');
     
     let moveDist = 0;
     function calculateHeroMath() {
@@ -151,54 +146,62 @@ document.addEventListener('DOMContentLoaded', () => {
         const l2CenterY = l2Rect.top + (l2Rect.height / 2); 
         moveDist = l2CenterY - 40; 
     }
-    
     setTimeout(calculateHeroMath, 100); 
     window.addEventListener('resize', calculateHeroMath);
 
-    function onScroll() {
+    let manifestoTriggered = false;
+
+    function onWindowScroll() {
         const scrollY = window.scrollY;
-        const windowHeight = window.innerHeight;
+        // The exact distance required to finish the animation
+        const transitionDistance = 500; 
+        const progress = Math.max(0, Math.min(scrollY / transitionDistance, 1));
 
-        const transitionDistance = windowHeight; 
-        const heroProgress = Math.max(0, Math.min(scrollY / transitionDistance, 1));
+        // 1. Grid fades to 10% opacity and blurs as you enter reading mode
+        techCanvasEl.style.opacity = 0.5 - (progress * 0.4); 
+        techCanvasEl.style.filter = `blur(${progress * 8}px)`; 
 
-        // Fade and blur the canvas matrix
-        techCanvasEl.style.opacity = 0.5 - (heroProgress * 0.4); 
-        techCanvasEl.style.filter = `blur(${heroProgress * 8}px)`; 
+        // 2. Footer line subtly vanishes
+        siteFooter.style.borderTopColor = `rgba(148, 163, 184, ${0.3 - (progress * 0.3)})`;
 
-        // Hero Text Fade
-        heroL1.style.opacity = 1 - (heroProgress * 2); 
-        heroL3.style.opacity = 1 - (heroProgress * 2); 
+        // 3. Hero Text fades and locks
+        heroL1.style.opacity = 1 - (progress * 2); 
+        heroL3.style.opacity = 1 - (progress * 2); 
 
         const isMobile = window.innerWidth <= 768;
         const endScale = isMobile ? 0.4 : 0.3; 
-        const currentScale = 1 - ((1 - endScale) * heroProgress);
+        const currentScale = 1 - ((1 - endScale) * progress);
         
-        dynamicHero.style.transform = `translateY(-${moveDist * heroProgress}px)`;
+        dynamicHero.style.transform = `translateY(-${moveDist * progress}px)`;
         heroL2.style.transform = `scale(${currentScale})`;
 
-        headerBg.style.opacity = heroProgress;
+        headerBg.style.opacity = progress;
 
-        // B. Paragraph Scrub & Uplift
-        const manifestoRect = manifestoTrigger.getBoundingClientRect();
+        // 4. Capsule slides up from below
+        capsule.style.transform = `translateY(${(1 - progress) * 100}vh)`;
+        capsule.style.opacity = progress;
         
-        if (manifestoRect.top < windowHeight && manifestoRect.bottom > 0) {
-            let progress = -manifestoRect.top / (manifestoRect.height - windowHeight);
-            progress = Math.max(0, Math.min(progress, 1));
+        // 5. Enable internal scrolling once locked
+        if (progress === 1) {
+            capsule.style.pointerEvents = 'auto';
             
-            let activeWordIndex = Math.floor(progress * wordSpans.length);
-
-            wordSpans.forEach((span, index) => {
-                if (index <= activeWordIndex) {
-                    span.classList.add('active-word');
-                } else {
-                    span.classList.remove('active-word');
-                }
-            });
+            // Trigger the fluid wave perfectly on arrival
+            if (!manifestoTriggered) {
+                manifestoTriggered = true;
+                wordSpans.forEach((span, index) => {
+                    setTimeout(() => {
+                        span.classList.add('active-word');
+                    }, index * 30); 
+                });
+            }
+        } else {
+            capsule.style.pointerEvents = 'none';
         }
 
-        requestAnimationFrame(onScroll);
+        requestAnimationFrame(onWindowScroll);
     }
 
-    requestAnimationFrame(onScroll);
+    // Bind to the outer window
+    window.addEventListener('scroll', () => { requestAnimationFrame(onWindowScroll); });
+    onWindowScroll(); // Initial call
 });
