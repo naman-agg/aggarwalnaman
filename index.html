@@ -14,6 +14,7 @@
 
 <body class="dark-mode">
     <div class="static-background"></div>
+    <div class="film-grain"></div>
 
     <canvas id="tech-canvas" class="tech-canvas"></canvas>
 
@@ -34,9 +35,24 @@
         <div class="hero-l3" id="hero-l3">PRODUCT MANAGER. DESIGNER. INVENTOR.</div>
     </div>
 
+    <nav class="capsule-nav" id="capsule-nav">
+        <div class="nav-dot active interactive-element" data-target="manifesto-trigger">
+            <span class="nav-label">Intro</span>
+        </div>
+        <div class="nav-dot interactive-element" data-target="journey-section">
+            <span class="nav-label">Journey</span>
+        </div>
+        <div class="nav-dot interactive-element" data-target="workshop-section">
+            <span class="nav-label">Workshop</span>
+        </div>
+        <div class="nav-dot interactive-element" data-target="skills-section">
+            <span class="nav-label">Stack</span>
+        </div>
+    </nav>
+
     <main class="capsule-container" id="capsule-container">
 
-        <section class="manifesto-section" id="manifesto-trigger">
+        <section class="manifesto-section scroll-spy-section" id="manifesto-trigger">
             <div class="sticky-content flex-center">
                 <p class="manifesto-text" id="manifesto-text">
                     With a foundation in Mechanical Engineering and an MBA, I bridge the gap between tangible hardware and scalable digital ecosystems. From architecting supply chain programmes to inventing physical interfaces, I engineer products that demand attention.
@@ -44,7 +60,7 @@
             </div>
         </section>
 
-        <section class="standard-section journey-section">
+        <section class="standard-section journey-section scroll-spy-section" id="journey-section">
             <h2 class="section-heading fade-up">The Journey</h2>
             <div class="timeline-container">
                 <div class="timeline-line" id="timeline-line"></div>
@@ -69,7 +85,7 @@
             </div>
         </section>
 
-        <section class="standard-section workshop-section">
+        <section class="standard-section workshop-section scroll-spy-section" id="workshop-section">
             <h2 class="section-heading fade-up">The Workshop</h2>
             <div class="workshop-grid fade-up">
                 <div class="workshop-card" id="ai-card">
@@ -91,7 +107,7 @@
             </div>
         </section>
 
-        <section class="standard-section skills-section">
+        <section class="standard-section skills-section scroll-spy-section" id="skills-section">
             <h2 class="section-heading fade-up">Education & Stack</h2>
             
             <div class="education-block fade-up">
@@ -126,7 +142,10 @@
 
     <footer class="site-footer" id="site-footer">
         <div class="footer-left">
-            <span id="live-clock" class="clock-display">00:00:00</span>
+            <div class="world-clock" id="world-clock-container">
+                <span id="clock-time" class="clock-display">00:00:00</span>
+                <span id="clock-location" class="clock-label">NEW DELHI</span>
+            </div>
         </div>
         <div class="footer-centre">
             <a href="#" aria-label="LinkedIn" class="social-icon interactive-element">

@@ -38,48 +38,34 @@ document.addEventListener('DOMContentLoaded', () => {
         canvas.width = width;
         canvas.height = height;
         dots.length = 0;
-        
         for (let x = 0; x < width; x += spacing) {
-            for (let y = 0; y < height; y += spacing) {
-                dots.push({ x, y });
-            }
+            for (let y = 0; y < height; y += spacing) { dots.push({ x, y }); }
         }
     }
     
     function drawGrid() {
         ctx.clearRect(0, 0, width, height);
-        
         ctx.fillStyle = 'rgba(148, 163, 184, 0.4)'; 
         dots.forEach(dot => {
-            ctx.beginPath();
-            ctx.arc(dot.x, dot.y, 1.5, 0, Math.PI * 2);
-            ctx.fill();
+            ctx.beginPath(); ctx.arc(dot.x, dot.y, 1.5, 0, Math.PI * 2); ctx.fill();
         });
 
         const interactionRadius = 250;
         let nearbyDots = [];
-        
         dots.forEach(dot => {
             const dist = Math.hypot(dot.x - mouseX, dot.y - mouseY);
-            if (dist < interactionRadius) { 
-                nearbyDots.push({ dot, dist });
-            }
+            if (dist < interactionRadius) nearbyDots.push({ dot, dist });
         });
 
         nearbyDots.sort((a, b) => a.dist - b.dist);
         const dotsToConnect = nearbyDots.slice(0, 4);
 
         dotsToConnect.forEach(item => {
-            ctx.beginPath();
-            ctx.moveTo(item.dot.x, item.dot.y);
-            ctx.lineTo(mouseX, mouseY);
-            
+            ctx.beginPath(); ctx.moveTo(item.dot.x, item.dot.y); ctx.lineTo(mouseX, mouseY);
             const opacity = 1 - (item.dist / interactionRadius);
             ctx.strokeStyle = `rgba(56, 189, 248, ${opacity * 0.8})`; 
-            ctx.lineWidth = 1.5;
-            ctx.stroke();
+            ctx.lineWidth = 1.5; ctx.stroke();
         });
-        
         requestAnimationFrame(drawGrid);
     }
     
@@ -87,7 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('resize', initCanvas);
     drawGrid();
 
-    // --- 3. Theme Toggle & Clock ---
+    // --- 3. Theme Toggle ---
     const themeToggle = document.getElementById('themeToggle');
     const body = document.body;
 
@@ -99,17 +85,41 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    const clockElement = document.getElementById('live-clock');
-    setInterval(() => {
-        const now = new Date();
-        clockElement.textContent = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
-    }, 1000);
+    // --- 4. The Interactive World Clock ---
+    const clockTime = document.getElementById('clock-time');
+    const clockLabel = document.getElementById('clock-location');
+    
+    const timezones = [
+        { label: 'NEW DELHI', tz: 'Asia/Kolkata' },
+        { label: 'LONDON', tz: 'Europe/London' },
+        { label: 'NEW YORK', tz: 'America/New_York' },
+        { label: 'CUPERTINO', tz: 'America/Los_Angeles' }
+    ];
+    let currentTzIndex = 0;
 
-    // --- 4. Word-by-Word Setup ---
+    function updateTime() {
+        const now = new Date();
+        const options = { timeZone: timezones[currentTzIndex].tz, hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' };
+        clockTime.textContent = new Intl.DateTimeFormat('en-GB', options).format(now);
+    }
+    setInterval(updateTime, 1000);
+    updateTime();
+
+    // Cycle through locations every 4 seconds
+    setInterval(() => {
+        clockLabel.classList.add('clock-fade');
+        setTimeout(() => {
+            currentTzIndex = (currentTzIndex + 1) % timezones.length;
+            clockLabel.textContent = timezones[currentTzIndex].label;
+            clockLabel.classList.remove('clock-fade');
+            updateTime();
+        }, 300); // Wait for fade out
+    }, 4000);
+
+    // --- 5. Word-by-Word Setup ---
     const manifestoTextEl = document.getElementById('manifesto-text');
     const words = manifestoTextEl.innerText.trim().split(/\s+/);
     manifestoTextEl.innerHTML = ''; 
-    
     words.forEach(word => {
         const span = document.createElement('span');
         span.innerText = word;
@@ -118,28 +128,19 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     const wordSpans = manifestoTextEl.querySelectorAll('span');
 
-    // --- 5. Intersection Observers (Attached to Capsule) ---
+    // --- 6. Capsule Internal Scroll Logic (Scrubbing & Spy Nav) ---
     const capsule = document.getElementById('capsule-container');
-    
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('in-view');
-            }
-        });
-    }, { root: capsule, threshold: 0.1 });
-    
-    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
-
-    // --- 6. Inner Capsule Scroll Scrubbing ---
     const manifestoTrigger = document.getElementById('manifesto-trigger');
+    const navDots = document.querySelectorAll('.capsule-nav .nav-dot');
+    const spySections = document.querySelectorAll('.scroll-spy-section');
     
     capsule.addEventListener('scroll', () => {
+        const scrollY = capsule.scrollTop;
+        const capsuleHeight = capsule.clientHeight;
+
+        // 6A. Word Scrubbing Math (Fixed to strictly wait for scroll)
         const manifestoTop = manifestoTrigger.offsetTop; 
         const manifestoHeight = manifestoTrigger.offsetHeight;
-        const capsuleHeight = capsule.clientHeight;
-        const scrollY = capsule.scrollTop;
-
         const startScrub = manifestoTop;
         const endScrub = manifestoTop + manifestoHeight - capsuleHeight;
 
@@ -160,29 +161,51 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (scrollY > endScrub) {
             wordSpans.forEach(span => span.classList.add('active-word'));
         }
+
+        // 6B. Scroll Spy Navigation Highlight
+        spySections.forEach((sec, index) => {
+            const secTop = sec.offsetTop - 200; // Offset for trigger point
+            const secBottom = secTop + sec.offsetHeight;
+            if (scrollY >= secTop && scrollY < secBottom) {
+                navDots.forEach(dot => dot.classList.remove('active'));
+                if(navDots[index]) navDots[index].classList.add('active');
+            }
+        });
     });
 
-    // --- 7. Outer Window Scroll Engine ---
+    // 6C. Click to Jump via Nav
+    navDots.forEach(dot => {
+        dot.addEventListener('click', () => {
+            const targetId = dot.getAttribute('data-target');
+            const targetSec = document.getElementById(targetId);
+            capsule.scrollTo({ top: targetSec.offsetTop, behavior: 'smooth' });
+        });
+    });
+
+    // Standard Observers
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('in-view'); });
+    }, { root: capsule, threshold: 0.1 });
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+    // --- 7. Outer Window Scroll Engine (State Change) ---
     const dynamicHero = document.getElementById('dynamic-hero');
     const heroL1 = document.getElementById('hero-l1');
     const heroL2 = document.getElementById('hero-l2');
     const heroL3 = document.getElementById('hero-l3');
     const techCanvasEl = document.getElementById('tech-canvas');
+    const capsuleNav = document.getElementById('capsule-nav');
     
     let moveDist = 0;
     function calculateHeroMath() {
         const l2Rect = heroL2.getBoundingClientRect();
         const l2CenterY = l2Rect.top + (l2Rect.height / 2); 
-        // Use dynamically calculated gap and height from CSS variables if possible, 
-        // but safe fallback to standard 60px (40 gap + 20 half height) for desktop, 40 for mobile
         const isMobile = window.innerWidth <= 768;
         const endCenter = isMobile ? 40 : 60; 
         moveDist = l2CenterY - endCenter; 
     }
     setTimeout(calculateHeroMath, 100); 
     window.addEventListener('resize', calculateHeroMath);
-
-    let manifestoTriggered = false;
 
     function onWindowScroll() {
         const scrollY = window.scrollY;
@@ -207,14 +230,10 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (progress === 1) {
             capsule.style.pointerEvents = 'auto';
-            if (!manifestoTriggered) {
-                manifestoTriggered = true;
-                wordSpans.forEach((span, index) => {
-                    setTimeout(() => { span.classList.add('active-word'); }, index * 30); 
-                });
-            }
+            capsuleNav.classList.add('visible');
         } else {
             capsule.style.pointerEvents = 'none';
+            capsuleNav.classList.remove('visible');
         }
 
         requestAnimationFrame(onWindowScroll);

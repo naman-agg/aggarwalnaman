@@ -2,10 +2,7 @@
     --font-main: 'Inter', sans-serif;
     --transition-smooth: 0.6s cubic-bezier(0.22, 1, 0.36, 1);
     
-    /* Horizontal Edge Padding */
     --edge-pad: 120px; 
-    
-    /* Vertical Symmetrical Spacing Variables */
     --v-gap: 40px;
     --ui-height: 40px;
     
@@ -37,7 +34,7 @@
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
-html { scrollbar-width: none; }
+html { scrollbar-width: none; scroll-behavior: smooth; }
 ::-webkit-scrollbar { display: none; }
 
 body {
@@ -52,7 +49,14 @@ body {
     body, a, button, .theme-toggle { cursor: none; }
 }
 
-/* Backgrounds & Canvas */
+/* 1. Cinematic Film Grain Overlay */
+.film-grain {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    pointer-events: none; z-index: 999; opacity: 0.04;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+.light-mode .film-grain { opacity: 0.06; mix-blend-mode: multiply; }
+
 .static-background {
     position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
     background: radial-gradient(circle at 50% 0%, rgba(56, 189, 248, 0.05), transparent 70%);
@@ -61,11 +65,11 @@ body {
 
 .tech-canvas {
     position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-    z-index: -1; pointer-events: none;
-    opacity: 0.5; transition: opacity 0.1s linear, filter 0.1s linear;
+    z-index: -1; pointer-events: none; opacity: 0.5;
+    transition: opacity 0.1s linear, filter 0.1s linear;
 }
 
-/* Inverted Cursor */
+/* Cursor */
 .cursor-trail {
     position: fixed; top: 0; left: 0; width: 50px; height: 50px;
     background: #ffffff; border-radius: 50%;
@@ -76,18 +80,15 @@ body {
 }
 .cursor-trail.hovering { width: 20px; height: 20px; filter: blur(2px); }
 
-/* Global Controls (Perfect Symmetry, No Background) */
+/* Global Controls */
 .global-controls {
-    position: fixed; 
-    top: var(--v-gap); 
-    left: 0; width: 100%; 
-    height: var(--ui-height);
+    position: fixed; top: var(--v-gap); left: 0; width: 100%; height: var(--ui-height);
     display: flex; justify-content: space-between; align-items: center;
     padding: 0 var(--edge-pad); z-index: 105; pointer-events: none;
 }
 .global-controls > * { pointer-events: auto; }
 
-.search-btn { background: none; border: none; color: var(--text-primary); transition: opacity 0.3s ease; cursor: pointer; }
+.search-btn { background: none; border: none; color: var(--text-primary); transition: opacity 0.3s ease; }
 .theme-toggle { width: 52px; height: 28px; background: var(--toggle-bg); border-radius: 30px; position: relative; transition: background var(--transition-smooth); cursor: pointer; }
 .toggle-circle { width: 20px; height: 20px; background: var(--toggle-circle); border-radius: 50%; position: absolute; top: 4px; left: 4px; transition: transform var(--transition-smooth); }
 .light-mode .toggle-circle { transform: translateX(24px); }
@@ -102,16 +103,41 @@ body {
 .hero-l2 { font-size: clamp(60px, 11vw, 150px); font-weight: 900; letter-spacing: -0.04em; white-space: nowrap; transform-origin: center center; line-height: 1; }
 .hero-l3 { font-size: clamp(14px, 2vw, 24px); font-weight: 900; letter-spacing: 0.3em; color: var(--text-secondary); line-height: 1; }
 
-/* Fixed Capsule Container (Perfect Mathematical Symmetry) */
+/* 2. Floating Scroll-Spy Navigation */
+.capsule-nav {
+    position: fixed;
+    top: 50%; transform: translateY(-50%);
+    left: calc(var(--edge-pad) / 2); /* Centers it in the margin space */
+    display: flex; flex-direction: column; gap: 20px;
+    z-index: 105; opacity: 0; pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+.capsule-nav.visible { opacity: 1; pointer-events: auto; }
+
+.nav-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--text-muted); cursor: pointer;
+    position: relative; transition: all 0.3s ease;
+}
+.nav-dot.active { background: var(--accent); transform: scale(1.4); box-shadow: 0 0 10px var(--accent); }
+
+/* Nav Labels (Fade in on hover) */
+.nav-label {
+    position: absolute; left: 24px; top: 50%; transform: translateY(-50%);
+    font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--text-secondary); opacity: 0; pointer-events: none;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.nav-dot:hover .nav-label { opacity: 1; transform: translateY(-50%) translateX(5px); }
+
+/* Fixed Capsule Container */
 .capsule-container { 
     position: fixed;
-    /* Top = Gap + Header Height + Gap */
     top: calc(var(--v-gap) * 2 + var(--ui-height)); 
     left: var(--edge-pad);
     width: calc(100% - (var(--edge-pad) * 2)); 
-    /* Height leaves exactly (Gap + Footer Height + Gap) at the bottom */
     height: calc(100vh - (var(--v-gap) * 4 + var(--ui-height) * 2)); 
-    z-index: 50; /* Slides beautifully under the footer text */
+    z-index: 50; 
     
     background: var(--bg-glass-heavy);
     backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
@@ -121,18 +147,15 @@ body {
     
     overflow-y: auto; scrollbar-width: none;
     transform: translateY(100vh); opacity: 0; pointer-events: none;
+    scroll-behavior: smooth;
 }
 .capsule-container::-webkit-scrollbar { display: none; }
 
-/* Internal Layouts */
 .flex-center { display: flex; flex-direction: column; justify-content: center; align-items: center; }
 .footer-spacer { height: 120px; } 
 
-/* Scrub & Uplift Paragraph Layout */
-.manifesto-section { 
-    height: 150vh; 
-    position: relative;
-} 
+/* Fixed Paragraph Reveal (Starts hidden until scrolled) */
+.manifesto-section { height: 150vh; position: relative; } 
 .sticky-content {
     position: sticky; top: 0; 
     height: calc(100vh - (var(--v-gap) * 4 + var(--ui-height) * 2)); 
@@ -140,7 +163,6 @@ body {
     display: flex; justify-content: center; align-items: center;
 }
 
-/* Perfect Flexbox Centring */
 .manifesto-text {
     font-size: clamp(24px, 3.5vw, 48px); 
     font-weight: 600; line-height: 1.4; letter-spacing: -0.02em;
@@ -187,39 +209,40 @@ body {
 .marquee-content span:nth-child(even) { color: var(--accent); }
 @keyframes scroll-marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
-/* Mixed Footer (Completely transparent background, Floating UI above capsule) */
+/* 3. The World Clock & Footer */
 .site-footer {
-    position: fixed; 
-    bottom: var(--v-gap); 
-    left: 0; width: 100%; 
-    height: var(--ui-height);
+    position: fixed; bottom: var(--v-gap); left: 0; width: 100%; height: var(--ui-height);
     display: flex; justify-content: space-between; align-items: center;
-    padding: 0 var(--edge-pad); 
-    background: transparent; border: none;
-    z-index: 100; /* Locked permanently above capsule */
-    pointer-events: none; 
+    padding: 0 var(--edge-pad); background: transparent; border: none;
+    z-index: 100; pointer-events: none; 
 }
 .site-footer > * { pointer-events: auto; } 
+
+.world-clock { display: flex; align-items: baseline; gap: 12px; }
+.clock-display { font-family: monospace; color: var(--text-primary); font-size: 24px; letter-spacing: 0.05em; font-weight: 600; width: 120px; }
+.clock-label { font-size: 12px; font-weight: 700; letter-spacing: 0.2em; color: var(--accent); transition: opacity 0.3s ease; }
+.clock-fade { opacity: 0; }
+
 .social-icon { color: var(--text-secondary); transition: color 0.3s ease, transform 0.3s ease; display: flex; }
 .social-icon:hover { color: var(--text-primary); transform: translateY(-2px); }
 .footer-centre { display: flex; gap: 24px; }
 
-.clock-display { font-family: monospace; color: var(--text-secondary); font-size: 24px; letter-spacing: 0.05em; }
 .resume-link { color: var(--text-primary); text-decoration: none; font-size: 18px; font-weight: 700; letter-spacing: 0.1em; transition: opacity 0.3s ease; }
 .resume-link:hover { opacity: 0.7; }
 
-/* Intersection Animations */
 .fade-up { opacity: 0; transform: translateY(40px); transition: opacity 0.8s ease, transform 0.8s ease; }
 .fade-up.in-view { opacity: 1; transform: translateY(0); }
 
+/* MOBILE RESPONSIVENESS (Proper variable syntax here) */
 @media (max-width: 768px) {
     :root { 
         --edge-pad: 20px; 
-        --v-gap: 20px; /* Tighter symmetry for mobile */
+        --v-gap: 20px; 
     } 
+    .capsule-nav { display: none; } 
     .sticky-content, .standard-section { padding: 60px 20px; }
     .workshop-grid { grid-template-columns: 1fr; }
-    .clock-display { font-size: 16px; }
+    .clock-display { font-size: 16px; width: 80px; }
     .resume-link { font-size: 14px; }
     .social-icon svg { width: 20px; height: 20px; }
 }
