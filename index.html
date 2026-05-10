@@ -16,7 +16,6 @@
     <div class="static-background"></div>
 
     <canvas id="tech-canvas" class="tech-canvas"></canvas>
-
     <div class="cursor-trail" id="cursor-trail"></div>
 
     <div class="global-controls">
@@ -24,11 +23,12 @@
             <span class="material-symbols-outlined">search</span>
         </button>
         <div class="theme-toggle interactive-element" id="themeToggle" role="button" tabindex="0">
-            <div class="toggle-circle"></div>
+            <div class="celestial-body">
+                <div class="craters"></div>
+                <div class="sun-rays"></div>
+            </div>
         </div>
     </div>
-
-    <div class="header-bg" id="header-bg"></div>
 
     <div class="dynamic-hero" id="dynamic-hero">
         <div class="hero-l1" id="hero-l1">Hello! I am</div>
@@ -52,7 +52,6 @@
     </nav>
 
     <main class="capsule-container" id="capsule-container">
-
         <section class="manifesto-section scroll-spy-section" id="manifesto-trigger">
             <div class="sticky-content flex-center">
                 <p class="manifesto-text" id="manifesto-text">
@@ -65,7 +64,6 @@
             <h2 class="section-heading fade-up">The Journey</h2>
             <div class="timeline-container">
                 <div class="timeline-line" id="timeline-line"></div>
-                
                 <div class="timeline-item fade-up">
                     <div class="timeline-dot"></div>
                     <div class="timeline-content">
@@ -74,7 +72,6 @@
                         <p class="job-desc">Optimising high-scale logistics and bridging the gap between primary technical domains and secondary operational efficiencies for global tech leaders.</p>
                     </div>
                 </div>
-
                 <div class="timeline-item fade-up">
                     <div class="timeline-dot"></div>
                     <div class="timeline-content">
@@ -98,7 +95,6 @@
                     </div>
                     <h3 class="card-label">AI Web Architecture</h3>
                 </div>
-
                 <div class="workshop-card" id="print-card">
                     <div class="card-layer blueprint-layer">
                         <div class="placeholder-img wireframe">CAD Prototyping</div>
@@ -110,34 +106,17 @@
 
         <section class="standard-section skills-section scroll-spy-section" id="skills-section">
             <h2 class="section-heading fade-up">Education & Stack</h2>
-            
             <div class="education-block fade-up">
-                <div class="edu-item">
-                    <h4>Master of Business Administration (MBA)</h4>
-                </div>
-                <div class="edu-item">
-                    <h4>B.Tech in Mechanical Engineering</h4>
-                </div>
+                <div class="edu-item"><h4>Master of Business Administration (MBA)</h4></div>
+                <div class="edu-item"><h4>B.Tech in Mechanical Engineering</h4></div>
             </div>
-
             <div class="marquee-container mt-large">
                 <div class="marquee-content">
-                    <span>Liquid UI</span><span>•</span>
-                    <span>CAD Modelling</span><span>•</span>
-                    <span>Programme Management</span><span>•</span>
-                    <span>3D Prototyping</span><span>•</span>
-                    <span>Prompt Engineering</span><span>•</span>
-                    <span>Agile Logistics</span><span>•</span>
-                    <span>Liquid UI</span><span>•</span>
-                    <span>CAD Modelling</span><span>•</span>
-                    <span>Programme Management</span><span>•</span>
-                    <span>3D Prototyping</span><span>•</span>
-                    <span>Prompt Engineering</span><span>•</span>
-                    <span>Agile Logistics</span><span>•</span>
+                    <span>Liquid UI</span><span>•</span><span>CAD Modelling</span><span>•</span><span>Programme Management</span><span>•</span><span>3D Prototyping</span><span>•</span><span>Prompt Engineering</span><span>•</span><span>Agile Logistics</span><span>•</span>
+                    <span>Liquid UI</span><span>•</span><span>CAD Modelling</span><span>•</span><span>Programme Management</span><span>•</span><span>3D Prototyping</span><span>•</span><span>Prompt Engineering</span><span>•</span><span>Agile Logistics</span><span>•</span>
                 </div>
             </div>
         </section>
-        
         <div class="footer-spacer"></div>
     </main>
 
@@ -146,31 +125,31 @@
             <div class="world-clock">
                 <div class="clock-item">
                     <span class="clock-label">LON</span>
-                    <span class="clock-time" id="time-lon">00:00:00</span>
+                    <span class="clock-time" id="time-lon">00:00</span>
                 </div>
                 <div class="clock-item">
                     <span class="clock-label">DEL</span>
-                    <span class="clock-time" id="time-del">00:00:00</span>
+                    <span class="clock-time" id="time-del">00:00</span>
                 </div>
                 <div class="clock-item mobile-hide">
                     <span class="clock-label">DXB</span>
-                    <span class="clock-time" id="time-dxb">00:00:00</span>
+                    <span class="clock-time" id="time-dxb">00:00</span>
                 </div>
                 <div class="clock-item mobile-hide">
                     <span class="clock-label">NYC</span>
-                    <span class="clock-time" id="time-nyc">00:00:00</span>
+                    <span class="clock-time" id="time-nyc">00:00</span>
                 </div>
             </div>
         </div>
         <div class="footer-centre">
             <a href="#" aria-label="LinkedIn" class="social-icon interactive-element">
-                <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.16-3.8c-1.1 0-1.8.6-2.1 1.2v-1h-3v9h3V13c0-1.2.3-1.8 1.4-1.8 1.1 0 1.3.9 1.3 1.9v5.4h3M7.5 18.5V9.4H4.4v9.1h3.1M6 8a1.7 1.7 0 1 0 0-3.4 1.7 1.7 0 0 0 0 3.4z"/></svg>
+                <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.16-3.8c-1.1 0-1.8.6-2.1 1.2v-1h-3v9h3V13c0-1.2.3-1.8 1.4-1.8 1.1 0 1.3.9 1.3 1.9v5.4h3M7.5 18.5V9.4H4.4v9.1h3.1M6 8a1.7 1.7 0 1 0 0-3.4 1.7 1.7 0 0 0 0 3.4z"/></svg>
             </a>
             <a href="#" aria-label="GitHub" class="social-icon interactive-element">
-                <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24"><path d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.45-1.15-1.11-1.46-1.11-1.46-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z"/></svg>
+                <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22"><path d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.45-1.15-1.11-1.46-1.11-1.46-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z"/></svg>
             </a>
             <a href="#" aria-label="Email" class="social-icon interactive-element">
-                <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zm0 2v.51l8 4.5 8-4.5V6H4zm0 2.49V18h16V8.49l-8 4.5-8-4.5z"/></svg>
+                <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zm0 2v.51l8 4.5 8-4.5V6H4zm0 2.49V18h16V8.49l-8 4.5-8-4.5z"/></svg>
             </a>
         </div>
         <div class="footer-right">
