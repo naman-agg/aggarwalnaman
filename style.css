@@ -15,6 +15,7 @@
     --text-secondary: #94a3b8;
     --border-color: rgba(255, 255, 255, 0.05);
     
+    /* Deep physical shadow variables */
     --capsule-shadow: 0 40px 80px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
@@ -26,6 +27,8 @@
     --text-muted: rgba(17, 17, 17, 0.15);
     --text-secondary: #666666;
     --border-color: rgba(0, 0, 0, 0.05);
+    
+    /* Lighter physical shadow */
     --capsule-shadow: 0 40px 80px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.5);
 }
 
@@ -107,29 +110,29 @@ body.light-mode .light-icon { color: var(--bg-static); }
     text-align: center; z-index: 101; pointer-events: none;
 }
 
-/* FIX: Inline-flex shrink-wraps the container tightly around the main name */
+/* Inline-flex shrink-wraps the container tightly around the main name */
 .hero-wrapper {
     position: relative; 
     display: inline-flex; flex-direction: column; align-items: center; justify-content: center;
 }
 
-/* FIX: CSS anchored safely behind the name, resized slightly to stop clipping */
+/* L1: The Massive "Ghost" Background Overlay */
 .hero-l1 { 
     position: absolute; 
-    bottom: 50%; /* Locks exactly to the middle of the wrapper */
-    left: 50%; transform: translateX(-50%);
+    top: 40%; /* Locks nicely behind the upper half of the name */
+    left: 50%; transform: translate(-50%, -50%);
     width: 100vw; 
-    font-size: clamp(100px, 16vw, 260px); 
+    font-size: clamp(150px, 22vw, 350px); 
     font-weight: 900; line-height: 1; letter-spacing: -0.05em; white-space: nowrap;
     text-align: center; z-index: -1; pointer-events: none; 
     filter: blur(8px); 
     
-    background: linear-gradient(180deg, rgba(248, 250, 252, 0.25) 0%, transparent 70%);
+    background: linear-gradient(180deg, rgba(248, 250, 252, 0.25) 0%, transparent 65%);
     -webkit-background-clip: text; background-clip: text; color: transparent;
     transition: opacity 0.5s ease;
 }
 .light-mode .hero-l1 { 
-    background: linear-gradient(180deg, rgba(17, 17, 17, 0.2) 0%, transparent 70%); 
+    background: linear-gradient(180deg, rgba(17, 17, 17, 0.2) 0%, transparent 65%); 
     -webkit-background-clip: text; background-clip: text; color: transparent;
 }
 
@@ -138,11 +141,11 @@ body.light-mode .light-icon { color: var(--bg-static); }
     transform-origin: center center; line-height: 1; color: var(--text-primary); position: relative; 
 }
 
-/* FIX: CSS anchored cleanly below the name with explicit margin */
+/* L3: Scramble text locked beneath the name */
 .hero-l3 { 
     position: absolute; 
-    top: 100%; /* Locks exactly to the bottom edge of the wrapper */
-    margin-top: 20px; /* Explicit requested spacing */
+    top: 100%; /* Sits securely tight below the name baseline */
+    margin-top: 20px; /* Clean breathing room */
     left: 50%; transform: translateX(-50%);
     font-family: monospace; font-size: clamp(14px, 2vw, 24px); font-weight: 900; 
     letter-spacing: 0.3em; color: var(--text-secondary); white-space: nowrap; 
@@ -272,9 +275,9 @@ body.light-mode .light-icon { color: var(--bg-static); }
         --edge-pad: 16px; 
         --v-gap: 16px; 
     } 
-    .hero-l1 { font-size: clamp(80px, 15vw, 120px); bottom: 55%; filter: blur(4px); } 
+    .hero-l1 { font-size: clamp(80px, 15vw, 150px); filter: blur(4px); } 
     .hero-l2 { font-size: clamp(40px, 8vw, 80px); }
-    .hero-l3 { font-size: 11px; margin-top: 12px; }
+    .hero-l3 { font-size: 12px; margin-top: 12px; }
     
     .capsule-nav { display: none; } 
     .sticky-content, .standard-section { padding: 60px 16px; } 

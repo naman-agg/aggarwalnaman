@@ -120,7 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- 6. Matrix Role Scramble Engine ---
     const scrambleEl = document.getElementById('hero-l3');
-    const phrases = ["A PRODUCT MANAGER.", "A DESIGNER.", "AN INVENTOR."];
+    const phrases = ["A PRODUCT MANAGER", "A DESIGNER", "AN INVENTOR"];
     const chars = "><[]{}*&^%$#@!ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"; 
     let phraseIndex = 0;
     
@@ -216,7 +216,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const endScale = isMobile ? 0.35 : 0.25; 
         const currentScale = 1 - ((1 - endScale) * progress);
         
-        // FIX: Clean, reliable translateY physics ensuring horizontal centring is not overwritten
+        // CSS manages layout centre. JS strictly manages vertical fade offset
         heroL1.style.opacity = Math.max(0, 1 - (progress * 2));
         heroL1.style.transform = `translateX(-50%) translateY(-${progress * 40}px)`;
 
