@@ -12,16 +12,14 @@ document.addEventListener('DOMContentLoaded', () => {
         mouseY = e.clientY;
     });
 
-    // Smooth Lerp animation for the trail
     function renderCursor() {
-        trailX += (mouseX - trailX) * 0.15; // The smaller the decimal, the smoother the lag
+        trailX += (mouseX - trailX) * 0.15; 
         trailY += (mouseY - trailY) * 0.15;
         cursorTrail.style.transform = `translate3d(calc(${trailX}px - 50%), calc(${trailY}px - 50%), 0)`;
         requestAnimationFrame(renderCursor);
     }
     renderCursor();
 
-    // Hover interactions for the negative cursor
     document.querySelectorAll('.interactive-element').forEach(el => {
         el.addEventListener('mouseenter', () => {
             cursorTrail.classList.add('hovering');
@@ -31,12 +29,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // --- 2. Canvas Tech Grid (Nodes & Connections) ---
+    // --- 2. Canvas Tech Grid (Pronounced) ---
     const canvas = document.getElementById('tech-canvas');
     const ctx = canvas.getContext('2d');
     let width, height;
     const dots = [];
-    const spacing = 60; // Distance between dots
+    const spacing = 60; 
 
     function initCanvas() {
         width = window.innerWidth;
@@ -55,26 +53,26 @@ document.addEventListener('DOMContentLoaded', () => {
     function drawGrid() {
         ctx.clearRect(0, 0, width, height);
         
-        // Draw the static dots
-        ctx.fillStyle = 'rgba(148, 163, 184, 0.2)'; // Very faint slate color
+        // Brighter, slightly larger static dots
+        ctx.fillStyle = 'rgba(148, 163, 184, 0.5)'; 
         dots.forEach(dot => {
             ctx.beginPath();
-            ctx.arc(dot.x, dot.y, 1.5, 0, Math.PI * 2);
+            ctx.arc(dot.x, dot.y, 2, 0, Math.PI * 2);
             ctx.fill();
         });
 
-        // Draw connections to the mouse
+        // Larger interaction radius, thicker/brighter connecting lines
+        const interactionRadius = 250;
         dots.forEach(dot => {
             const dist = Math.hypot(dot.x - mouseX, dot.y - mouseY);
-            if (dist < 180) { // Interaction radius
+            if (dist < interactionRadius) { 
                 ctx.beginPath();
                 ctx.moveTo(dot.x, dot.y);
                 ctx.lineTo(mouseX, mouseY);
-                // Line opacity fades out the further the dot is from the mouse
-                const opacity = 1 - (dist / 180);
-                // Using the exact accent blue colour for the laser connections
-                ctx.strokeStyle = `rgba(56, 189, 248, ${opacity * 0.4})`; 
-                ctx.lineWidth = 1;
+                
+                const opacity = 1 - (dist / interactionRadius);
+                ctx.strokeStyle = `rgba(56, 189, 248, ${opacity * 0.8})`; 
+                ctx.lineWidth = 1.5;
                 ctx.stroke();
             }
         });
@@ -135,7 +133,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const headerBg = document.getElementById('header-bg');
     const manifestoTrigger = document.getElementById('manifesto-trigger');
     
-    // Calculate exact pixel distance needed to center name in the 80px header
     let moveDist = 0;
     function calculateHeroMath() {
         const l2Rect = heroL2.getBoundingClientRect();
@@ -150,26 +147,19 @@ document.addEventListener('DOMContentLoaded', () => {
         const scrollY = window.scrollY;
         const windowHeight = window.innerHeight;
 
-        // A. Zero-Delay Hero Transition
-        // Transition finishes exactly as you scroll one full screen down.
-        // Because the cinematic container is at 100vh, it reveals perfectly underneath.
         const transitionDistance = windowHeight; 
         const heroProgress = Math.max(0, Math.min(scrollY / transitionDistance, 1));
 
-        // Fade out top and bottom lines
         heroL1.style.opacity = 1 - (heroProgress * 2); 
         heroL3.style.opacity = 1 - (heroProgress * 2); 
 
-        // Scale Naman Aggarwal
         const isMobile = window.innerWidth <= 768;
         const endScale = isMobile ? 0.4 : 0.3; 
         const currentScale = 1 - ((1 - endScale) * heroProgress);
         
-        // Move wrapper up and scale name
         dynamicHero.style.transform = `translateY(-${moveDist * heroProgress}px)`;
         heroL2.style.transform = `scale(${currentScale})`;
 
-        // Solid Header Background Fade
         headerBg.style.opacity = heroProgress;
         
         if (heroProgress > 0.9) {
@@ -182,7 +172,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const manifestoRect = manifestoTrigger.getBoundingClientRect();
         
         if (manifestoRect.top < windowHeight && manifestoRect.bottom > 0) {
-            // Maps scroll purely inside the sticky container bounds
             let progress = -manifestoRect.top / (manifestoRect.height - windowHeight);
             progress = Math.max(0, Math.min(progress, 1));
             
