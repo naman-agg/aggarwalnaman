@@ -13,8 +13,10 @@
     --text-primary: #f8fafc;
     --text-muted: rgba(248, 250, 252, 0.15); 
     --text-secondary: #94a3b8;
+    --border-color: rgba(255, 255, 255, 0.05);
     
-    --border-color: rgba(148, 163, 184, 0.3);
+    /* Deep physical shadow variables */
+    --capsule-shadow: 0 40px 80px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .light-mode {
@@ -24,7 +26,10 @@
     --text-primary: #111111;
     --text-muted: rgba(17, 17, 17, 0.15);
     --text-secondary: #666666;
-    --border-color: rgba(0, 0, 0, 0.1);
+    --border-color: rgba(0, 0, 0, 0.05);
+    
+    /* Lighter physical shadow */
+    --capsule-shadow: 0 40px 80px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.5);
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -37,6 +42,10 @@ body {
     background: var(--bg-static); 
     height: calc(100vh + 500px);
     overflow-x: hidden;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    body, a, button { cursor: none; }
 }
 
 /* Backgrounds */
@@ -58,7 +67,7 @@ body {
     opacity: 1; transition: opacity 0.2s linear;
 }
 
-/* Inverted Trailing Cursor (Native cursor is allowed) */
+/* Inverted Trailing Cursor */
 .cursor-trail {
     position: fixed; top: 0; left: 0; width: 50px; height: 50px;
     background: #ffffff; border-radius: 50%;
@@ -79,22 +88,31 @@ body {
 
 .search-btn { background: none; border: none; color: var(--text-primary); transition: opacity 0.3s ease; cursor: pointer; }
 
-/* The NEW Eclipse Toggle */
-.eclipse-toggle {
-    width: 32px; height: 32px; border-radius: 50%;
-    border: 2px solid var(--text-primary);
-    position: relative; overflow: hidden; cursor: pointer;
-    transition: border-color var(--transition-smooth);
+/* The NEW Intuitive Pill Toggle */
+.theme-toggle {
+    width: 60px; height: 32px; 
+    background: var(--bg-card); border: 1px solid var(--border-color);
+    border-radius: 30px; position: relative; 
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 6px; cursor: pointer;
 }
-.eclipse-mask {
-    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-    background: var(--text-primary);
-    transform: translateX(-100%);
-    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), background var(--transition-smooth);
+.theme-toggle .material-symbols-outlined {
+    font-size: 16px; z-index: 2; color: var(--text-secondary);
+    transition: color 0.3s ease; pointer-events: none;
 }
-.light-mode .eclipse-mask { transform: translateX(0%); }
+.toggle-slider {
+    position: absolute; top: 3px; left: 3px;
+    width: 24px; height: 24px; border-radius: 50%;
+    background: var(--text-primary); z-index: 1;
+    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+/* The slider shifts and the icon beneath it changes colour */
+.light-mode .toggle-slider { transform: translateX(28px); }
+body:not(.light-mode) .dark-icon { color: var(--bg-static); }
+body.light-mode .light-icon { color: var(--bg-static); }
 
-/* Dynamic Hero (Isolated bounding box for exact mathematical symmetry) */
+
+/* Dynamic Hero */
 .dynamic-hero {
     position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
     display: flex; align-items: center; justify-content: center;
@@ -104,9 +122,9 @@ body {
     position: relative; 
     display: flex; align-items: center; justify-content: center;
 }
-/* Absolute positioning removes L1 and L3 from flow, so L2 is the true vertical center */
 .hero-l1 { position: absolute; top: clamp(-50px, -6vw, -80px); font-size: clamp(24px, 3vw, 36px); font-weight: 700; color: var(--text-secondary); white-space: nowrap;}
-.hero-l2 { font-size: clamp(60px, 11vw, 150px); font-weight: 900; letter-spacing: -0.04em; white-space: nowrap; transform-origin: center center; line-height: 1; }
+/* Scaled down the main name slightly per your request */
+.hero-l2 { font-size: clamp(50px, 9vw, 120px); font-weight: 900; letter-spacing: -0.04em; white-space: nowrap; transform-origin: center center; line-height: 1; }
 .hero-l3 { position: absolute; bottom: clamp(-40px, -4vw, -60px); font-size: clamp(14px, 2vw, 24px); font-weight: 900; letter-spacing: 0.3em; color: var(--text-secondary); white-space: nowrap; }
 
 /* Floating Scroll-Spy Navigation */
@@ -134,7 +152,7 @@ body {
 .nav-dot.active { background: var(--accent); transform: scale(1.4); box-shadow: 0 0 10px var(--accent); }
 .nav-dot.active .nav-label { opacity: 1; transform: translateY(-50%) translateX(5px); color: var(--text-primary); }
 
-/* Fixed Capsule Container */
+/* Physical Smoked Glass Capsule Container */
 .capsule-container { 
     position: fixed;
     top: calc(var(--v-gap) * 2 + var(--ui-height)); 
@@ -144,10 +162,11 @@ body {
     z-index: 50; 
     
     background: var(--bg-glass-heavy);
-    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(56, 189, 248, 0.4);
+    backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+    /* Cleaned up borders and shadows for physical realism */
+    border: 1px solid var(--border-color);
     border-radius: 20px; 
-    box-shadow: 0 20px 40px rgba(0,0,0,0.5), inset 0 0 20px rgba(56, 189, 248, 0.15);
+    box-shadow: var(--capsule-shadow);
     
     overflow-y: auto; scrollbar-width: none;
     transform: translateY(100vh); opacity: 0; pointer-events: none;
@@ -156,7 +175,7 @@ body {
 .capsule-container::-webkit-scrollbar { display: none; }
 
 .flex-center { display: flex; flex-direction: column; justify-content: center; align-items: center; }
-.footer-spacer { height: 120px; } 
+.footer-spacer { height: 120px; clear: both; } 
 
 /* Fixed Paragraph Reveal */
 .manifesto-section { height: 150vh; position: relative; } 
@@ -244,10 +263,11 @@ body {
         --v-gap: 16px; 
     } 
     .capsule-nav { display: none; } 
-    .sticky-content, .standard-section { padding: 60px 16px; }
+    .sticky-content, .standard-section { padding: 60px 16px; } 
     .workshop-grid { grid-template-columns: 1fr; }
     
     .site-footer { grid-template-columns: 1fr 1fr; } 
     .footer-centre { display: none; }
     .mobile-hide { display: none !important; }
-}
+    .social-icon svg { width: 24px; height: 24px; } /* Slightly scaled down on mobile */
+}   

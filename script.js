@@ -76,6 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const scrollY = capsule.scrollTop;
         const capsuleHeight = capsule.clientHeight;
 
+        // Scrubbing Math
         const manifestoTop = manifestoTrigger.offsetTop; 
         const manifestoHeight = manifestoTrigger.offsetHeight;
         const startScrub = manifestoTop;
@@ -83,7 +84,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (scrollY >= startScrub && scrollY <= endScrub) {
             let progress = (scrollY - startScrub) / (endScrub - startScrub);
-            // Critical Fix: Progress forced to -1 index if at start so the first word resets
             let activeWordIndex = progress <= 0.01 ? -1 : Math.floor(progress * wordSpans.length);
 
             wordSpans.forEach((span, index) => {
@@ -121,9 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- 6. Outer Window Scroll Engine (State Change) ---
     const dynamicHero = document.getElementById('dynamic-hero');
-    const heroL1 = document.getElementById('hero-l1');
-    const heroL2 = document.getElementById('hero-l2');
-    const heroL3 = document.getElementById('hero-l3');
+    const heroL1 = document.getElementById('hero-l1'), heroL2 = document.getElementById('hero-l2'), heroL3 = document.getElementById('hero-l3');
     const capsuleNav = document.getElementById('capsule-nav');
     
     let moveDist = 0;
@@ -131,7 +129,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const l2Rect = heroL2.getBoundingClientRect();
         const l2CenterY = l2Rect.top + (l2Rect.height / 2); 
         
-        // Use exact pixel gap defined in CSS variables
         const isMobile = window.innerWidth <= 768;
         const vGap = isMobile ? 16 : 24;
         const uiHeight = 40;
@@ -139,8 +136,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         moveDist = l2CenterY - endCenter; 
     }
-    setTimeout(calculateHeroMath, 100); 
-    window.addEventListener('resize', calculateHeroMath);
+    setTimeout(calculateHeroMath, 100); window.addEventListener('resize', calculateHeroMath);
 
     function onWindowScroll() {
         const scrollY = window.scrollY;
@@ -149,19 +145,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
         archGrid.style.opacity = 1 - progress; 
 
-        // Scale Name (Significantly smaller end state)
+        // Scale Name
         const isMobile = window.innerWidth <= 768;
-        const endScale = isMobile ? 0.25 : 0.2; 
+        const endScale = isMobile ? 0.35 : 0.25; 
         const currentScale = 1 - ((1 - endScale) * progress);
         
-        // Translate L1 and L3 away to isolate L2's bounding box
+        // Isolate L2 bounding box
         heroL1.style.transform = `translateY(-${progress * 40}px)`;
         heroL1.style.opacity = 1 - (progress * 2); 
         
         heroL3.style.transform = `translateY(${progress * 40}px)`;
         heroL3.style.opacity = 1 - (progress * 2); 
 
-        // Translate the whole block so L2 aligns perfectly in header
         dynamicHero.style.transform = `translateY(-${moveDist * progress}px)`;
         heroL2.style.transform = `scale(${currentScale})`;
 
@@ -175,7 +170,6 @@ document.addEventListener('DOMContentLoaded', () => {
             capsule.style.pointerEvents = 'none';
             capsuleNav.classList.remove('visible');
         }
-
         requestAnimationFrame(onWindowScroll);
     }
 
