@@ -128,8 +128,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const l3El = document.getElementById('hero-l3');
         const isMobile = window.innerWidth <= 768;
         
-        // Gap below the name
-        const gap = isMobile ? 30 : 50; 
+        // Drastically tightened gap to account for invisible font bounding-box padding
+        const gap = isMobile ? 0 : 10; 
         
         l3El.style.bottom = `-${gap}px`;
         l3El.style.left = `50%`;
