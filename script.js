@@ -118,25 +118,11 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
 
 
-    // --- 6. Orbit Calculation & Scramble Engine ---
+    // --- 6. Matrix Role Scramble Engine ---
     const scrambleEl = document.getElementById('hero-l3');
     const phrases = ["A PRODUCT MANAGER.", "A DESIGNER.", "AN INVENTOR."];
     const chars = "><[]{}*&^%$#@!ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"; 
     let phraseIndex = 0;
-    
-    function calculateOrbitPositions() {
-        const l3El = document.getElementById('hero-l3');
-        const isMobile = window.innerWidth <= 768;
-        
-        // Drastically tightened gap to account for invisible font bounding-box padding
-        const gap = isMobile ? 0 : 10; 
-        
-        l3El.style.bottom = `-${gap}px`;
-        l3El.style.left = `50%`;
-        l3El.style.transform = `translateX(-50%)`;
-    }
-    setTimeout(calculateOrbitPositions, 50);
-    window.addEventListener('resize', calculateOrbitPositions);
     
     class CypherScrambler {
         constructor(el) { this.el = el; }
@@ -230,11 +216,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const endScale = isMobile ? 0.35 : 0.25; 
         const currentScale = 1 - ((1 - endScale) * progress);
         
-        // Ghost L1 fades and translates slightly up relative to its -50% centre origin
+        // FIX: Translate logic stripped down. CSS holds the horizontal center.
         heroL1.style.opacity = Math.max(0, 1 - (progress * 2));
-        heroL1.style.transform = `translate(-50%, calc(-50% - ${progress * 40}px))`;
+        heroL1.style.transform = `translateX(-50%) translateY(-${progress * 40}px)`;
 
-        // L3 Scramble fades and translates down
         heroL3.style.opacity = Math.max(0, 1 - (progress * 2));
         heroL3.style.transform = `translateX(-50%) translateY(${progress * 40}px)`;
 

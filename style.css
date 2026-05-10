@@ -106,15 +106,18 @@ body.light-mode .light-icon { color: var(--bg-static); }
     display: flex; align-items: center; justify-content: center;
     text-align: center; z-index: 101; pointer-events: none;
 }
+
+/* FIX: Shrink-wraps the name to allow perfect relative positioning */
 .hero-wrapper {
-    position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center;
-    width: 100%; height: 100%;
+    position: relative; 
+    display: inline-flex; flex-direction: column; align-items: center; justify-content: center;
 }
 
-/* L1: The Massive "Ghost" Background Overlay - Perfectly scaled and slightly shifted up */
+/* L1: The Massive "Ghost" Background Overlay */
 .hero-l1 { 
     position: absolute; 
-    top: 40%; left: 50%; transform: translate(-50%, -50%);
+    bottom: 65%; /* Shifts perfectly up behind the top half of the name */
+    left: 50%; transform: translateX(-50%);
     width: 100vw; 
     font-size: clamp(150px, 22vw, 350px); 
     font-weight: 900; line-height: 1; letter-spacing: -0.05em; white-space: nowrap;
@@ -134,8 +137,13 @@ body.light-mode .light-icon { color: var(--bg-static); }
     font-size: clamp(50px, 9vw, 120px); font-weight: 900; letter-spacing: -0.04em; white-space: nowrap; 
     transform-origin: center center; line-height: 1; color: var(--text-primary); position: relative; 
 }
+
+/* L3: Scramble text */
 .hero-l3 { 
-    position: absolute; font-family: monospace; font-size: clamp(14px, 2vw, 24px); font-weight: 900; 
+    position: absolute; 
+    top: 90%; /* Sits securely tight below the name baseline */
+    left: 50%; transform: translateX(-50%);
+    font-family: monospace; font-size: clamp(14px, 2vw, 24px); font-weight: 900; 
     letter-spacing: 0.3em; color: var(--text-secondary); white-space: nowrap; 
 }
 .cypher-char {
@@ -263,9 +271,11 @@ body.light-mode .light-icon { color: var(--bg-static); }
         --edge-pad: 16px; 
         --v-gap: 16px; 
     } 
-    .hero-l1 { font-size: clamp(80px, 20vw, 150px); filter: blur(4px); top: 42%; } 
+    /* Mobile typographic adjustments */
+    .hero-l1 { font-size: clamp(100px, 20vw, 150px); bottom: 60%; filter: blur(4px); } 
     .hero-l2 { font-size: clamp(40px, 8vw, 80px); }
-    .hero-l3 { font-size: 12px; }
+    .hero-l3 { font-size: 11px; top: 85%; }
+    
     .capsule-nav { display: none; } 
     .sticky-content, .standard-section { padding: 60px 16px; } 
     .workshop-grid { grid-template-columns: 1fr; }
