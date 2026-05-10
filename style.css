@@ -45,31 +45,30 @@ body {
     overflow-x: hidden;
 }
 
-@media (hover: hover) and (pointer: fine) {
-    body, a, button, .theme-toggle { cursor: none; }
-}
-
-/* 1. Cinematic Film Grain Overlay */
-.film-grain {
-    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-    pointer-events: none; z-index: 999; opacity: 0.04;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-}
-.light-mode .film-grain { opacity: 0.06; mix-blend-mode: multiply; }
-
+/* Backgrounds */
 .static-background {
     position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
     background: radial-gradient(circle at 50% 0%, rgba(56, 189, 248, 0.05), transparent 70%);
     z-index: -2; pointer-events: none;
 }
 
-.tech-canvas {
+/* 1. The New Architectural Spotlight Grid */
+.architectural-grid {
     position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-    z-index: -1; pointer-events: none; opacity: 0.5;
-    transition: opacity 0.1s linear, filter 0.1s linear;
+    background-size: 40px 40px;
+    background-image:
+        linear-gradient(to right, rgba(148, 163, 184, 0.15) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(148, 163, 184, 0.15) 1px, transparent 1px);
+    z-index: -1;
+    pointer-events: none;
+    /* This mask is dynamically updated via JS to follow the cursor */
+    -webkit-mask-image: radial-gradient(circle at 50% 50%, black 0%, transparent 0%);
+    mask-image: radial-gradient(circle at 50% 50%, black 0%, transparent 0%);
+    opacity: 1;
+    transition: opacity 0.2s linear;
 }
 
-/* Cursor */
+/* 2. Inverted Trailing Cursor (No cursor hide applied) */
 .cursor-trail {
     position: fixed; top: 0; left: 0; width: 50px; height: 50px;
     background: #ffffff; border-radius: 50%;
@@ -88,7 +87,7 @@ body {
 }
 .global-controls > * { pointer-events: auto; }
 
-.search-btn { background: none; border: none; color: var(--text-primary); transition: opacity 0.3s ease; }
+.search-btn { background: none; border: none; color: var(--text-primary); transition: opacity 0.3s ease; cursor: pointer; }
 .theme-toggle { width: 52px; height: 28px; background: var(--toggle-bg); border-radius: 30px; position: relative; transition: background var(--transition-smooth); cursor: pointer; }
 .toggle-circle { width: 20px; height: 20px; background: var(--toggle-circle); border-radius: 50%; position: absolute; top: 4px; left: 4px; transition: transform var(--transition-smooth); }
 .light-mode .toggle-circle { transform: translateX(24px); }
@@ -103,11 +102,11 @@ body {
 .hero-l2 { font-size: clamp(60px, 11vw, 150px); font-weight: 900; letter-spacing: -0.04em; white-space: nowrap; transform-origin: center center; line-height: 1; }
 .hero-l3 { font-size: clamp(14px, 2vw, 24px); font-weight: 900; letter-spacing: 0.3em; color: var(--text-secondary); line-height: 1; }
 
-/* 2. Floating Scroll-Spy Navigation */
+/* Floating Scroll-Spy Navigation */
 .capsule-nav {
     position: fixed;
     top: 50%; transform: translateY(-50%);
-    left: calc(var(--edge-pad) / 2); /* Centers it in the margin space */
+    left: calc(var(--edge-pad) / 2); 
     display: flex; flex-direction: column; gap: 20px;
     z-index: 105; opacity: 0; pointer-events: none;
     transition: opacity 0.3s ease;
@@ -121,7 +120,6 @@ body {
 }
 .nav-dot.active { background: var(--accent); transform: scale(1.4); box-shadow: 0 0 10px var(--accent); }
 
-/* Nav Labels (Fade in on hover) */
 .nav-label {
     position: absolute; left: 24px; top: 50%; transform: translateY(-50%);
     font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
@@ -154,7 +152,7 @@ body {
 .flex-center { display: flex; flex-direction: column; justify-content: center; align-items: center; }
 .footer-spacer { height: 120px; } 
 
-/* Fixed Paragraph Reveal (Starts hidden until scrolled) */
+/* Fixed Paragraph Reveal */
 .manifesto-section { height: 150vh; position: relative; } 
 .sticky-content {
     position: sticky; top: 0; 
@@ -209,7 +207,7 @@ body {
 .marquee-content span:nth-child(even) { color: var(--accent); }
 @keyframes scroll-marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
-/* 3. The World Clock & Footer */
+/* The 3D World Clock & Footer */
 .site-footer {
     position: fixed; bottom: var(--v-gap); left: 0; width: 100%; height: var(--ui-height);
     display: flex; justify-content: space-between; align-items: center;
@@ -218,10 +216,18 @@ body {
 }
 .site-footer > * { pointer-events: auto; } 
 
-.world-clock { display: flex; align-items: baseline; gap: 12px; }
-.clock-display { font-family: monospace; color: var(--text-primary); font-size: 24px; letter-spacing: 0.05em; font-weight: 600; width: 120px; }
-.clock-label { font-size: 12px; font-weight: 700; letter-spacing: 0.2em; color: var(--accent); transition: opacity 0.3s ease; }
-.clock-fade { opacity: 0; }
+.world-clock { display: flex; align-items: baseline; gap: 8px; perspective: 1000px; }
+.clock-text { font-size: 12px; font-weight: 600; letter-spacing: 0.1em; color: var(--text-secondary); text-transform: uppercase; }
+.clock-display { font-family: monospace; color: var(--text-primary); font-size: 24px; letter-spacing: 0.05em; font-weight: 600; }
+/* The 3D Flip Styles */
+.clock-location { 
+    font-size: 12px; font-weight: 700; letter-spacing: 0.2em; color: var(--accent); 
+    display: inline-block; transform-style: preserve-3d;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease;
+}
+.flip-out { transform: rotateX(90deg); opacity: 0; }
+.flip-in { transform: rotateX(-90deg); opacity: 0; }
+.flip-normal { transform: rotateX(0deg); opacity: 1; }
 
 .social-icon { color: var(--text-secondary); transition: color 0.3s ease, transform 0.3s ease; display: flex; }
 .social-icon:hover { color: var(--text-primary); transform: translateY(-2px); }
@@ -233,16 +239,13 @@ body {
 .fade-up { opacity: 0; transform: translateY(40px); transition: opacity 0.8s ease, transform 0.8s ease; }
 .fade-up.in-view { opacity: 1; transform: translateY(0); }
 
-/* MOBILE RESPONSIVENESS (Proper variable syntax here) */
 @media (max-width: 768px) {
-    :root { 
-        --edge-pad: 20px; 
-        --v-gap: 20px; 
-    } 
+    :root { --edge-pad: 20px; --v-gap: 20px; } 
     .capsule-nav { display: none; } 
     .sticky-content, .standard-section { padding: 60px 20px; }
     .workshop-grid { grid-template-columns: 1fr; }
-    .clock-display { font-size: 16px; width: 80px; }
+    .clock-display { font-size: 16px; }
+    .clock-text, .clock-location { font-size: 10px; }
     .resume-link { font-size: 14px; }
     .social-icon svg { width: 20px; height: 20px; }
 }

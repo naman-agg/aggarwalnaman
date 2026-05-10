@@ -1,7 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    // --- 1. Inverted Trailing Cursor ---
+    // --- 1. Inverted Trailing Cursor (System Cursor remains visible) ---
     const cursorTrail = document.getElementById('cursor-trail');
+    const archGrid = document.getElementById('arch-grid');
     let mouseX = window.innerWidth / 2;
     let mouseY = window.innerHeight / 2;
     let trailX = mouseX;
@@ -10,6 +11,10 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('mousemove', (e) => {
         mouseX = e.clientX;
         mouseY = e.clientY;
+
+        // Apply architectural spotlight mask based on mouse movement
+        archGrid.style.webkitMaskImage = `radial-gradient(circle 350px at ${mouseX}px ${mouseY}px, black 0%, transparent 100%)`;
+        archGrid.style.maskImage = `radial-gradient(circle 350px at ${mouseX}px ${mouseY}px, black 0%, transparent 100%)`;
     });
 
     function renderCursor() {
@@ -25,55 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
         el.addEventListener('mouseleave', () => { cursorTrail.classList.remove('hovering'); });
     });
 
-    // --- 2. Canvas Tech Grid ---
-    const canvas = document.getElementById('tech-canvas');
-    const ctx = canvas.getContext('2d');
-    let width, height;
-    const dots = [];
-    const spacing = 60; 
-
-    function initCanvas() {
-        width = window.innerWidth;
-        height = window.innerHeight;
-        canvas.width = width;
-        canvas.height = height;
-        dots.length = 0;
-        for (let x = 0; x < width; x += spacing) {
-            for (let y = 0; y < height; y += spacing) { dots.push({ x, y }); }
-        }
-    }
-    
-    function drawGrid() {
-        ctx.clearRect(0, 0, width, height);
-        ctx.fillStyle = 'rgba(148, 163, 184, 0.4)'; 
-        dots.forEach(dot => {
-            ctx.beginPath(); ctx.arc(dot.x, dot.y, 1.5, 0, Math.PI * 2); ctx.fill();
-        });
-
-        const interactionRadius = 250;
-        let nearbyDots = [];
-        dots.forEach(dot => {
-            const dist = Math.hypot(dot.x - mouseX, dot.y - mouseY);
-            if (dist < interactionRadius) nearbyDots.push({ dot, dist });
-        });
-
-        nearbyDots.sort((a, b) => a.dist - b.dist);
-        const dotsToConnect = nearbyDots.slice(0, 4);
-
-        dotsToConnect.forEach(item => {
-            ctx.beginPath(); ctx.moveTo(item.dot.x, item.dot.y); ctx.lineTo(mouseX, mouseY);
-            const opacity = 1 - (item.dist / interactionRadius);
-            ctx.strokeStyle = `rgba(56, 189, 248, ${opacity * 0.8})`; 
-            ctx.lineWidth = 1.5; ctx.stroke();
-        });
-        requestAnimationFrame(drawGrid);
-    }
-    
-    initCanvas();
-    window.addEventListener('resize', initCanvas);
-    drawGrid();
-
-    // --- 3. Theme Toggle ---
+    // --- 2. Theme Toggle ---
     const themeToggle = document.getElementById('themeToggle');
     const body = document.body;
 
@@ -85,15 +42,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- 4. The Interactive World Clock ---
+    // --- 3. The 3D Flip World Clock ---
     const clockTime = document.getElementById('clock-time');
     const clockLabel = document.getElementById('clock-location');
     
     const timezones = [
-        { label: 'NEW DELHI', tz: 'Asia/Kolkata' },
         { label: 'LONDON', tz: 'Europe/London' },
-        { label: 'NEW YORK', tz: 'America/New_York' },
-        { label: 'CUPERTINO', tz: 'America/Los_Angeles' }
+        { label: 'NEW DELHI', tz: 'Asia/Kolkata' },
+        { label: 'NEW YORK', tz: 'America/New_York' }
     ];
     let currentTzIndex = 0;
 
@@ -105,21 +61,35 @@ document.addEventListener('DOMContentLoaded', () => {
     setInterval(updateTime, 1000);
     updateTime();
 
-    // Cycle through locations every 4 seconds
+    // The 3D Flip Animation Logic
     setInterval(() => {
-        clockLabel.classList.add('clock-fade');
+        // Step 1: Flip out
+        clockLabel.classList.add('flip-out');
+        clockLabel.classList.remove('flip-normal');
+
         setTimeout(() => {
+            // Step 2: Change text while invisible, prep for flip in
             currentTzIndex = (currentTzIndex + 1) % timezones.length;
             clockLabel.textContent = timezones[currentTzIndex].label;
-            clockLabel.classList.remove('clock-fade');
+            
+            clockLabel.classList.remove('flip-out');
+            clockLabel.classList.add('flip-in');
+            
+            // Force browser reflow to reset transition state
+            void clockLabel.offsetWidth;
+            
+            // Step 3: Flip back to normal
+            clockLabel.classList.remove('flip-in');
+            clockLabel.classList.add('flip-normal');
             updateTime();
-        }, 300); // Wait for fade out
+        }, 400); // 400ms matches the CSS transition timing
     }, 4000);
 
-    // --- 5. Word-by-Word Setup ---
+    // --- 4. Word-by-Word Setup ---
     const manifestoTextEl = document.getElementById('manifesto-text');
     const words = manifestoTextEl.innerText.trim().split(/\s+/);
     manifestoTextEl.innerHTML = ''; 
+    
     words.forEach(word => {
         const span = document.createElement('span');
         span.innerText = word;
@@ -128,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     const wordSpans = manifestoTextEl.querySelectorAll('span');
 
-    // --- 6. Capsule Internal Scroll Logic (Scrubbing & Spy Nav) ---
+    // --- 5. Capsule Internal Scroll Logic (Scrubbing & Spy Nav) ---
     const capsule = document.getElementById('capsule-container');
     const manifestoTrigger = document.getElementById('manifesto-trigger');
     const navDots = document.querySelectorAll('.capsule-nav .nav-dot');
@@ -138,7 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const scrollY = capsule.scrollTop;
         const capsuleHeight = capsule.clientHeight;
 
-        // 6A. Word Scrubbing Math (Fixed to strictly wait for scroll)
+        // Scrubbing Math
         const manifestoTop = manifestoTrigger.offsetTop; 
         const manifestoHeight = manifestoTrigger.offsetHeight;
         const startScrub = manifestoTop;
@@ -162,9 +132,9 @@ document.addEventListener('DOMContentLoaded', () => {
             wordSpans.forEach(span => span.classList.add('active-word'));
         }
 
-        // 6B. Scroll Spy Navigation Highlight
+        // Scroll Spy Navigation
         spySections.forEach((sec, index) => {
-            const secTop = sec.offsetTop - 200; // Offset for trigger point
+            const secTop = sec.offsetTop - 200; 
             const secBottom = secTop + sec.offsetHeight;
             if (scrollY >= secTop && scrollY < secBottom) {
                 navDots.forEach(dot => dot.classList.remove('active'));
@@ -173,7 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // 6C. Click to Jump via Nav
+    // Click to Jump via Nav
     navDots.forEach(dot => {
         dot.addEventListener('click', () => {
             const targetId = dot.getAttribute('data-target');
@@ -188,12 +158,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }, { root: capsule, threshold: 0.1 });
     document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
 
-    // --- 7. Outer Window Scroll Engine (State Change) ---
+    // --- 6. Outer Window Scroll Engine (State Change) ---
     const dynamicHero = document.getElementById('dynamic-hero');
     const heroL1 = document.getElementById('hero-l1');
     const heroL2 = document.getElementById('hero-l2');
     const heroL3 = document.getElementById('hero-l3');
-    const techCanvasEl = document.getElementById('tech-canvas');
     const capsuleNav = document.getElementById('capsule-nav');
     
     let moveDist = 0;
@@ -212,8 +181,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const transitionDistance = 500; 
         const progress = Math.max(0, Math.min(scrollY / transitionDistance, 1));
 
-        techCanvasEl.style.opacity = 0.5 - (progress * 0.4); 
-        techCanvasEl.style.filter = `blur(${progress * 8}px)`; 
+        // Spotlight Grid fades out as you enter reading mode
+        archGrid.style.opacity = 1 - progress; 
 
         heroL1.style.opacity = 1 - (progress * 2); 
         heroL3.style.opacity = 1 - (progress * 2); 
