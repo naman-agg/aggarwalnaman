@@ -37,62 +37,40 @@ body {
     color: var(--text-primary);
     background: var(--bg-static); 
     transition: background var(--transition-smooth), color var(--transition-smooth);
+    /* System cursor is kept default as requested */
 }
 
-/* Hide default cursor */
-@media (hover: hover) and (pointer: fine) {
-    body, a, button, .theme-toggle { cursor: none; }
-}
-
-/* Negative Blend Custom Cursor */
-.cursor-dot {
-    position: fixed; top: 0; left: 0; width: 8px; height: 8px;
-    background: #ffffff; border-radius: 50%;
-    pointer-events: none; z-index: 9999;
-    mix-blend-mode: difference;
-    transform: translate(-50%, -50%);
-}
-.cursor-ring {
-    position: fixed; top: 0; left: 0; width: 40px; height: 40px;
-    border: 1px solid #ffffff; border-radius: 50%;
-    pointer-events: none; z-index: 9998;
-    mix-blend-mode: difference;
-    transform: translate(-50%, -50%);
-    transition: transform 0.1s ease-out, width 0.2s ease, height 0.2s ease, border-width 0.2s ease;
-}
-
-/* Cursor Hover Interaction (Collapses) */
-.cursor-ring.hovering {
-    width: 8px; height: 8px;
-    border-width: 4px;
-}
-
+/* Base Gradient Background */
 .static-background {
     position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
     background: radial-gradient(circle at 50% 0%, rgba(56, 189, 248, 0.05), transparent 70%);
-    z-index: -1; pointer-events: none;
+    z-index: -2; pointer-events: none;
 }
 
-/* Ambient Aurora Glow */
-.ambient-aurora {
+/* 1. Canvas Tech Grid */
+.tech-canvas {
     position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-    z-index: 0; pointer-events: none; overflow: hidden;
-    transition: transform 0.1s ease-out, opacity 0.3s linear;
-}
-.aurora-orb {
-    position: absolute; border-radius: 50%;
-    filter: blur(140px); opacity: 0.4;
-    animation: float-orb 20s infinite ease-in-out alternate;
-}
-.orb-1 { width: 60vw; height: 60vw; background: rgba(56, 189, 248, 0.2); top: -20%; left: -10%; }
-.orb-2 { width: 50vw; height: 50vw; background: rgba(148, 163, 184, 0.15); bottom: -10%; right: -10%; animation-delay: -10s; }
-
-@keyframes float-orb {
-    0% { transform: translate(0, 0) scale(1); }
-    100% { transform: translate(10vw, 5vh) scale(1.1); }
+    z-index: -1; pointer-events: none;
+    opacity: 0.6; /* Subtle watermark opacity */
 }
 
-/* Global Controls */
+/* 2. Inverted Trailing Cursor Glow */
+.cursor-trail {
+    position: fixed; top: 0; left: 0; width: 50px; height: 50px;
+    background: #ffffff; border-radius: 50%;
+    pointer-events: none; z-index: 9999;
+    filter: blur(4px); /* Soft glowing edge */
+    mix-blend-mode: difference; /* Creates the negative inversion */
+    transform: translate(-50%, -50%);
+    transition: width 0.3s ease, height 0.3s ease;
+}
+
+.cursor-trail.hovering {
+    width: 20px; height: 20px;
+    filter: blur(2px);
+}
+
+/* 3. Global Controls */
 .global-controls {
     position: fixed; top: 0; left: 0; width: 100%; height: 80px;
     display: flex; justify-content: space-between; align-items: center;
@@ -100,9 +78,9 @@ body {
 }
 .global-controls > * { pointer-events: auto; }
 
-.search-btn { background: none; border: none; color: var(--text-primary); transition: opacity 0.3s ease; }
+.search-btn { background: none; border: none; color: var(--text-primary); transition: opacity 0.3s ease; cursor: pointer; }
 
-.theme-toggle { width: 52px; height: 28px; background: var(--toggle-bg); border-radius: 30px; position: relative; transition: background var(--transition-smooth); }
+.theme-toggle { width: 52px; height: 28px; background: var(--toggle-bg); border-radius: 30px; position: relative; transition: background var(--transition-smooth); cursor: pointer; }
 .toggle-circle { width: 20px; height: 20px; background: var(--toggle-circle); border-radius: 50%; position: absolute; top: 4px; left: 4px; transition: transform var(--transition-smooth); }
 .light-mode .toggle-circle { transform: translateX(24px); }
 
@@ -120,12 +98,11 @@ body {
 }
 .header-bg.show-neon::after { opacity: 1; }
 
-/* Dynamic Hero with 3D Perspective Support */
+/* 4. Dynamic Hero (Perfectly Stable & Centred) */
 .dynamic-hero {
     position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     gap: 24px; text-align: center; z-index: 101; pointer-events: none;
-    perspective: 1000px; transform-style: preserve-3d;
 }
 
 .hero-l1 { font-size: clamp(16px, 2vw, 24px); font-weight: 700; color: var(--text-secondary); line-height: 1; }
@@ -134,8 +111,11 @@ body {
 }
 .hero-l3 { font-size: clamp(12px, 1.8vw, 18px); font-weight: 900; letter-spacing: 0.3em; color: var(--text-secondary); line-height: 1; }
 
-/* Sections & Delay Fix: Margin-top perfectly matches header scroll duration */
-.cinematic-container { width: 100%; position: relative; z-index: 10; margin-top: 350px; }
+/* 5. Sections & Delay Fix: Margin matches exact screen height */
+.cinematic-container { 
+    width: 100%; position: relative; z-index: 10; 
+    margin-top: 100vh; /* Flawless pacing. Only visible when scrolled */
+}
 .flex-center { display: flex; flex-direction: column; justify-content: center; align-items: center; }
 .footer-spacer { height: 120px; } 
 

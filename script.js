@@ -1,35 +1,91 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    // --- 1. Magnetic Parallax & Cursor Engine ---
-    const cursorDot = document.getElementById('cursor-dot');
-    const cursorRing = document.getElementById('cursor-ring');
-    const ambientAurora = document.getElementById('ambient-aurora');
-    
-    // Global variables to store mouse coordinates for the render loop
-    let mouseX = 0;
-    let mouseY = 0;
+    // --- 1. Inverted Trailing Cursor ---
+    const cursorTrail = document.getElementById('cursor-trail');
+    let mouseX = window.innerWidth / 2;
+    let mouseY = window.innerHeight / 2;
+    let trailX = mouseX;
+    let trailY = mouseY;
     
     window.addEventListener('mousemove', (e) => {
-        // Update custom cursor
-        cursorDot.style.transform = `translate3d(calc(${e.clientX}px - 50%), calc(${e.clientY}px - 50%), 0)`;
-        cursorRing.style.transform = `translate3d(calc(${e.clientX}px - 50%), calc(${e.clientY}px - 50%), 0)`;
-        
-        // Calculate parallax tilt limits (max 15 degrees)
-        mouseX = (window.innerWidth / 2 - e.clientX) / 40;
-        mouseY = (window.innerHeight / 2 - e.clientY) / 40;
+        mouseX = e.clientX;
+        mouseY = e.clientY;
     });
+
+    // Smooth Lerp animation for the trail
+    function renderCursor() {
+        trailX += (mouseX - trailX) * 0.15; // The smaller the decimal, the smoother the lag
+        trailY += (mouseY - trailY) * 0.15;
+        cursorTrail.style.transform = `translate3d(calc(${trailX}px - 50%), calc(${trailY}px - 50%), 0)`;
+        requestAnimationFrame(renderCursor);
+    }
+    renderCursor();
 
     // Hover interactions for the negative cursor
     document.querySelectorAll('.interactive-element').forEach(el => {
         el.addEventListener('mouseenter', () => {
-            cursorRing.classList.add('hovering');
+            cursorTrail.classList.add('hovering');
         });
         el.addEventListener('mouseleave', () => {
-            cursorRing.classList.remove('hovering');
+            cursorTrail.classList.remove('hovering');
         });
     });
 
-    // --- 2. Theme Toggle & Clock ---
+    // --- 2. Canvas Tech Grid (Nodes & Connections) ---
+    const canvas = document.getElementById('tech-canvas');
+    const ctx = canvas.getContext('2d');
+    let width, height;
+    const dots = [];
+    const spacing = 60; // Distance between dots
+
+    function initCanvas() {
+        width = window.innerWidth;
+        height = window.innerHeight;
+        canvas.width = width;
+        canvas.height = height;
+        dots.length = 0;
+        
+        for (let x = 0; x < width; x += spacing) {
+            for (let y = 0; y < height; y += spacing) {
+                dots.push({ x, y });
+            }
+        }
+    }
+    
+    function drawGrid() {
+        ctx.clearRect(0, 0, width, height);
+        
+        // Draw the static dots
+        ctx.fillStyle = 'rgba(148, 163, 184, 0.2)'; // Very faint slate color
+        dots.forEach(dot => {
+            ctx.beginPath();
+            ctx.arc(dot.x, dot.y, 1.5, 0, Math.PI * 2);
+            ctx.fill();
+        });
+
+        // Draw connections to the mouse
+        dots.forEach(dot => {
+            const dist = Math.hypot(dot.x - mouseX, dot.y - mouseY);
+            if (dist < 180) { // Interaction radius
+                ctx.beginPath();
+                ctx.moveTo(dot.x, dot.y);
+                ctx.lineTo(mouseX, mouseY);
+                // Line opacity fades out the further the dot is from the mouse
+                const opacity = 1 - (dist / 180);
+                // Using the exact accent blue colour for the laser connections
+                ctx.strokeStyle = `rgba(56, 189, 248, ${opacity * 0.4})`; 
+                ctx.lineWidth = 1;
+                ctx.stroke();
+            }
+        });
+        requestAnimationFrame(drawGrid);
+    }
+    
+    initCanvas();
+    window.addEventListener('resize', initCanvas);
+    drawGrid();
+
+    // --- 3. Theme Toggle & Clock ---
     const themeToggle = document.getElementById('themeToggle');
     const body = document.body;
 
@@ -47,7 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
         clockElement.textContent = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
     }, 1000);
 
-    // --- 3. Word-by-Word Paragraph Setup ---
+    // --- 4. Word-by-Word Paragraph Setup ---
     const manifestoTextEl = document.getElementById('manifesto-text');
     const words = manifestoTextEl.innerText.trim().split(/\s+/);
     manifestoTextEl.innerHTML = ''; 
@@ -61,7 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const wordSpans = manifestoTextEl.querySelectorAll('span');
 
-    // --- 4. Standard Scroll Reveals ---
+    // --- 5. Standard Scroll Reveals ---
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
@@ -71,7 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }, { threshold: 0.1 });
     document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
 
-    // --- 5. Cinematic Scroll Logic Engine ---
+    // --- 6. Cinematic Scroll Logic Engine ---
     const dynamicHero = document.getElementById('dynamic-hero');
     const heroL1 = document.getElementById('hero-l1');
     const heroL2 = document.getElementById('hero-l2');
@@ -95,15 +151,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const windowHeight = window.innerHeight;
 
         // A. Zero-Delay Hero Transition
-        // The container margin is 350px. The transition must finish exactly at 350px.
-        const transitionDistance = 350; 
+        // Transition finishes exactly as you scroll one full screen down.
+        // Because the cinematic container is at 100vh, it reveals perfectly underneath.
+        const transitionDistance = windowHeight; 
         const heroProgress = Math.max(0, Math.min(scrollY / transitionDistance, 1));
-
-        // Fade Aurora
-        ambientAurora.style.opacity = 1 - (heroProgress * 1.5); 
-        // Parallax fades to 0 as it locks into header, ensuring stability
-        const parallaxStrength = 1 - heroProgress;
-        ambientAurora.style.transform = `translate(${mouseX * -2 * parallaxStrength}px, ${mouseY * -2 * parallaxStrength}px)`;
 
         // Fade out top and bottom lines
         heroL1.style.opacity = 1 - (heroProgress * 2); 
@@ -114,11 +165,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const endScale = isMobile ? 0.4 : 0.3; 
         const currentScale = 1 - ((1 - endScale) * heroProgress);
         
-        // Apply Translation, Scaling, and Magnetic Parallax simultaneously
-        dynamicHero.style.transform = `translateY(-${moveDist * heroProgress}px) rotateY(${mouseX * parallaxStrength}deg) rotateX(${mouseY * parallaxStrength}deg)`;
+        // Move wrapper up and scale name
+        dynamicHero.style.transform = `translateY(-${moveDist * heroProgress}px)`;
         heroL2.style.transform = `scale(${currentScale})`;
 
-        // Header Background Solid Color Fade
+        // Solid Header Background Fade
         headerBg.style.opacity = heroProgress;
         
         if (heroProgress > 0.9) {
