@@ -120,7 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- 6. Matrix Role Scramble Engine ---
     const scrambleEl = document.getElementById('hero-l3');
-    const phrases = ["A PRODUCT MANAGER.", "A DESIGNER.", "AN INVENTOR."];
+    const phrases = ["A PRODUCT MANAGER", "A DESIGNER", "AN INVENTOR"];
     const chars = "><[]{}*&^%$#@!ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"; 
     let phraseIndex = 0;
     
@@ -216,12 +216,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const endScale = isMobile ? 0.35 : 0.25; 
         const currentScale = 1 - ((1 - endScale) * progress);
         
-        // FIX: Clean, reliable translateY physics ensuring horizontal centring is not overwritten
+        // Fades L1 & L3 without changing CSS anchored layout center
         heroL1.style.opacity = Math.max(0, 1 - (progress * 2));
-        heroL1.style.transform = `translateX(-50%) translateY(-${progress * 40}px)`;
-
         heroL3.style.opacity = Math.max(0, 1 - (progress * 2));
-        heroL3.style.transform = `translateX(-50%) translateY(${progress * 40}px)`;
 
         dynamicHero.style.transform = `translateY(-${moveDist * progress}px)`;
         heroL2.style.transform = `scale(${currentScale})`;
@@ -232,6 +229,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (progress === 1) {
             capsule.style.pointerEvents = 'auto';
             capsuleNav.classList.add('visible');
+            // Hide custom ring so only native cursor remains inside the reading capsule
             cursorTrail.style.display = 'none'; 
         } else {
             capsule.style.pointerEvents = 'none';
