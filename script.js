@@ -1,22 +1,18 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    // --- 1. Inverted Trailing Cursor & Spotlight & PERMANENT CURSOR FIX ---
+    // --- 1. Inverted Trailing Cursor & Architectural Spotlight ---
     const cursorTrail = document.getElementById('cursor-trail');
     const archGrid = document.getElementById('arch-grid');
-    const rootEl = document.documentElement; // html element
-    const bodyEl = document.body;
-
+    
     let mouseX = window.innerWidth / 2, mouseY = window.innerHeight / 2;
     let trailX = mouseX, trailY = mouseY;
     
-    // Tracks mouse on outer scope
     window.addEventListener('mousemove', (e) => {
         mouseX = e.clientX; mouseY = e.clientY;
         archGrid.style.webkitMaskImage = `radial-gradient(circle 400px at ${mouseX}px ${mouseY}px, black 0%, transparent 100%)`;
         archGrid.style.maskImage = `radial-gradient(circle 400px at ${mouseX}px ${mouseY}px, black 0%, transparent 100%)`;
     });
 
-    // Trail rendering function
     function renderCursor() {
         trailX += (mouseX - trailX) * 0.15; 
         trailY += (mouseY - trailY) * 0.15;
@@ -29,7 +25,6 @@ document.addEventListener('DOMContentLoaded', () => {
         el.addEventListener('mouseenter', () => { cursorTrail.classList.add('hovering'); });
         el.addEventListener('mouseleave', () => { cursorTrail.classList.remove('hovering'); });
     });
-
 
     // --- 2. Theme Toggle ---
     const themeToggle = document.getElementById('themeToggle');
@@ -122,10 +117,11 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
 
 
-    // --- 6. Matrix Role Scramble Engine (L3 Animation) ---
+    // --- 6. Matrix Role Scramble Engine (Upgraded) ---
     const scrambleEl = document.getElementById('hero-l3');
-    const phrases = ["A PRODUCT MANAGER", "A DESIGNER", "AN INVENTOR"];
-    const chars = "¡¢£¤¥¦§¨©ª«¬®¯°±²³´µ¶·¸¹º»¼½¾¿ABCDEFG"; 
+    const phrases = ["A PRODUCT MANAGER.", "A DESIGNER.", "AN INVENTOR."];
+    // Tech-heavy character pool
+    const chars = "><[]{}*&^%$#@!ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"; 
     
     let phraseIndex = 0;
     
@@ -141,8 +137,8 @@ document.addEventListener('DOMContentLoaded', () => {
             for (let i = 0; i < maxLength; i++) {
                 const startChars = oldText[i] || '';
                 const endChar = newText[i] || '';
-                const startScramble = Math.floor(Math.random() * 20); 
-                const endScramble = startScramble + Math.floor(Math.random() * 20);
+                const startScramble = Math.floor(Math.random() * 15); 
+                const endScramble = startScramble + Math.floor(Math.random() * 15);
                 this.queue.push({ startChars, endChar, startScramble, endScramble });
             }
             
@@ -162,7 +158,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     complete++; output += endChar;
                 } else if (this.frame >= startScramble) {
                     const char = chars[Math.floor(Math.random() * chars.length)];
-                    output += `<span style="color:var(--accent);">${char}</span>`;
+                    // Wrap the scrambled character in the specific cypher-char class for the glow effect
+                    output += `<span class="cypher-char">${char}</span>`;
                 } else { output += startChars; }
             }
             
@@ -173,19 +170,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Centring Math for Roles (Required because position:absolute)
     function calculateRolePosition() {
         const l2El = document.getElementById('hero-l2');
         const l3El = document.getElementById('hero-l3');
         const isMobile = window.innerWidth <= 768;
         
-        const l2Rect = l2El.getBoundingClientRect();
-        
-        // Gap below name based on screen size
         const bottomGap = isMobile ? 30 : 50; 
         l3El.style.bottom = `-${bottomGap}px`;
-        
-        // Centres l3 horizontally relative to l2
         l3El.style.left = `50%`;
         l3El.style.transform = `translateX(-50%)`;
     }
@@ -197,16 +188,17 @@ document.addEventListener('DOMContentLoaded', () => {
         while(true) {
             await scrambler.scramble(phrases[phraseIndex]);
             phraseIndex = (phraseIndex + 1) % phrases.length;
-            await new Promise(r => setTimeout(r, 3000)); // Delay between phrases
+            await new Promise(r => setTimeout(r, 2500)); 
         }
     }
     runScrambleLoop();
 
 
-    // --- 7. Outer Window Scroll Engine (State Change) & PERMANENT FIXES ---
+    // --- 7. Outer Window Scroll Engine (State Change & Vanishing Fixes) ---
     const dynamicHero = document.getElementById('dynamic-hero');
-    const heroL1 = document.getElementById('hero-l1'); // Ghost overlay
-    const heroL2 = document.getElementById('hero-l2'); // Name
+    const heroL1 = document.getElementById('hero-l1'); 
+    const heroL2 = document.getElementById('hero-l2'); 
+    const heroL3 = document.getElementById('hero-l3'); 
     const capsuleNav = document.getElementById('capsule-nav');
     
     let moveDist = 0;
@@ -228,34 +220,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
         archGrid.style.opacity = 1 - progress; 
 
-        // Scale Name 
         const isMobile = window.innerWidth <= 768;
         const endScale = isMobile ? 0.35 : 0.25; 
         const currentScale = 1 - ((1 - endScale) * progress);
         
-        // Handle phrase scrambler bounding box relative center
+        // Handle Ghost L1 dissolver 
+        heroL1.style.opacity = Math.max(0, 1 - (progress * 1.5));
+        heroL1.style.transform = `translateY(-${progress * 40}px)`;
+
+        // Handle L3 Vanishing (RESTORED & FIXED)
+        heroL3.style.opacity = Math.max(0, 1 - (progress * 2));
+        // Important: maintain the horizontally centred translateX(-50%) whilst translating it downwards
+        heroL3.style.transform = `translateX(-50%) translateY(${progress * 40}px)`;
+
         dynamicHero.style.transform = `translateY(-${moveDist * progress}px)`;
         heroL2.style.transform = `scale(${currentScale})`;
-
-        // Handle Ghost L1 dissolver 
-        heroL1.style.opacity = 1 - (progress * 1.5);
 
         capsule.style.transform = `translateY(${(1 - progress) * 100}vh)`;
         capsule.style.opacity = progress;
         
-        // Handle state complete boundary
         if (progress === 1) {
             capsule.style.pointerEvents = 'auto';
             capsuleNav.classList.add('visible');
-            
-            // FIX Part B: System cursor is auto, no trail
-            cursorTrail.style.display = 'none';
         } else {
             capsule.style.pointerEvents = 'none';
             capsuleNav.classList.remove('visible');
-            
-            // FIX Part C: Trail trails system cursor
-            cursorTrail.style.display = 'block';
         }
         requestAnimationFrame(onWindowScroll);
     }
