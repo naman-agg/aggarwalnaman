@@ -39,7 +39,7 @@ body {
     font-family: var(--font-main);
     color: var(--text-primary);
     background: var(--bg-static); 
-    /* The body is precisely 500px taller than the screen to allow the initial transition */
+    /* Allows 500px of scrolling to trigger the animation before locking */
     height: calc(100vh + 500px);
     overflow-x: hidden;
 }
@@ -73,7 +73,7 @@ body {
 }
 .cursor-trail.hovering { width: 20px; height: 20px; filter: blur(2px); }
 
-/* Global Controls */
+/* Global Controls (Mixed seamless header) */
 .global-controls {
     position: fixed; top: 0; left: 0; width: 100%; height: 80px;
     display: flex; justify-content: space-between; align-items: center;
@@ -86,13 +86,6 @@ body {
 .toggle-circle { width: 20px; height: 20px; background: var(--toggle-circle); border-radius: 50%; position: absolute; top: 4px; left: 4px; transition: transform var(--transition-smooth); }
 .light-mode .toggle-circle { transform: translateX(24px); }
 
-/* Solid Header Background (No Border, No Glass) */
-.header-bg {
-    position: fixed; top: 0; left: 0; width: 100%; height: 80px;
-    background: var(--bg-static); 
-    z-index: 100; opacity: 0; transition: opacity 0.1s linear;
-}
-
 /* Dynamic Hero */
 .dynamic-hero {
     position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
@@ -103,13 +96,13 @@ body {
 .hero-l2 { font-size: clamp(60px, 11vw, 150px); font-weight: 900; letter-spacing: -0.04em; white-space: nowrap; transform-origin: center center; line-height: 1; }
 .hero-l3 { font-size: clamp(14px, 2vw, 24px); font-weight: 900; letter-spacing: 0.3em; color: var(--text-secondary); line-height: 1; }
 
-/* Fixed Capsule Container (Scrolls Internally) */
+/* Fixed Capsule Container (Z-index 50 allows it to slide UNDER the footer) */
 .capsule-container { 
     position: fixed;
-    top: 100px; /* 80px header + 20px visual gap */
+    top: 100px; 
     left: var(--edge-pad);
     width: calc(100% - (var(--edge-pad) * 2)); 
-    height: calc(100vh - 200px); /* Leaves exactly 20px gap above the 80px footer */
+    height: calc(100vh - 200px); 
     z-index: 50; 
     
     background: var(--bg-glass-heavy);
@@ -123,35 +116,51 @@ body {
     overflow-y: auto;
     scrollbar-width: none;
     
-    /* Initial state before scroll */
+    /* Initially hidden below the screen */
     transform: translateY(100vh);
     opacity: 0;
     pointer-events: none;
 }
 .capsule-container::-webkit-scrollbar { display: none; }
 
-/* Internal Capsule Layout */
+/* Internal Layouts */
 .flex-center { display: flex; flex-direction: column; justify-content: center; align-items: center; }
 .footer-spacer { height: 120px; } 
 
-.manifesto-section { padding: 120px 80px 150px 80px; min-height: 80vh; display: flex; align-items: center; } 
+/* Scrub & Uplift Paragraph Layout */
+.manifesto-section { 
+    height: 150vh; /* Taller area within capsule to allow scrolling */
+    position: relative;
+} 
+.sticky-content {
+    position: sticky; top: 0; 
+    height: calc(100vh - 200px); /* Matches exact capsule height */
+    padding: 0 80px; overflow: hidden;
+    display: flex; justify-content: center; align-items: center;
+}
 
+/* Perfect Flexbox Centring for the Paragraph */
 .manifesto-text {
     font-size: clamp(24px, 3.5vw, 48px); 
     font-weight: 600; line-height: 1.4; letter-spacing: -0.02em;
-    max-width: 1000px; text-align: center;
+    max-width: 1000px; 
+    text-align: center;
+    margin: 0 auto;
+    display: flex; 
+    flex-wrap: wrap; 
+    justify-content: center;
 }
 .manifesto-text span {
     display: inline-block; color: var(--text-muted);
-    transform: translateY(20px); opacity: 0;
-    transition: color 0.4s ease, transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.6s ease;
+    transform: translateY(20px); 
+    transition: color 0.15s ease, transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
     margin-right: 8px; margin-bottom: 8px;
 }
 .manifesto-text span.active-word {
-    color: var(--text-primary); transform: translateY(0); opacity: 1;
+    color: var(--text-primary); transform: translateY(0); 
 }
 
-/* Standard Sections */
+/* Standard Sections (Inside Capsule) */
 .standard-section { padding: 100px 80px; max-width: 1000px; margin: 0 auto; }
 .section-heading { font-size: clamp(32px, 4vw, 40px); margin-bottom: 80px; text-align: center; }
 
@@ -181,17 +190,16 @@ body {
 .marquee-content span:nth-child(even) { color: var(--accent); }
 @keyframes scroll-marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
-/* Footer (Fades border out on scroll) */
+/* Mixed Footer (Completely transparent background, Floating UI above capsule) */
 .site-footer {
     position: fixed; bottom: 0; left: 0; width: 100%; height: 80px;
     display: flex; justify-content: space-between; align-items: center;
     padding: 0 var(--edge-pad); 
-    background: var(--bg-glass-heavy); 
-    backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-    z-index: 40; /* Lower than capsule */
-    border-top: 1px solid var(--border-color);
-    transition: border-color 0.1s linear;
+    background: transparent; /* Seamless blend */
+    z-index: 100; /* Stays above sliding capsule */
+    pointer-events: none; /* Let empty space click through to capsule */
 }
+.site-footer > * { pointer-events: auto; } /* Ensure buttons still work */
 .social-icon { color: var(--text-secondary); transition: color 0.3s ease, transform 0.3s ease; display: flex; }
 .social-icon:hover { color: var(--text-primary); transform: translateY(-2px); }
 .footer-centre { display: flex; gap: 24px; }
@@ -206,10 +214,8 @@ body {
 
 @media (max-width: 768px) {
     :root { --edge-pad: 20px; } 
-    .capsule-container { 
-        top: 90px; height: calc(100vh - 180px);
-    }
-    .manifesto-section, .standard-section { padding: 60px 20px; }
+    .capsule-container { top: 90px; height: calc(100vh - 180px); }
+    .sticky-content, .standard-section { padding: 60px 20px; }
     .workshop-grid { grid-template-columns: 1fr; }
     .clock-display { font-size: 16px; }
     .resume-link { font-size: 14px; }

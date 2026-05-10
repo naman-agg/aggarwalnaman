@@ -114,6 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const span = document.createElement('span');
         span.innerText = word;
         manifestoTextEl.appendChild(span);
+        // Space added outside the span so it does not animate
         manifestoTextEl.appendChild(document.createTextNode(' '));
     });
     const wordSpans = manifestoTextEl.querySelectorAll('span');
@@ -131,14 +132,45 @@ document.addEventListener('DOMContentLoaded', () => {
     
     document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
 
-    // --- 6. Scroll Jacking Engine ---
+    // --- 6. Inner Capsule Scroll Scrubbing ---
+    const manifestoTrigger = document.getElementById('manifesto-trigger');
+    
+    capsule.addEventListener('scroll', () => {
+        const manifestoTop = manifestoTrigger.offsetTop; 
+        const manifestoHeight = manifestoTrigger.offsetHeight;
+        const capsuleHeight = capsule.clientHeight;
+
+        const scrollY = capsule.scrollTop;
+
+        // Sticky scroll duration math
+        const startScrub = manifestoTop;
+        const endScrub = manifestoTop + manifestoHeight - capsuleHeight;
+
+        if (scrollY >= startScrub && scrollY <= endScrub) {
+            let progress = (scrollY - startScrub) / (endScrub - startScrub);
+            progress = Math.max(0, Math.min(progress, 1));
+            let activeWordIndex = Math.floor(progress * wordSpans.length);
+
+            wordSpans.forEach((span, index) => {
+                if (index <= activeWordIndex) {
+                    span.classList.add('active-word');
+                } else {
+                    span.classList.remove('active-word');
+                }
+            });
+        } else if (scrollY < startScrub) {
+            wordSpans.forEach(span => span.classList.remove('active-word'));
+        } else if (scrollY > endScrub) {
+            wordSpans.forEach(span => span.classList.add('active-word'));
+        }
+    });
+
+    // --- 7. Outer Window Scroll Engine (State Change) ---
     const dynamicHero = document.getElementById('dynamic-hero');
     const heroL1 = document.getElementById('hero-l1');
     const heroL2 = document.getElementById('hero-l2');
     const heroL3 = document.getElementById('hero-l3');
-    const headerBg = document.getElementById('header-bg');
     const techCanvasEl = document.getElementById('tech-canvas');
-    const siteFooter = document.getElementById('site-footer');
     
     let moveDist = 0;
     function calculateHeroMath() {
@@ -149,22 +181,17 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(calculateHeroMath, 100); 
     window.addEventListener('resize', calculateHeroMath);
 
-    let manifestoTriggered = false;
-
     function onWindowScroll() {
         const scrollY = window.scrollY;
-        // The exact distance required to finish the animation
+        // Exactly matches the 500px extra height on the body
         const transitionDistance = 500; 
         const progress = Math.max(0, Math.min(scrollY / transitionDistance, 1));
 
-        // 1. Grid fades to 10% opacity and blurs as you enter reading mode
+        // 1. Grid fades and blurs out
         techCanvasEl.style.opacity = 0.5 - (progress * 0.4); 
         techCanvasEl.style.filter = `blur(${progress * 8}px)`; 
 
-        // 2. Footer line subtly vanishes
-        siteFooter.style.borderTopColor = `rgba(148, 163, 184, ${0.3 - (progress * 0.3)})`;
-
-        // 3. Hero Text fades and locks
+        // 2. Hero Text fades and locks into header position
         heroL1.style.opacity = 1 - (progress * 2); 
         heroL3.style.opacity = 1 - (progress * 2); 
 
@@ -175,25 +202,13 @@ document.addEventListener('DOMContentLoaded', () => {
         dynamicHero.style.transform = `translateY(-${moveDist * progress}px)`;
         heroL2.style.transform = `scale(${currentScale})`;
 
-        headerBg.style.opacity = progress;
-
-        // 4. Capsule slides up from below
+        // 3. Capsule visually slides up from behind the footer
         capsule.style.transform = `translateY(${(1 - progress) * 100}vh)`;
         capsule.style.opacity = progress;
         
-        // 5. Enable internal scrolling once locked
+        // 4. Unlock internal capsule scrolling when transition finishes
         if (progress === 1) {
             capsule.style.pointerEvents = 'auto';
-            
-            // Trigger the fluid wave perfectly on arrival
-            if (!manifestoTriggered) {
-                manifestoTriggered = true;
-                wordSpans.forEach((span, index) => {
-                    setTimeout(() => {
-                        span.classList.add('active-word');
-                    }, index * 30); 
-                });
-            }
         } else {
             capsule.style.pointerEvents = 'none';
         }
@@ -201,7 +216,7 @@ document.addEventListener('DOMContentLoaded', () => {
         requestAnimationFrame(onWindowScroll);
     }
 
-    // Bind to the outer window
+    // Bind outer scroll
     window.addEventListener('scroll', () => { requestAnimationFrame(onWindowScroll); });
-    onWindowScroll(); // Initial call
+    onWindowScroll(); 
 });
