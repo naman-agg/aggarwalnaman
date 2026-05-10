@@ -216,7 +216,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const endScale = isMobile ? 0.35 : 0.25; 
         const currentScale = 1 - ((1 - endScale) * progress);
         
-        // FIX: Translate logic stripped down. CSS holds the horizontal center.
+        // FIX: Clean, reliable translateY physics ensuring horizontal centring is not overwritten
         heroL1.style.opacity = Math.max(0, 1 - (progress * 2));
         heroL1.style.transform = `translateX(-50%) translateY(-${progress * 40}px)`;
 
