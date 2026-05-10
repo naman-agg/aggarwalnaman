@@ -1,21 +1,20 @@
 :root {
     --font-main: 'Inter', sans-serif;
     --transition-smooth: 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-    --edge-pad: 120px; 
-    --v-gap: 40px;
+    
+    /* Greatly reduced padding to make the rectangle huge */
+    --edge-pad: 40px; 
+    --v-gap: 24px;
     --ui-height: 40px;
     
     --accent: #38bdf8; 
-    
     --bg-static: #020617;
     --bg-glass-heavy: rgba(15, 23, 42, 0.7); 
     --bg-card: rgba(30, 41, 59, 0.4);
-    
     --text-primary: #f8fafc;
     --text-muted: rgba(248, 250, 252, 0.15); 
     --text-secondary: #94a3b8;
     --toggle-bg: #1e293b;
-    --toggle-circle: #38bdf8;
     --border-color: rgba(148, 163, 184, 0.3);
 }
 
@@ -23,12 +22,10 @@
     --bg-static: #f8f9fa;
     --bg-glass-heavy: rgba(255, 255, 255, 0.7);
     --bg-card: rgba(255, 255, 255, 0.5);
-    
     --text-primary: #111111;
     --text-muted: rgba(17, 17, 17, 0.15);
     --text-secondary: #666666;
     --toggle-bg: #dee2e6;
-    --toggle-circle: #111111;
     --border-color: rgba(0, 0, 0, 0.1);
 }
 
@@ -48,20 +45,28 @@ body {
     body, a, button, .theme-toggle { cursor: none; }
 }
 
-/* Backgrounds & Canvas */
+/* Backgrounds */
 .static-background {
     position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
     background: radial-gradient(circle at 50% 0%, rgba(56, 189, 248, 0.05), transparent 70%);
     z-index: -2; pointer-events: none;
 }
 
-.tech-canvas {
+/* 1. The NEW Architectural Spotlight Grid */
+.architectural-grid {
     position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background-size: 40px 40px;
+    background-image:
+        linear-gradient(to right, rgba(148, 163, 184, 0.1) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(148, 163, 184, 0.1) 1px, transparent 1px);
     z-index: -1; pointer-events: none;
-    opacity: 0.5; transition: opacity 0.1s linear, filter 0.1s linear;
+    /* Circular mask updated by JS */
+    -webkit-mask-image: radial-gradient(circle at 50% 50%, black 0%, transparent 0%);
+    mask-image: radial-gradient(circle at 50% 50%, black 0%, transparent 0%);
+    opacity: 1; transition: opacity 0.2s linear;
 }
 
-/* Inverted Cursor */
+/* 2. Inverted Trailing Cursor */
 .cursor-trail {
     position: fixed; top: 0; left: 0; width: 50px; height: 50px;
     background: #ffffff; border-radius: 50%;
@@ -79,18 +84,25 @@ body {
     padding: 0 var(--edge-pad); z-index: 105; pointer-events: none;
 }
 .global-controls > * { pointer-events: auto; }
-
 .search-btn { background: none; border: none; color: var(--text-primary); transition: opacity 0.3s ease; cursor: pointer; }
-.theme-toggle { width: 52px; height: 28px; background: var(--toggle-bg); border-radius: 30px; position: relative; transition: background var(--transition-smooth); cursor: pointer; }
-.toggle-circle { width: 20px; height: 20px; background: var(--toggle-circle); border-radius: 50%; position: absolute; top: 4px; left: 4px; transition: transform var(--transition-smooth); }
-.light-mode .toggle-circle { transform: translateX(24px); }
 
-/* Solid Header Background (Fades in) */
-.header-bg {
-    position: fixed; top: 0; left: 0; width: 100%; height: 80px;
-    background: var(--bg-static); 
-    z-index: 100; opacity: 0; transition: opacity 0.1s linear;
+/* Morphing Celestial Toggle */
+.theme-toggle {
+    width: 44px; height: 44px; background: var(--toggle-bg); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden; transition: background 0.5s ease; cursor: pointer;
 }
+.celestial-body {
+    width: 22px; height: 22px; background: #FFD700; border-radius: 50%;
+    position: relative; transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55), background 0.5s ease;
+}
+.celestial-body::after {
+    content: ''; position: absolute; top: -4px; right: -8px; width: 22px; height: 22px;
+    background: var(--toggle-bg); border-radius: 50%; transition: transform 0.5s ease, background 0.5s ease;
+}
+.dark-mode .celestial-body { background: #f8fafc; }
+.dark-mode .celestial-body::after { transform: translate(-4px, 4px); }
+.light-mode .celestial-body::after { transform: translate(10px, -10px); }
 
 /* Dynamic Hero */
 .dynamic-hero {
@@ -102,41 +114,7 @@ body {
 .hero-l2 { font-size: clamp(60px, 11vw, 150px); font-weight: 900; letter-spacing: -0.04em; white-space: nowrap; transform-origin: center center; line-height: 1; }
 .hero-l3 { font-size: clamp(14px, 2vw, 24px); font-weight: 900; letter-spacing: 0.3em; color: var(--text-secondary); line-height: 1; }
 
-/* Floating Scroll-Spy Navigation */
-.capsule-nav {
-    position: fixed;
-    top: 50%; transform: translateY(-50%);
-    left: calc(var(--edge-pad) / 2); 
-    display: flex; flex-direction: column; gap: 20px;
-    z-index: 105; opacity: 0; pointer-events: none;
-    transition: opacity 0.3s ease;
-}
-.capsule-nav.visible { opacity: 1; pointer-events: auto; }
-
-.nav-dot {
-    width: 10px; height: 10px; border-radius: 50%;
-    background: var(--text-muted); cursor: pointer;
-    position: relative; transition: all 0.3s ease;
-}
-
-/* Navigation Labels (Permanent on Active, Hover for rest) */
-.nav-label {
-    position: absolute; left: 24px; top: 50%; transform: translateY(-50%);
-    font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
-    color: var(--text-secondary); opacity: 0; pointer-events: none;
-    transition: opacity 0.3s ease, transform 0.3s ease, color 0.3s ease;
-}
-.nav-dot:hover .nav-label { opacity: 1; transform: translateY(-50%) translateX(5px); }
-
-/* The Active State (Permanently visible) */
-.nav-dot.active { background: var(--accent); transform: scale(1.4); box-shadow: 0 0 10px var(--accent); }
-.nav-dot.active .nav-label {
-    opacity: 1; 
-    transform: translateY(-50%) translateX(5px); 
-    color: var(--text-primary);
-}
-
-/* Fixed Capsule Container */
+/* 3. Fixed Capsule Container (Sharper corners, smaller margins) */
 .capsule-container { 
     position: fixed;
     top: calc(var(--v-gap) * 2 + var(--ui-height)); 
@@ -148,7 +126,7 @@ body {
     background: var(--bg-glass-heavy);
     backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
     border: 1px solid rgba(56, 189, 248, 0.4);
-    border-radius: 40px;
+    border-radius: 20px; /* Reduced from 40px for a sharper look */
     box-shadow: 0 20px 40px rgba(0,0,0,0.5), inset 0 0 20px rgba(56, 189, 248, 0.15);
     
     overflow-y: auto; scrollbar-width: none;
@@ -157,22 +135,53 @@ body {
 }
 .capsule-container::-webkit-scrollbar { display: none; }
 
+/* 4. Internal Scroll-Spy Navigation (Now sits cleanly inside the capsule) */
+.capsule-nav {
+    position: sticky;
+    top: 50%; transform: translateY(-50%);
+    /* Places nav perfectly inside the left edge of the capsule */
+    margin-left: 32px; 
+    width: 10px; /* Forces it to not take up horizontal space */
+    float: left; /* Pulls it out of normal flex flow */
+    display: flex; flex-direction: column; gap: 20px;
+    z-index: 105; opacity: 0; pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+.capsule-nav.visible { opacity: 1; pointer-events: auto; }
+.nav-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--text-muted); cursor: pointer;
+    position: relative; transition: all 0.3s ease;
+}
+.nav-label {
+    position: absolute; left: 24px; top: 50%; transform: translateY(-50%);
+    font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--text-secondary); opacity: 0; pointer-events: none;
+    transition: opacity 0.3s ease, transform 0.3s ease, color 0.3s ease;
+}
+.nav-dot:hover .nav-label { opacity: 1; transform: translateY(-50%) translateX(5px); }
+.nav-dot.active { background: var(--accent); transform: scale(1.4); box-shadow: 0 0 10px var(--accent); }
+.nav-dot.active .nav-label { opacity: 1; transform: translateY(-50%) translateX(5px); color: var(--text-primary); }
+
+/* Internal Content Wrappers */
 .flex-center { display: flex; flex-direction: column; justify-content: center; align-items: center; }
-.footer-spacer { height: 120px; } 
+.footer-spacer { height: 120px; clear: both; } 
 
 /* Fixed Paragraph Reveal */
 .manifesto-section { height: 150vh; position: relative; } 
 .sticky-content {
     position: sticky; top: 0; 
     height: calc(100vh - (var(--v-gap) * 4 + var(--ui-height) * 2)); 
-    padding: 0 80px; overflow: hidden;
+    /* Ensures text doesn't overlap the floating nav dots on desktop */
+    padding: 0 40px; overflow: hidden;
     display: flex; justify-content: center; align-items: center;
 }
 
+/* 5. Fixed Typography cutoff for mobile */
 .manifesto-text {
-    font-size: clamp(24px, 3.5vw, 48px); 
+    font-size: clamp(18px, 4vw, 40px); /* Slightly smaller to prevent wrapping cutoffs */
     font-weight: 600; line-height: 1.4; letter-spacing: -0.02em;
-    max-width: 1000px; text-align: center; margin: 0 auto;
+    max-width: 900px; text-align: center; margin: 0 auto;
     display: flex; flex-wrap: wrap; justify-content: center;
 }
 .manifesto-text span {
@@ -181,12 +190,10 @@ body {
     transition: color 0.15s ease, transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
     margin-right: 8px; margin-bottom: 8px;
 }
-.manifesto-text span.active-word {
-    color: var(--text-primary); transform: translateY(0); 
-}
+.manifesto-text span.active-word { color: var(--text-primary); transform: translateY(0); }
 
 /* Standard Sections */
-.standard-section { padding: 100px 80px; max-width: 1000px; margin: 0 auto; }
+.standard-section { padding: 100px 40px; max-width: 900px; margin: 0 auto; clear: both; }
 .section-heading { font-size: clamp(32px, 4vw, 40px); margin-bottom: 80px; text-align: center; }
 
 .timeline-container { position: relative; max-width: 800px; margin: 0 auto; }
@@ -195,56 +202,55 @@ body {
 .timeline-dot { position: absolute; left: -7px; top: 8px; width: 16px; height: 16px; border-radius: 50%; background: var(--bg-static); border: 2px solid var(--accent); box-shadow: 0 0 15px rgba(56, 189, 248, 0.5); }
 .job-date { font-size: 12px; font-weight: 700; letter-spacing: 0.1em; color: var(--text-secondary); display: block; margin-bottom: 8px; }
 .job-title { font-size: clamp(22px, 3vw, 28px); margin-bottom: 16px; }
-.job-desc { font-size: 16px; color: var(--text-secondary); line-height: 1.6; }
 
-/* The Workshop */
 .workshop-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; width: 100%; margin-top: 40px; }
 .workshop-card { position: relative; width: 100%; aspect-ratio: 4/5; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 24px; overflow: hidden; }
 .card-layer { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding: 40px; }
 .card-label { position: absolute; bottom: 30px; left: 30px; font-size: 14px; letter-spacing: 0.1em; z-index: 10; background: var(--bg-glass-heavy); padding: 8px 16px; border-radius: 30px; backdrop-filter: blur(10px); }
-.text-layer { font-family: monospace; font-size: 14px; color: var(--accent); line-height: 1.8; justify-content: flex-start; align-items: flex-start; z-index: 2; }
-.blueprint-layer { z-index: 1; opacity: 0.5; }
-.placeholder-img { width: 100%; height: 100%; background: #1e293b; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 12px; color: #94a3b8; border-radius: 12px; }
-
-/* Education & Marquee */
-.education-block { display: flex; justify-content: space-around; margin-bottom: 100px; text-align: center; flex-wrap: wrap; gap: 30px; }
-.edu-item h4 { font-size: 20px; font-weight: 500; color: var(--text-secondary); }
 
 .marquee-container { width: 100%; position: relative; overflow: hidden; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); padding: 30px 0; background: var(--bg-card); border-radius: 20px; }
 .marquee-content { display: flex; white-space: nowrap; animation: scroll-marquee 30s linear infinite; gap: 40px; align-items: center; font-size: 24px; font-weight: 700; color: var(--text-primary); text-transform: uppercase; }
 .marquee-content span:nth-child(even) { color: var(--accent); }
 @keyframes scroll-marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
-/* Mixed Footer (Global Terminal Clock Layout) */
+/* Footer Grid Logic */
 .site-footer {
     position: fixed; bottom: var(--v-gap); left: 0; width: 100%; height: var(--ui-height);
-    display: flex; justify-content: space-between; align-items: center;
+    display: grid; grid-template-columns: 1fr 1fr 1fr; align-items: center;
     padding: 0 var(--edge-pad); background: transparent; border: none;
     z-index: 100; pointer-events: none; 
 }
 .site-footer > * { pointer-events: auto; } 
 
-.world-clock { display: flex; align-items: center; gap: 20px; }
-.clock-item { display: flex; align-items: baseline; gap: 6px; }
-.clock-label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; color: var(--text-secondary); }
-.clock-time { font-family: monospace; font-size: 15px; font-weight: 600; color: var(--text-primary); letter-spacing: 0.05em; }
+.footer-left { display: flex; justify-content: flex-start; }
+.footer-centre { display: flex; justify-content: center; gap: 32px; } 
+.footer-right { display: flex; justify-content: flex-end; }
+
+.world-clock { display: flex; gap: 24px; }
+.clock-item { display: flex; flex-direction: column; line-height: 1.1; min-width: 50px; }
+.clock-label { font-size: 9px; font-weight: 800; letter-spacing: 0.1em; color: var(--accent); margin-bottom: 2px; }
+.clock-time { font-family: monospace; font-size: 14px; font-weight: 600; color: var(--text-primary); }
 
 .social-icon { color: var(--text-secondary); transition: color 0.3s ease, transform 0.3s ease; display: flex; }
 .social-icon:hover { color: var(--text-primary); transform: translateY(-2px); }
-.footer-centre { display: flex; gap: 24px; }
 
-.resume-link { color: var(--text-primary); text-decoration: none; font-size: 16px; font-weight: 700; letter-spacing: 0.1em; transition: opacity 0.3s ease; }
+.resume-link { color: var(--text-primary); text-decoration: none; font-size: 14px; font-weight: 800; letter-spacing: 0.1em; transition: opacity 0.3s ease; }
 .resume-link:hover { opacity: 0.7; }
 
 .fade-up { opacity: 0; transform: translateY(40px); transition: opacity 0.8s ease, transform 0.8s ease; }
 .fade-up.in-view { opacity: 1; transform: translateY(0); }
 
+/* MOBILE RESPONSIVENESS */
 @media (max-width: 768px) {
-    :root { --edge-pad: 20px; --v-gap: 20px; } 
-    .capsule-nav { display: none; } 
-    .sticky-content, .standard-section { padding: 60px 20px; }
+    :root { 
+        --edge-pad: 16px; 
+        --v-gap: 16px; 
+    } 
+    .capsule-nav { display: none; } /* Nav hidden on mobile to save space */
+    .sticky-content, .standard-section { padding: 60px 16px; } /* Ensures text never cuts off */
     .workshop-grid { grid-template-columns: 1fr; }
-    .mobile-hide { display: none !important; } /* Hides DXB and NYC on small screens */
-    .resume-link { font-size: 12px; }
-    .social-icon svg { width: 20px; height: 20px; }
+    
+    .site-footer { grid-template-columns: 1fr 1fr; } 
+    .footer-centre { display: none; }
+    .mobile-hide { display: none !important; }
 }
