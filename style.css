@@ -113,22 +113,22 @@ body.light-mode .light-icon { color: var(--bg-static); }
     position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center;
 }
 
-/* L1: The Massive "Ghost" Background Overlay - Perfectly Centred and Deeply Blurred */
+/* L1: The Massive "Ghost" Background Overlay - Reverted to prominent state */
 .hero-l1 { 
     position: absolute; 
     top: 50%; left: 50%; transform: translate(-50%, -50%);
     width: 100vw; 
-    font-size: clamp(150px, 20vw, 300px); 
+    font-size: clamp(200px, 30vw, 400px); /* Restored to massive scale */
     font-weight: 900; line-height: 1; letter-spacing: -0.05em; white-space: nowrap;
     text-align: center; z-index: -1; pointer-events: none; 
-    filter: blur(10px); /* Increased blur */
+    filter: blur(2px); /* Restored crispness */
     
-    background: linear-gradient(180deg, rgba(248, 250, 252, 0.2) 0%, transparent 65%);
+    background: linear-gradient(180deg, rgba(248, 250, 252, 0.15) 0%, transparent 60%);
     -webkit-background-clip: text; background-clip: text; color: transparent;
     transition: opacity 0.5s ease;
 }
 .light-mode .hero-l1 { 
-    background: linear-gradient(180deg, rgba(17, 17, 17, 0.15) 0%, transparent 65%); 
+    background: linear-gradient(180deg, rgba(17, 17, 17, 0.12) 0%, transparent 60%); 
     -webkit-background-clip: text; background-clip: text; color: transparent;
 }
 
@@ -217,7 +217,7 @@ body.light-mode .light-icon { color: var(--bg-static); }
 
 /* The Workshop */
 .workshop-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; width: 100%; margin-top: 40px; }
-.workshop-card { position: relative; width: 100%; aspect-ratio: 4/5; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 24px; overflow: hidden; }
+.workshop-card { relative; width: 100%; aspect-ratio: 4/5; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 24px; overflow: hidden; }
 .card-layer { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding: 40px; }
 .card-label { position: absolute; bottom: 30px; left: 30px; font-size: 14px; letter-spacing: 0.1em; z-index: 10; background: var(--bg-glass-heavy); padding: 8px 16px; border-radius: 30px; backdrop-filter: blur(10px); }
 .text-layer { font-family: monospace; font-size: 14px; color: var(--accent); line-height: 1.8; justify-content: flex-start; align-items: flex-start; z-index: 2; }
@@ -265,6 +265,7 @@ body.light-mode .light-icon { color: var(--bg-static); }
         --edge-pad: 16px; 
         --v-gap: 16px; 
     } 
+    .hero-l1 { font-size: clamp(100px, 20vw, 200px); } 
     .hero-l2 { font-size: clamp(40px, 8vw, 80px); }
     .hero-l3 { font-size: 12px; }
     .capsule-nav { display: none; } 
