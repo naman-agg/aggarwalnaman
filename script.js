@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function drawGrid() {
         ctx.clearRect(0, 0, width, height);
         
-        // Draw static dots
+        // Static dots
         ctx.fillStyle = 'rgba(148, 163, 184, 0.4)'; 
         dots.forEach(dot => {
             ctx.beginPath();
@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
             ctx.fill();
         });
 
-        // 1. Gather all dots within interaction radius
+        // Gather all dots within interaction radius
         const interactionRadius = 250;
         let nearbyDots = [];
         
@@ -72,12 +72,9 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // 2. Sort by distance (closest first)
+        // Sort by distance and connect only to the 4 closest dots
         nearbyDots.sort((a, b) => a.dist - b.dist);
-
-        // 3. Only draw lines to the top 4 closest dots (creates the clean geometric shape)
-        const maxConnections = 4;
-        const dotsToConnect = nearbyDots.slice(0, maxConnections);
+        const dotsToConnect = nearbyDots.slice(0, 4);
 
         dotsToConnect.forEach(item => {
             ctx.beginPath();
@@ -146,6 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const heroL3 = document.getElementById('hero-l3');
     const headerBg = document.getElementById('header-bg');
     const manifestoTrigger = document.getElementById('manifesto-trigger');
+    const techCanvasEl = document.getElementById('tech-canvas');
     
     let moveDist = 0;
     function calculateHeroMath() {
@@ -164,6 +162,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const transitionDistance = windowHeight; 
         const heroProgress = Math.max(0, Math.min(scrollY / transitionDistance, 1));
 
+        // Fade and blur the canvas matrix
+        techCanvasEl.style.opacity = 0.5 - (heroProgress * 0.4); 
+        techCanvasEl.style.filter = `blur(${heroProgress * 8}px)`; 
+
+        // Hero Text Fade
         heroL1.style.opacity = 1 - (heroProgress * 2); 
         heroL3.style.opacity = 1 - (heroProgress * 2); 
 
@@ -175,12 +178,6 @@ document.addEventListener('DOMContentLoaded', () => {
         heroL2.style.transform = `scale(${currentScale})`;
 
         headerBg.style.opacity = heroProgress;
-        
-        if (heroProgress > 0.9) {
-            headerBg.classList.add('show-neon');
-        } else {
-            headerBg.classList.remove('show-neon');
-        }
 
         // B. Paragraph Scrub & Uplift
         const manifestoRect = manifestoTrigger.getBoundingClientRect();
