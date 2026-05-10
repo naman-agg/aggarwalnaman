@@ -27,6 +27,8 @@
     --text-muted: rgba(17, 17, 17, 0.15);
     --text-secondary: #666666;
     --border-color: rgba(0, 0, 0, 0.05);
+    
+    /* Lighter physical shadow */
     --capsule-shadow: 0 40px 80px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.5);
 }
 
@@ -40,6 +42,10 @@ body {
     background: var(--bg-static); 
     height: calc(100vh + 500px);
     overflow-x: hidden;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    body, a, button { cursor: none; }
 }
 
 /* Backgrounds */
@@ -107,18 +113,24 @@ body.light-mode .light-icon { color: var(--bg-static); }
     position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center;
 }
 
-/* L1: The Massive "Ghost" Background Gradient Overlay (Made Prominent) */
+/* L1: The Massive "Ghost" Background Overlay - Perfectly Centred and Deeply Blurred */
 .hero-l1 { 
-    position: fixed; top: -50px; left: 0; width: 100%; height: 600px;
-    font-size: clamp(200px, 30vw, 400px); font-weight: 900; line-height: 1; letter-spacing: -0.05em; white-space: nowrap;
-    text-align: center; z-index: -1; pointer-events: none; filter: blur(2px);
+    position: absolute; 
+    top: 50%; left: 50%; transform: translate(-50%, -50%);
+    width: 100vw; 
+    font-size: clamp(150px, 20vw, 300px); 
+    font-weight: 900; line-height: 1; letter-spacing: -0.05em; white-space: nowrap;
+    text-align: center; z-index: -1; pointer-events: none; 
+    filter: blur(10px); /* Increased blur */
     
-    /* Bumped up opacity significantly */
-    background: linear-gradient(180deg, rgba(248, 250, 252, 0.15) 0%, transparent 60%);
+    background: linear-gradient(180deg, rgba(248, 250, 252, 0.2) 0%, transparent 65%);
     -webkit-background-clip: text; background-clip: text; color: transparent;
     transition: opacity 0.5s ease;
 }
-.light-mode .hero-l1 { background: linear-gradient(180deg, rgba(17, 17, 17, 0.12) 0%, transparent 60%); -webkit-background-clip: text; background-clip: text; color: transparent;}
+.light-mode .hero-l1 { 
+    background: linear-gradient(180deg, rgba(17, 17, 17, 0.15) 0%, transparent 65%); 
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+}
 
 .hero-l2 {
     font-size: clamp(50px, 9vw, 120px); font-weight: 900; letter-spacing: -0.04em; white-space: nowrap; 
@@ -128,8 +140,6 @@ body.light-mode .light-icon { color: var(--bg-static); }
     position: absolute; font-family: monospace; font-size: clamp(14px, 2vw, 24px); font-weight: 900; 
     letter-spacing: 0.3em; color: var(--text-secondary); white-space: nowrap; 
 }
-
-/* Add the glowing cypher characters class */
 .cypher-char {
     color: var(--accent);
     text-shadow: 0 0 8px var(--accent);
@@ -255,7 +265,6 @@ body.light-mode .light-icon { color: var(--bg-static); }
         --edge-pad: 16px; 
         --v-gap: 16px; 
     } 
-    .hero-l1 { display: none; } 
     .hero-l2 { font-size: clamp(40px, 8vw, 80px); }
     .hero-l3 { font-size: 12px; }
     .capsule-nav { display: none; } 
@@ -265,4 +274,5 @@ body.light-mode .light-icon { color: var(--bg-static); }
     .site-footer { grid-template-columns: 1fr 1fr; } 
     .footer-centre { display: none; }
     .mobile-hide { display: none !important; }
+    .social-icon svg { width: 24px; height: 24px; }
 }

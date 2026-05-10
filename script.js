@@ -54,10 +54,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     setInterval(updateClocks, 1000); updateClocks();
 
-    // --- 4. Word-by-Word Manifesto Setup ---
+    // --- 4. Word-by-Word Reveal Setup ---
     const manifestoTextEl = document.getElementById('manifesto-text');
     const words = manifestoTextEl.innerText.trim().split(/\s+/);
     manifestoTextEl.innerHTML = ''; 
+    
     words.forEach(word => {
         const span = document.createElement('span');
         span.innerText = word;
@@ -66,7 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     const wordSpans = manifestoTextEl.querySelectorAll('span');
 
-    // --- 5. Internal Capsule Scroll Engine (Scrubbing & Spy Nav) ---
+    // --- 5. Capsule Internal Scroll Logic (Scrubbing & Spy Nav) ---
     const capsule = document.getElementById('capsule-container');
     const manifestoTrigger = document.getElementById('manifesto-trigger');
     const navDots = document.querySelectorAll('.capsule-nav .nav-dot');
@@ -117,10 +118,9 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
 
 
-    // --- 6. Matrix Role Scramble Engine (Upgraded) ---
+    // --- 6. Matrix Role Scramble Engine (Throttled for readability) ---
     const scrambleEl = document.getElementById('hero-l3');
     const phrases = ["A PRODUCT MANAGER.", "A DESIGNER.", "AN INVENTOR."];
-    // Tech-heavy character pool
     const chars = "><[]{}*&^%$#@!ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"; 
     
     let phraseIndex = 0;
@@ -148,6 +148,19 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         update() {
+            // Frame Throttle: Only updates the scramble every ~50ms to make it readable
+            if (!this.lastTime) this.lastTime = Date.now();
+            const now = Date.now();
+            const dt = now - this.lastTime;
+
+            if (dt < 50) { 
+                requestAnimationFrame(this.update.bind(this));
+                return;
+            }
+            
+            this.lastTime = now;
+            this.frame++;
+
             let output = '';
             let complete = 0;
             
@@ -158,7 +171,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     complete++; output += endChar;
                 } else if (this.frame >= startScramble) {
                     const char = chars[Math.floor(Math.random() * chars.length)];
-                    // Wrap the scrambled character in the specific cypher-char class for the glow effect
                     output += `<span class="cypher-char">${char}</span>`;
                 } else { output += startChars; }
             }
@@ -166,7 +178,7 @@ document.addEventListener('DOMContentLoaded', () => {
             this.el.innerHTML = output;
             
             if (complete === this.queue.length) { this.resolvePromise(); } 
-            else { this.frame++; requestAnimationFrame(this.update.bind(this)); }
+            else { requestAnimationFrame(this.update.bind(this)); }
         }
     }
 
@@ -194,7 +206,7 @@ document.addEventListener('DOMContentLoaded', () => {
     runScrambleLoop();
 
 
-    // --- 7. Outer Window Scroll Engine (State Change & Vanishing Fixes) ---
+    // --- 7. Outer Window Scroll Engine (State Change) ---
     const dynamicHero = document.getElementById('dynamic-hero');
     const heroL1 = document.getElementById('hero-l1'); 
     const heroL2 = document.getElementById('hero-l2'); 
@@ -224,14 +236,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const endScale = isMobile ? 0.35 : 0.25; 
         const currentScale = 1 - ((1 - endScale) * progress);
         
-        // Handle Ghost L1 dissolver 
+        // Ensure Ghost L1 stays centered mathematically while translating up
         heroL1.style.opacity = Math.max(0, 1 - (progress * 1.5));
-        heroL1.style.transform = `translateY(-${progress * 40}px)`;
+        heroL1.style.transform = `translate(-50%, calc(-50% - ${progress * 40}px))`;
 
-        // Handle L3 Vanishing (RESTORED & FIXED)
+        // Ensure L3 stays centered horizontally while translating up
         heroL3.style.opacity = Math.max(0, 1 - (progress * 2));
-        // Important: maintain the horizontally centred translateX(-50%) whilst translating it downwards
-        heroL3.style.transform = `translateX(-50%) translateY(${progress * 40}px)`;
+        heroL3.style.transform = `translateX(-50%) translateY(-${progress * 40}px)`;
 
         dynamicHero.style.transform = `translateY(-${moveDist * progress}px)`;
         heroL2.style.transform = `scale(${currentScale})`;
@@ -242,9 +253,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (progress === 1) {
             capsule.style.pointerEvents = 'auto';
             capsuleNav.classList.add('visible');
+            cursorTrail.style.display = 'none'; // Clean native interaction inside capsule
         } else {
             capsule.style.pointerEvents = 'none';
             capsuleNav.classList.remove('visible');
+            cursorTrail.style.display = 'block'; // Restore xray ring when back in hero
         }
         requestAnimationFrame(onWindowScroll);
     }
