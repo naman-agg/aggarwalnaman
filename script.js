@@ -8,7 +8,6 @@ document.addEventListener('DOMContentLoaded', () => {
     
     window.addEventListener('mousemove', (e) => {
         mouseX = e.clientX; mouseY = e.clientY;
-        // The Spotlight Grid Effect follows the cursor perfectly
         archGrid.style.webkitMaskImage = `radial-gradient(circle 400px at ${mouseX}px ${mouseY}px, black 0%, transparent 100%)`;
         archGrid.style.maskImage = `radial-gradient(circle 400px at ${mouseX}px ${mouseY}px, black 0%, transparent 100%)`;
     });
@@ -34,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
         body.classList.toggle('light-mode');
     });
 
-    // --- 3. Global World Clock Engine ---
+    // --- 3. Global Terminal Clock ---
     const zones = [
         { id: 'time-lon', tz: 'Europe/London' },
         { id: 'time-del', tz: 'Asia/Kolkata' },
@@ -58,6 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const manifestoTextEl = document.getElementById('manifesto-text');
     const words = manifestoTextEl.innerText.trim().split(/\s+/);
     manifestoTextEl.innerHTML = ''; 
+    
     words.forEach(word => {
         const span = document.createElement('span');
         span.innerText = word;
@@ -76,7 +76,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const scrollY = capsule.scrollTop;
         const capsuleHeight = capsule.clientHeight;
 
-        // Scrubbing Math
         const manifestoTop = manifestoTrigger.offsetTop; 
         const manifestoHeight = manifestoTrigger.offsetHeight;
         const startScrub = manifestoTop;
@@ -115,7 +114,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Standard Observers
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('in-view'); });
     }, { root: capsule, threshold: 0.1 });
@@ -123,33 +121,47 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- 6. Outer Window Scroll Engine (State Change) ---
     const dynamicHero = document.getElementById('dynamic-hero');
-    const heroL1 = document.getElementById('hero-l1'), heroL2 = document.getElementById('hero-l2'), heroL3 = document.getElementById('hero-l3');
+    const heroL1 = document.getElementById('hero-l1');
+    const heroL2 = document.getElementById('hero-l2');
+    const heroL3 = document.getElementById('hero-l3');
     const capsuleNav = document.getElementById('capsule-nav');
     
     let moveDist = 0;
     function calculateHeroMath() {
         const l2Rect = heroL2.getBoundingClientRect();
         const l2CenterY = l2Rect.top + (l2Rect.height / 2); 
+        
+        // Use exact pixel gap defined in CSS variables
         const isMobile = window.innerWidth <= 768;
-        const endCenter = isMobile ? 40 : 60; 
+        const vGap = isMobile ? 16 : 24;
+        const uiHeight = 40;
+        const endCenter = vGap + (uiHeight / 2); 
+        
         moveDist = l2CenterY - endCenter; 
     }
-    setTimeout(calculateHeroMath, 100); window.addEventListener('resize', calculateHeroMath);
+    setTimeout(calculateHeroMath, 100); 
+    window.addEventListener('resize', calculateHeroMath);
 
     function onWindowScroll() {
         const scrollY = window.scrollY;
         const transitionDistance = 500; 
         const progress = Math.max(0, Math.min(scrollY / transitionDistance, 1));
 
-        // Grid fades out completely as you enter the reading mode capsule
         archGrid.style.opacity = 1 - progress; 
 
+        // Scale Name (Significantly smaller end state)
+        const isMobile = window.innerWidth <= 768;
+        const endScale = isMobile ? 0.25 : 0.2; 
+        const currentScale = 1 - ((1 - endScale) * progress);
+        
+        // Translate L1 and L3 away to isolate L2's bounding box
+        heroL1.style.transform = `translateY(-${progress * 40}px)`;
         heroL1.style.opacity = 1 - (progress * 2); 
+        
+        heroL3.style.transform = `translateY(${progress * 40}px)`;
         heroL3.style.opacity = 1 - (progress * 2); 
 
-        const isMobile = window.innerWidth <= 768;
-        const currentScale = 1 - ((1 - (isMobile ? 0.4 : 0.3)) * progress);
-        
+        // Translate the whole block so L2 aligns perfectly in header
         dynamicHero.style.transform = `translateY(-${moveDist * progress}px)`;
         heroL2.style.transform = `scale(${currentScale})`;
 
@@ -163,6 +175,7 @@ document.addEventListener('DOMContentLoaded', () => {
             capsule.style.pointerEvents = 'none';
             capsuleNav.classList.remove('visible');
         }
+
         requestAnimationFrame(onWindowScroll);
     }
 

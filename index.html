@@ -23,33 +23,35 @@
         <button class="search-btn interactive-element" aria-label="Search">
             <span class="material-symbols-outlined">search</span>
         </button>
-        <div class="theme-toggle interactive-element" id="themeToggle" role="button" tabindex="0">
-            <div class="celestial-body"></div>
+        <div class="eclipse-toggle interactive-element" id="themeToggle" role="button" aria-label="Toggle Theme">
+            <div class="eclipse-mask"></div>
         </div>
     </div>
 
     <div class="dynamic-hero" id="dynamic-hero">
-        <div class="hero-l1" id="hero-l1">Hello! I am</div>
-        <div class="hero-l2" id="hero-l2">Naman Aggarwal</div>
-        <div class="hero-l3" id="hero-l3">PRODUCT MANAGER. DESIGNER. INVENTOR.</div>
+        <div class="hero-wrapper">
+            <div class="hero-l1" id="hero-l1">Hello I'm</div>
+            <div class="hero-l2" id="hero-l2">NAMAN AGGARWAL</div>
+            <div class="hero-l3" id="hero-l3">PRODUCT MANAGER. DESIGNER. INVENTOR.</div>
+        </div>
     </div>
 
+    <nav class="capsule-nav" id="capsule-nav">
+        <div class="nav-dot active interactive-element" data-target="manifesto-trigger">
+            <span class="nav-label">Intro</span>
+        </div>
+        <div class="nav-dot interactive-element" data-target="journey-section">
+            <span class="nav-label">Journey</span>
+        </div>
+        <div class="nav-dot interactive-element" data-target="workshop-section">
+            <span class="nav-label">Workshop</span>
+        </div>
+        <div class="nav-dot interactive-element" data-target="skills-section">
+            <span class="nav-label">Stack</span>
+        </div>
+    </nav>
+
     <main class="capsule-container" id="capsule-container">
-        
-        <nav class="capsule-nav" id="capsule-nav">
-            <div class="nav-dot active interactive-element" data-target="manifesto-trigger">
-                <span class="nav-label">Intro</span>
-            </div>
-            <div class="nav-dot interactive-element" data-target="journey-section">
-                <span class="nav-label">Journey</span>
-            </div>
-            <div class="nav-dot interactive-element" data-target="workshop-section">
-                <span class="nav-label">Workshop</span>
-            </div>
-            <div class="nav-dot interactive-element" data-target="skills-section">
-                <span class="nav-label">Stack</span>
-            </div>
-        </nav>
 
         <section class="manifesto-section scroll-spy-section" id="manifesto-trigger">
             <div class="sticky-content flex-center">
@@ -63,6 +65,7 @@
             <h2 class="section-heading fade-up">The Journey</h2>
             <div class="timeline-container">
                 <div class="timeline-line" id="timeline-line"></div>
+                
                 <div class="timeline-item fade-up">
                     <div class="timeline-dot"></div>
                     <div class="timeline-content">
@@ -71,6 +74,7 @@
                         <p class="job-desc">Optimising high-scale logistics and bridging the gap between primary technical domains and secondary operational efficiencies for global tech leaders.</p>
                     </div>
                 </div>
+
                 <div class="timeline-item fade-up">
                     <div class="timeline-dot"></div>
                     <div class="timeline-content">
@@ -94,6 +98,7 @@
                     </div>
                     <h3 class="card-label">AI Web Architecture</h3>
                 </div>
+
                 <div class="workshop-card" id="print-card">
                     <div class="card-layer blueprint-layer">
                         <div class="placeholder-img wireframe">CAD Prototyping</div>
@@ -105,17 +110,34 @@
 
         <section class="standard-section skills-section scroll-spy-section" id="skills-section">
             <h2 class="section-heading fade-up">Education & Stack</h2>
+            
             <div class="education-block fade-up">
-                <div class="edu-item"><h4>Master of Business Administration (MBA)</h4></div>
-                <div class="edu-item"><h4>B.Tech in Mechanical Engineering</h4></div>
+                <div class="edu-item">
+                    <h4>Master of Business Administration (MBA)</h4>
+                </div>
+                <div class="edu-item">
+                    <h4>B.Tech in Mechanical Engineering</h4>
+                </div>
             </div>
+
             <div class="marquee-container mt-large">
                 <div class="marquee-content">
-                    <span>Liquid UI</span><span>•</span><span>CAD Modelling</span><span>•</span><span>Programme Management</span><span>•</span><span>3D Prototyping</span><span>•</span><span>Prompt Engineering</span><span>•</span><span>Agile Logistics</span><span>•</span>
-                    <span>Liquid UI</span><span>•</span><span>CAD Modelling</span><span>•</span><span>Programme Management</span><span>•</span><span>3D Prototyping</span><span>•</span><span>Prompt Engineering</span><span>•</span><span>Agile Logistics</span><span>•</span>
+                    <span>Liquid UI</span><span>•</span>
+                    <span>CAD Modelling</span><span>•</span>
+                    <span>Programme Management</span><span>•</span>
+                    <span>3D Prototyping</span><span>•</span>
+                    <span>Prompt Engineering</span><span>•</span>
+                    <span>Agile Logistics</span><span>•</span>
+                    <span>Liquid UI</span><span>•</span>
+                    <span>CAD Modelling</span><span>•</span>
+                    <span>Programme Management</span><span>•</span>
+                    <span>3D Prototyping</span><span>•</span>
+                    <span>Prompt Engineering</span><span>•</span>
+                    <span>Agile Logistics</span><span>•</span>
                 </div>
             </div>
         </section>
+        
         <div class="footer-spacer"></div>
     </main>
 
