@@ -118,21 +118,32 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
 
 
-    // --- 6. Matrix Role Scramble Engine (Throttled for readability) ---
+    // --- 6. Orbit Calculation & Scramble Engine ---
     const scrambleEl = document.getElementById('hero-l3');
     const phrases = ["A PRODUCT MANAGER.", "A DESIGNER.", "AN INVENTOR."];
     const chars = "><[]{}*&^%$#@!ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"; 
-    
     let phraseIndex = 0;
+    
+    function calculateOrbitPositions() {
+        const l3El = document.getElementById('hero-l3');
+        const isMobile = window.innerWidth <= 768;
+        
+        // Gap below the name
+        const gap = isMobile ? 30 : 50; 
+        
+        l3El.style.bottom = `-${gap}px`;
+        l3El.style.left = `50%`;
+        l3El.style.transform = `translateX(-50%)`;
+    }
+    setTimeout(calculateOrbitPositions, 50);
+    window.addEventListener('resize', calculateOrbitPositions);
     
     class CypherScrambler {
         constructor(el) { this.el = el; }
-        
         async scramble(newText) {
             const oldText = this.el.innerText;
             const maxLength = Math.max(oldText.length, newText.length);
             const promise = new Promise(resolve => this.resolvePromise = resolve);
-            
             this.queue = [];
             for (let i = 0; i < maxLength; i++) {
                 const startChars = oldText[i] || '';
@@ -141,14 +152,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 const endScramble = startScramble + Math.floor(Math.random() * 15);
                 this.queue.push({ startChars, endChar, startScramble, endScramble });
             }
-            
             this.frame = 0;
             this.update();
             return promise;
         }
-        
         update() {
-            // Frame Throttle: Only updates the scramble every ~50ms to make it readable
             if (!this.lastTime) this.lastTime = Date.now();
             const now = Date.now();
             const dt = now - this.lastTime;
@@ -157,7 +165,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 requestAnimationFrame(this.update.bind(this));
                 return;
             }
-            
             this.lastTime = now;
             this.frame++;
 
@@ -166,7 +173,6 @@ document.addEventListener('DOMContentLoaded', () => {
             
             for (let i = 0; i < this.queue.length; i++) {
                 const { startChars, endChar, startScramble, endScramble } = this.queue[i];
-                
                 if (this.frame >= endScramble) {
                     complete++; output += endChar;
                 } else if (this.frame >= startScramble) {
@@ -174,26 +180,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     output += `<span class="cypher-char">${char}</span>`;
                 } else { output += startChars; }
             }
-            
             this.el.innerHTML = output;
             
             if (complete === this.queue.length) { this.resolvePromise(); } 
             else { requestAnimationFrame(this.update.bind(this)); }
         }
     }
-
-    function calculateRolePosition() {
-        const l2El = document.getElementById('hero-l2');
-        const l3El = document.getElementById('hero-l3');
-        const isMobile = window.innerWidth <= 768;
-        
-        const bottomGap = isMobile ? 30 : 50; 
-        l3El.style.bottom = `-${bottomGap}px`;
-        l3El.style.left = `50%`;
-        l3El.style.transform = `translateX(-50%)`;
-    }
-    setTimeout(calculateRolePosition, 50);
-    window.addEventListener('resize', calculateRolePosition);
 
     const scrambler = new CypherScrambler(scrambleEl);
     async function runScrambleLoop() {
@@ -217,10 +209,12 @@ document.addEventListener('DOMContentLoaded', () => {
     function calculateHeroMath() {
         const l2Rect = heroL2.getBoundingClientRect();
         const l2CenterY = l2Rect.top + (l2Rect.height / 2); 
+        
         const isMobile = window.innerWidth <= 768;
         const vGap = isMobile ? 16 : 24;
         const uiHeight = 40;
         const endCenterY = vGap + (uiHeight / 2); 
+        
         moveDist = l2CenterY - endCenterY; 
     }
     setTimeout(calculateHeroMath, 100); window.addEventListener('resize', calculateHeroMath);
@@ -236,13 +230,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const endScale = isMobile ? 0.35 : 0.25; 
         const currentScale = 1 - ((1 - endScale) * progress);
         
-        // Ensure Ghost L1 stays centered mathematically while translating up
-        heroL1.style.opacity = Math.max(0, 1 - (progress * 1.5));
+        // Ghost L1 fades and translates slightly up relative to its -50% centre origin
+        heroL1.style.opacity = Math.max(0, 1 - (progress * 2));
         heroL1.style.transform = `translate(-50%, calc(-50% - ${progress * 40}px))`;
 
-        // Ensure L3 stays centered horizontally while translating up
+        // L3 Scramble fades and translates down
         heroL3.style.opacity = Math.max(0, 1 - (progress * 2));
-        heroL3.style.transform = `translateX(-50%) translateY(-${progress * 40}px)`;
+        heroL3.style.transform = `translateX(-50%) translateY(${progress * 40}px)`;
 
         dynamicHero.style.transform = `translateY(-${moveDist * progress}px)`;
         heroL2.style.transform = `scale(${currentScale})`;
@@ -253,11 +247,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (progress === 1) {
             capsule.style.pointerEvents = 'auto';
             capsuleNav.classList.add('visible');
-            cursorTrail.style.display = 'none'; // Clean native interaction inside capsule
+            cursorTrail.style.display = 'none'; 
         } else {
             capsule.style.pointerEvents = 'none';
             capsuleNav.classList.remove('visible');
-            cursorTrail.style.display = 'block'; // Restore xray ring when back in hero
+            cursorTrail.style.display = 'block'; 
         }
         requestAnimationFrame(onWindowScroll);
     }
