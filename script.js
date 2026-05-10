@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // --- 2. Canvas Tech Grid (Pronounced) ---
+    // --- 2. Canvas Tech Grid (Nearest Neighbour Logic) ---
     const canvas = document.getElementById('tech-canvas');
     const ctx = canvas.getContext('2d');
     let width, height;
@@ -53,29 +53,43 @@ document.addEventListener('DOMContentLoaded', () => {
     function drawGrid() {
         ctx.clearRect(0, 0, width, height);
         
-        // Brighter, slightly larger static dots
-        ctx.fillStyle = 'rgba(148, 163, 184, 0.5)'; 
+        // Draw static dots
+        ctx.fillStyle = 'rgba(148, 163, 184, 0.4)'; 
         dots.forEach(dot => {
             ctx.beginPath();
-            ctx.arc(dot.x, dot.y, 2, 0, Math.PI * 2);
+            ctx.arc(dot.x, dot.y, 1.5, 0, Math.PI * 2);
             ctx.fill();
         });
 
-        // Larger interaction radius, thicker/brighter connecting lines
+        // 1. Gather all dots within interaction radius
         const interactionRadius = 250;
+        let nearbyDots = [];
+        
         dots.forEach(dot => {
             const dist = Math.hypot(dot.x - mouseX, dot.y - mouseY);
             if (dist < interactionRadius) { 
-                ctx.beginPath();
-                ctx.moveTo(dot.x, dot.y);
-                ctx.lineTo(mouseX, mouseY);
-                
-                const opacity = 1 - (dist / interactionRadius);
-                ctx.strokeStyle = `rgba(56, 189, 248, ${opacity * 0.8})`; 
-                ctx.lineWidth = 1.5;
-                ctx.stroke();
+                nearbyDots.push({ dot, dist });
             }
         });
+
+        // 2. Sort by distance (closest first)
+        nearbyDots.sort((a, b) => a.dist - b.dist);
+
+        // 3. Only draw lines to the top 4 closest dots (creates the clean geometric shape)
+        const maxConnections = 4;
+        const dotsToConnect = nearbyDots.slice(0, maxConnections);
+
+        dotsToConnect.forEach(item => {
+            ctx.beginPath();
+            ctx.moveTo(item.dot.x, item.dot.y);
+            ctx.lineTo(mouseX, mouseY);
+            
+            const opacity = 1 - (item.dist / interactionRadius);
+            ctx.strokeStyle = `rgba(56, 189, 248, ${opacity * 0.8})`; 
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+        });
+        
         requestAnimationFrame(drawGrid);
     }
     
