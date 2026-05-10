@@ -114,7 +114,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const span = document.createElement('span');
         span.innerText = word;
         manifestoTextEl.appendChild(span);
-        // Space added outside the span so it does not animate
         manifestoTextEl.appendChild(document.createTextNode(' '));
     });
     const wordSpans = manifestoTextEl.querySelectorAll('span');
@@ -139,10 +138,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const manifestoTop = manifestoTrigger.offsetTop; 
         const manifestoHeight = manifestoTrigger.offsetHeight;
         const capsuleHeight = capsule.clientHeight;
-
         const scrollY = capsule.scrollTop;
 
-        // Sticky scroll duration math
         const startScrub = manifestoTop;
         const endScrub = manifestoTop + manifestoHeight - capsuleHeight;
 
@@ -165,7 +162,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- 7. Outer Window Scroll Engine (State Change) ---
+    // --- 7. Outer Window Scroll Engine ---
     const dynamicHero = document.getElementById('dynamic-hero');
     const heroL1 = document.getElementById('hero-l1');
     const heroL2 = document.getElementById('hero-l2');
@@ -176,22 +173,25 @@ document.addEventListener('DOMContentLoaded', () => {
     function calculateHeroMath() {
         const l2Rect = heroL2.getBoundingClientRect();
         const l2CenterY = l2Rect.top + (l2Rect.height / 2); 
-        moveDist = l2CenterY - 40; 
+        // Use dynamically calculated gap and height from CSS variables if possible, 
+        // but safe fallback to standard 60px (40 gap + 20 half height) for desktop, 40 for mobile
+        const isMobile = window.innerWidth <= 768;
+        const endCenter = isMobile ? 40 : 60; 
+        moveDist = l2CenterY - endCenter; 
     }
     setTimeout(calculateHeroMath, 100); 
     window.addEventListener('resize', calculateHeroMath);
 
+    let manifestoTriggered = false;
+
     function onWindowScroll() {
         const scrollY = window.scrollY;
-        // Exactly matches the 500px extra height on the body
         const transitionDistance = 500; 
         const progress = Math.max(0, Math.min(scrollY / transitionDistance, 1));
 
-        // 1. Grid fades and blurs out
         techCanvasEl.style.opacity = 0.5 - (progress * 0.4); 
         techCanvasEl.style.filter = `blur(${progress * 8}px)`; 
 
-        // 2. Hero Text fades and locks into header position
         heroL1.style.opacity = 1 - (progress * 2); 
         heroL3.style.opacity = 1 - (progress * 2); 
 
@@ -202,13 +202,17 @@ document.addEventListener('DOMContentLoaded', () => {
         dynamicHero.style.transform = `translateY(-${moveDist * progress}px)`;
         heroL2.style.transform = `scale(${currentScale})`;
 
-        // 3. Capsule visually slides up from behind the footer
         capsule.style.transform = `translateY(${(1 - progress) * 100}vh)`;
         capsule.style.opacity = progress;
         
-        // 4. Unlock internal capsule scrolling when transition finishes
         if (progress === 1) {
             capsule.style.pointerEvents = 'auto';
+            if (!manifestoTriggered) {
+                manifestoTriggered = true;
+                wordSpans.forEach((span, index) => {
+                    setTimeout(() => { span.classList.add('active-word'); }, index * 30); 
+                });
+            }
         } else {
             capsule.style.pointerEvents = 'none';
         }
@@ -216,7 +220,6 @@ document.addEventListener('DOMContentLoaded', () => {
         requestAnimationFrame(onWindowScroll);
     }
 
-    // Bind outer scroll
     window.addEventListener('scroll', () => { requestAnimationFrame(onWindowScroll); });
     onWindowScroll(); 
 });

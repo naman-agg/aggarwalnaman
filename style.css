@@ -1,7 +1,13 @@
 :root {
     --font-main: 'Inter', sans-serif;
     --transition-smooth: 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    
+    /* Horizontal Edge Padding */
     --edge-pad: 120px; 
+    
+    /* Vertical Symmetrical Spacing Variables */
+    --v-gap: 40px;
+    --ui-height: 40px;
     
     --accent: #38bdf8; 
     
@@ -14,7 +20,6 @@
     --text-secondary: #94a3b8;
     --toggle-bg: #1e293b;
     --toggle-circle: #38bdf8;
-    
     --border-color: rgba(148, 163, 184, 0.3);
 }
 
@@ -39,7 +44,6 @@ body {
     font-family: var(--font-main);
     color: var(--text-primary);
     background: var(--bg-static); 
-    /* Allows 500px of scrolling to trigger the animation before locking */
     height: calc(100vh + 500px);
     overflow-x: hidden;
 }
@@ -58,8 +62,7 @@ body {
 .tech-canvas {
     position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
     z-index: -1; pointer-events: none;
-    opacity: 0.5;
-    transition: opacity 0.1s linear, filter 0.1s linear;
+    opacity: 0.5; transition: opacity 0.1s linear, filter 0.1s linear;
 }
 
 /* Inverted Cursor */
@@ -73,9 +76,12 @@ body {
 }
 .cursor-trail.hovering { width: 20px; height: 20px; filter: blur(2px); }
 
-/* Global Controls (Mixed seamless header) */
+/* Global Controls (Perfect Symmetry, No Background) */
 .global-controls {
-    position: fixed; top: 0; left: 0; width: 100%; height: 80px;
+    position: fixed; 
+    top: var(--v-gap); 
+    left: 0; width: 100%; 
+    height: var(--ui-height);
     display: flex; justify-content: space-between; align-items: center;
     padding: 0 var(--edge-pad); z-index: 105; pointer-events: none;
 }
@@ -96,30 +102,25 @@ body {
 .hero-l2 { font-size: clamp(60px, 11vw, 150px); font-weight: 900; letter-spacing: -0.04em; white-space: nowrap; transform-origin: center center; line-height: 1; }
 .hero-l3 { font-size: clamp(14px, 2vw, 24px); font-weight: 900; letter-spacing: 0.3em; color: var(--text-secondary); line-height: 1; }
 
-/* Fixed Capsule Container (Z-index 50 allows it to slide UNDER the footer) */
+/* Fixed Capsule Container (Perfect Mathematical Symmetry) */
 .capsule-container { 
     position: fixed;
-    top: 100px; 
+    /* Top = Gap + Header Height + Gap */
+    top: calc(var(--v-gap) * 2 + var(--ui-height)); 
     left: var(--edge-pad);
     width: calc(100% - (var(--edge-pad) * 2)); 
-    height: calc(100vh - 200px); 
-    z-index: 50; 
+    /* Height leaves exactly (Gap + Footer Height + Gap) at the bottom */
+    height: calc(100vh - (var(--v-gap) * 4 + var(--ui-height) * 2)); 
+    z-index: 50; /* Slides beautifully under the footer text */
     
     background: var(--bg-glass-heavy);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
     border: 1px solid rgba(56, 189, 248, 0.4);
     border-radius: 40px;
     box-shadow: 0 20px 40px rgba(0,0,0,0.5), inset 0 0 20px rgba(56, 189, 248, 0.15);
     
-    /* Internal Scrolling Enabled */
-    overflow-y: auto;
-    scrollbar-width: none;
-    
-    /* Initially hidden below the screen */
-    transform: translateY(100vh);
-    opacity: 0;
-    pointer-events: none;
+    overflow-y: auto; scrollbar-width: none;
+    transform: translateY(100vh); opacity: 0; pointer-events: none;
 }
 .capsule-container::-webkit-scrollbar { display: none; }
 
@@ -129,26 +130,22 @@ body {
 
 /* Scrub & Uplift Paragraph Layout */
 .manifesto-section { 
-    height: 150vh; /* Taller area within capsule to allow scrolling */
+    height: 150vh; 
     position: relative;
 } 
 .sticky-content {
     position: sticky; top: 0; 
-    height: calc(100vh - 200px); /* Matches exact capsule height */
+    height: calc(100vh - (var(--v-gap) * 4 + var(--ui-height) * 2)); 
     padding: 0 80px; overflow: hidden;
     display: flex; justify-content: center; align-items: center;
 }
 
-/* Perfect Flexbox Centring for the Paragraph */
+/* Perfect Flexbox Centring */
 .manifesto-text {
     font-size: clamp(24px, 3.5vw, 48px); 
     font-weight: 600; line-height: 1.4; letter-spacing: -0.02em;
-    max-width: 1000px; 
-    text-align: center;
-    margin: 0 auto;
-    display: flex; 
-    flex-wrap: wrap; 
-    justify-content: center;
+    max-width: 1000px; text-align: center; margin: 0 auto;
+    display: flex; flex-wrap: wrap; justify-content: center;
 }
 .manifesto-text span {
     display: inline-block; color: var(--text-muted);
@@ -160,7 +157,7 @@ body {
     color: var(--text-primary); transform: translateY(0); 
 }
 
-/* Standard Sections (Inside Capsule) */
+/* Standard Sections */
 .standard-section { padding: 100px 80px; max-width: 1000px; margin: 0 auto; }
 .section-heading { font-size: clamp(32px, 4vw, 40px); margin-bottom: 80px; text-align: center; }
 
@@ -192,14 +189,17 @@ body {
 
 /* Mixed Footer (Completely transparent background, Floating UI above capsule) */
 .site-footer {
-    position: fixed; bottom: 0; left: 0; width: 100%; height: 80px;
+    position: fixed; 
+    bottom: var(--v-gap); 
+    left: 0; width: 100%; 
+    height: var(--ui-height);
     display: flex; justify-content: space-between; align-items: center;
     padding: 0 var(--edge-pad); 
-    background: transparent; /* Seamless blend */
-    z-index: 100; /* Stays above sliding capsule */
-    pointer-events: none; /* Let empty space click through to capsule */
+    background: transparent; border: none;
+    z-index: 100; /* Locked permanently above capsule */
+    pointer-events: none; 
 }
-.site-footer > * { pointer-events: auto; } /* Ensure buttons still work */
+.site-footer > * { pointer-events: auto; } 
 .social-icon { color: var(--text-secondary); transition: color 0.3s ease, transform 0.3s ease; display: flex; }
 .social-icon:hover { color: var(--text-primary); transform: translateY(-2px); }
 .footer-centre { display: flex; gap: 24px; }
@@ -213,8 +213,10 @@ body {
 .fade-up.in-view { opacity: 1; transform: translateY(0); }
 
 @media (max-width: 768px) {
-    :root { --edge-pad: 20px; } 
-    .capsule-container { top: 90px; height: calc(100vh - 180px); }
+    :root { 
+        --edge-pad: 20px; 
+        --v-gap: 20px; /* Tighter symmetry for mobile */
+    } 
     .sticky-content, .standard-section { padding: 60px 20px; }
     .workshop-grid { grid-template-columns: 1fr; }
     .clock-display { font-size: 16px; }
