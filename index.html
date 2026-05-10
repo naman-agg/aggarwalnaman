@@ -15,7 +15,7 @@
 <body class="dark-mode">
     <div class="static-background"></div>
 
-    <div class="architectural-grid" id="arch-grid"></div>
+    <canvas id="tech-canvas" class="tech-canvas"></canvas>
 
     <div class="cursor-trail" id="cursor-trail"></div>
 
@@ -27,6 +27,8 @@
             <div class="toggle-circle"></div>
         </div>
     </div>
+
+    <div class="header-bg" id="header-bg"></div>
 
     <div class="dynamic-hero" id="dynamic-hero">
         <div class="hero-l1" id="hero-l1">Hello! I am</div>
@@ -141,11 +143,23 @@
 
     <footer class="site-footer" id="site-footer">
         <div class="footer-left">
-            <div class="world-clock" id="world-clock-container">
-                <span class="clock-text">It's </span>
-                <span id="clock-time" class="clock-display">00:00:00</span>
-                <span class="clock-text"> in </span>
-                <span id="clock-location" class="clock-location flip-normal">LONDON</span>
+            <div class="world-clock">
+                <div class="clock-item">
+                    <span class="clock-label">LON</span>
+                    <span class="clock-time" id="time-lon">00:00:00</span>
+                </div>
+                <div class="clock-item">
+                    <span class="clock-label">DEL</span>
+                    <span class="clock-time" id="time-del">00:00:00</span>
+                </div>
+                <div class="clock-item mobile-hide">
+                    <span class="clock-label">DXB</span>
+                    <span class="clock-time" id="time-dxb">00:00:00</span>
+                </div>
+                <div class="clock-item mobile-hide">
+                    <span class="clock-label">NYC</span>
+                    <span class="clock-time" id="time-nyc">00:00:00</span>
+                </div>
             </div>
         </div>
         <div class="footer-centre">

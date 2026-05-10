@@ -1,7 +1,6 @@
 :root {
     --font-main: 'Inter', sans-serif;
     --transition-smooth: 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-    
     --edge-pad: 120px; 
     --v-gap: 40px;
     --ui-height: 40px;
@@ -45,30 +44,24 @@ body {
     overflow-x: hidden;
 }
 
-/* Backgrounds */
+@media (hover: hover) and (pointer: fine) {
+    body, a, button, .theme-toggle { cursor: none; }
+}
+
+/* Backgrounds & Canvas */
 .static-background {
     position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
     background: radial-gradient(circle at 50% 0%, rgba(56, 189, 248, 0.05), transparent 70%);
     z-index: -2; pointer-events: none;
 }
 
-/* 1. The New Architectural Spotlight Grid */
-.architectural-grid {
+.tech-canvas {
     position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-    background-size: 40px 40px;
-    background-image:
-        linear-gradient(to right, rgba(148, 163, 184, 0.15) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(148, 163, 184, 0.15) 1px, transparent 1px);
-    z-index: -1;
-    pointer-events: none;
-    /* This mask is dynamically updated via JS to follow the cursor */
-    -webkit-mask-image: radial-gradient(circle at 50% 50%, black 0%, transparent 0%);
-    mask-image: radial-gradient(circle at 50% 50%, black 0%, transparent 0%);
-    opacity: 1;
-    transition: opacity 0.2s linear;
+    z-index: -1; pointer-events: none;
+    opacity: 0.5; transition: opacity 0.1s linear, filter 0.1s linear;
 }
 
-/* 2. Inverted Trailing Cursor (No cursor hide applied) */
+/* Inverted Cursor */
 .cursor-trail {
     position: fixed; top: 0; left: 0; width: 50px; height: 50px;
     background: #ffffff; border-radius: 50%;
@@ -91,6 +84,13 @@ body {
 .theme-toggle { width: 52px; height: 28px; background: var(--toggle-bg); border-radius: 30px; position: relative; transition: background var(--transition-smooth); cursor: pointer; }
 .toggle-circle { width: 20px; height: 20px; background: var(--toggle-circle); border-radius: 50%; position: absolute; top: 4px; left: 4px; transition: transform var(--transition-smooth); }
 .light-mode .toggle-circle { transform: translateX(24px); }
+
+/* Solid Header Background (Fades in) */
+.header-bg {
+    position: fixed; top: 0; left: 0; width: 100%; height: 80px;
+    background: var(--bg-static); 
+    z-index: 100; opacity: 0; transition: opacity 0.1s linear;
+}
 
 /* Dynamic Hero */
 .dynamic-hero {
@@ -118,15 +118,23 @@ body {
     background: var(--text-muted); cursor: pointer;
     position: relative; transition: all 0.3s ease;
 }
-.nav-dot.active { background: var(--accent); transform: scale(1.4); box-shadow: 0 0 10px var(--accent); }
 
+/* Navigation Labels (Permanent on Active, Hover for rest) */
 .nav-label {
     position: absolute; left: 24px; top: 50%; transform: translateY(-50%);
-    font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+    font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
     color: var(--text-secondary); opacity: 0; pointer-events: none;
-    transition: opacity 0.3s ease, transform 0.3s ease;
+    transition: opacity 0.3s ease, transform 0.3s ease, color 0.3s ease;
 }
 .nav-dot:hover .nav-label { opacity: 1; transform: translateY(-50%) translateX(5px); }
+
+/* The Active State (Permanently visible) */
+.nav-dot.active { background: var(--accent); transform: scale(1.4); box-shadow: 0 0 10px var(--accent); }
+.nav-dot.active .nav-label {
+    opacity: 1; 
+    transform: translateY(-50%) translateX(5px); 
+    color: var(--text-primary);
+}
 
 /* Fixed Capsule Container */
 .capsule-container { 
@@ -207,7 +215,7 @@ body {
 .marquee-content span:nth-child(even) { color: var(--accent); }
 @keyframes scroll-marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
-/* The 3D World Clock & Footer */
+/* Mixed Footer (Global Terminal Clock Layout) */
 .site-footer {
     position: fixed; bottom: var(--v-gap); left: 0; width: 100%; height: var(--ui-height);
     display: flex; justify-content: space-between; align-items: center;
@@ -216,24 +224,16 @@ body {
 }
 .site-footer > * { pointer-events: auto; } 
 
-.world-clock { display: flex; align-items: baseline; gap: 8px; perspective: 1000px; }
-.clock-text { font-size: 12px; font-weight: 600; letter-spacing: 0.1em; color: var(--text-secondary); text-transform: uppercase; }
-.clock-display { font-family: monospace; color: var(--text-primary); font-size: 24px; letter-spacing: 0.05em; font-weight: 600; }
-/* The 3D Flip Styles */
-.clock-location { 
-    font-size: 12px; font-weight: 700; letter-spacing: 0.2em; color: var(--accent); 
-    display: inline-block; transform-style: preserve-3d;
-    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease;
-}
-.flip-out { transform: rotateX(90deg); opacity: 0; }
-.flip-in { transform: rotateX(-90deg); opacity: 0; }
-.flip-normal { transform: rotateX(0deg); opacity: 1; }
+.world-clock { display: flex; align-items: center; gap: 20px; }
+.clock-item { display: flex; align-items: baseline; gap: 6px; }
+.clock-label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; color: var(--text-secondary); }
+.clock-time { font-family: monospace; font-size: 15px; font-weight: 600; color: var(--text-primary); letter-spacing: 0.05em; }
 
 .social-icon { color: var(--text-secondary); transition: color 0.3s ease, transform 0.3s ease; display: flex; }
 .social-icon:hover { color: var(--text-primary); transform: translateY(-2px); }
 .footer-centre { display: flex; gap: 24px; }
 
-.resume-link { color: var(--text-primary); text-decoration: none; font-size: 18px; font-weight: 700; letter-spacing: 0.1em; transition: opacity 0.3s ease; }
+.resume-link { color: var(--text-primary); text-decoration: none; font-size: 16px; font-weight: 700; letter-spacing: 0.1em; transition: opacity 0.3s ease; }
 .resume-link:hover { opacity: 0.7; }
 
 .fade-up { opacity: 0; transform: translateY(40px); transition: opacity 0.8s ease, transform 0.8s ease; }
@@ -244,8 +244,7 @@ body {
     .capsule-nav { display: none; } 
     .sticky-content, .standard-section { padding: 60px 20px; }
     .workshop-grid { grid-template-columns: 1fr; }
-    .clock-display { font-size: 16px; }
-    .clock-text, .clock-location { font-size: 10px; }
-    .resume-link { font-size: 14px; }
+    .mobile-hide { display: none !important; } /* Hides DXB and NYC on small screens */
+    .resume-link { font-size: 12px; }
     .social-icon svg { width: 20px; height: 20px; }
 }
