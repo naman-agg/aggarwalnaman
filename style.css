@@ -282,9 +282,13 @@ body.light-mode .light-icon { color: #ffffff; }
 .marquee-content span:nth-child(even) { color: var(--accent); font-family: monospace; font-size: 30px; }
 @keyframes scroll-marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
+/* ========================================================== */
+/* ENHANCED WORLD CLOCK DASHBOARD                             */
+/* ========================================================== */
 .site-footer {
     position: fixed; bottom: var(--v-gap); left: 0; width: 100%; height: var(--ui-height);
-    display: grid; grid-template-columns: 1fr 1fr 1fr; align-items: center;
+    display: grid; grid-template-columns: 1.5fr 1fr 1fr; /* Shifted weight to the clock area */
+    align-items: center;
     padding: 0 var(--edge-pad); background: transparent; border: none; z-index: 100; pointer-events: none; 
 }
 .site-footer > * { pointer-events: auto; } 
@@ -293,19 +297,54 @@ body.light-mode .light-icon { color: #ffffff; }
 .footer-centre { display: flex; justify-content: center; gap: 32px; } 
 .footer-right { display: flex; justify-content: flex-end; }
 
-.world-clock { display: flex; gap: 24px; }
-.clock-item { display: flex; flex-direction: column; line-height: 1.1; min-width: 50px; }
-.clock-label { font-size: 9px; font-weight: 800; letter-spacing: 0.1em; color: var(--text-secondary); margin-bottom: 2px; }
-.clock-time { font-family: monospace; font-size: 14px; font-weight: 600; color: var(--accent); }
+.world-clock { 
+    display: flex; 
+    gap: 32px; /* Increased gap between cities */
+}
 
+.clock-item { 
+    display: flex; 
+    flex-direction: column; 
+    line-height: 1.1; 
+    min-width: 60px; 
+}
+
+.clock-label { 
+    font-size: 10px; /* Slightly clearer label */
+    font-weight: 800; 
+    letter-spacing: 0.12em; 
+    color: var(--text-secondary); 
+    margin-bottom: 4px; 
+}
+
+.clock-time { 
+    font-family: monospace; 
+    font-size: 18px; /* Increased from 14px for better visibility */
+    font-weight: 600; 
+    color: var(--accent); 
+    letter-spacing: -0.02em; /* Tighter tracking for a high-end digital look */
+}
+
+/* Social icons and links refined for the new footer weight */
 .social-icon { color: var(--text-secondary); transition: color 0.3s ease, transform 0.3s ease; display: flex; }
 .social-icon:hover { color: var(--accent-secondary); transform: translateY(-2px); }
 
-.resume-link { color: var(--text-primary); text-decoration: none; font-size: 14px; font-weight: 800; letter-spacing: 0.1em; transition: opacity 0.3s ease; border-bottom: 2px solid transparent;}
+.resume-link { 
+    color: var(--text-primary); 
+    text-decoration: none; 
+    font-size: 14px; 
+    font-weight: 800; 
+    letter-spacing: 0.1em; 
+    transition: opacity 0.3s ease; 
+    border-bottom: 2px solid transparent;
+}
 .resume-link:hover { border-bottom: 2px solid var(--accent); }
 
-.fade-up { opacity: 0; transform: translateY(40px); transition: opacity 0.8s ease, transform 0.8s ease; }
-.fade-up.in-view { opacity: 1; transform: translateY(0); }
+@media (max-width: 768px) {
+    .site-footer { grid-template-columns: 1fr 1fr; }
+    .clock-time { font-size: 15px; } /* Slightly smaller for mobile screens */
+    .world-clock { gap: 16px; }
+}
 
 @media (max-width: 768px) {
     :root { --edge-pad: 16px; --v-gap: 16px; } 
@@ -323,8 +362,6 @@ body.light-mode .light-icon { color: #ffffff; }
     .sticky-view { mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%); }
 
     .workshop-grid { grid-template-columns: 1fr; }
-    
-    .site-footer { grid-template-columns: 1fr 1fr; } 
     .footer-centre { display: none; }
     .mobile-hide { display: none !important; }
 }
