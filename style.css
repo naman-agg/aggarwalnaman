@@ -9,68 +9,81 @@
     --accent: #fa5b1c; 
     --accent-secondary: #ff106a; 
     
-    /* Dark Mode (Deep Anodised Space Grey) */
-    --bg-static: #050505; 
-    --bg-capsule: #111111; 
-    --bg-card: #1a1a1a; 
-    --powder-grey: #a3a3a3;
+    /* MATERIAL SCIENCE PALETTE: Anodised Aluminium */
+    --surface-slab: #1c1c1e;        /* The outer metal body */
+    --surface-recessed: #151517;    /* The darker interior of the milled pocket */
+    --bg-card: #222224;             /* Solid components inside */
     
+    /* Precision CNC Lighting */
+    --cut-shadow-dark: rgba(0, 0, 0, 0.9);   
+    --cut-shadow-mid: rgba(0, 0, 0, 0.5);    
+    --edge-highlight: rgba(255, 255, 255, 0.06); 
+    --border-color: rgba(255, 255, 255, 0.05);
+    
+    --powder-grey: #a3a3a3;
     --text-primary: #f5f5f5;
     --text-muted: rgba(255, 255, 255, 0.15); 
     --text-secondary: #888888;
     
-    --border-color: rgba(255, 255, 255, 0.06);
-    --border-highlight: rgba(255, 255, 255, 0.05); 
-    
-    --capsule-shadow: 0 30px 60px rgba(0, 0, 0, 0.8), 0 0 0 1px var(--border-color);
-    --component-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 1px 0 var(--border-highlight);
-    
-    --tactile-radius: 12px;
+    /* High-frequency SVG micro-grain for sandblasted texture */
+    --micro-grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='4' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.025'/%3E%3C/svg%3E");
 }
 
 .light-mode {
-    /* Light Mode (Clear Anodised Silver) */
-    --bg-static: #e8e8e8; 
-    --bg-capsule: #f5f5f5; 
-    --bg-card: #ffffff; 
+    --surface-slab: #e2e2e4;
+    --surface-recessed: #d1d1d6;
+    --bg-card: #f8f8f8;
     
+    --cut-shadow-dark: rgba(0, 0, 0, 0.15);
+    --cut-shadow-mid: rgba(0, 0, 0, 0.1);
+    --edge-highlight: rgba(255, 255, 255, 1);
+    --border-color: rgba(0, 0, 0, 0.08);
+
     --text-primary: #111111;
     --text-muted: rgba(17, 17, 17, 0.15);
     --text-secondary: #555555;
-    
-    --border-color: rgba(0, 0, 0, 0.06);
-    --border-highlight: #ffffff;
-    
-    --capsule-shadow: 0 20px 50px rgba(0, 0, 0, 0.08), 0 0 0 1px var(--border-color);
-    --component-shadow: 0 8px 24px rgba(0, 0, 0, 0.04), inset 0 1px 0 var(--border-highlight);
+    --powder-grey: #666666;
 }
 
 /* ========================================================== */
-/* TEXTURE ENGINE: MICRO-GRAIN ANODISED ALUMINIUM             */
+/* CNC MILLED TEXTURE ENGINE                                  */
 /* ========================================================== */
 .material-base {
-    background-color: var(--bg-static);
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='4' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.02'/%3E%3C/svg%3E");
+    background-color: var(--surface-slab);
+    background-image: var(--micro-grain);
 }
 
+/* THE RECESSED POCKET (Main Container & Toggle) */
 .material-surface {
-    background-color: var(--bg-capsule);
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='4' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.02'/%3E%3C/svg%3E");
+    background-color: var(--surface-recessed);
+    background-image: 
+        linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(255,255,255,0.02) 100%),
+        var(--micro-grain);
+    box-shadow: 
+        inset 0 6px 12px -2px var(--cut-shadow-dark),
+        inset 0 2px 4px -1px var(--cut-shadow-mid),
+        inset 0 -1px 1px 0 var(--edge-highlight),
+        0 1px 0 0 rgba(255, 255, 255, 0.03);
+    border: none;
+    border-top: 1px solid rgba(0, 0, 0, 0.8);
 }
+.light-mode .material-surface { border-top: 1px solid rgba(0,0,0,0.15); }
 
+/* SOLID MACHINED COMPONENTS (Cards sitting in the tray) */
 .material-component {
-    background-color: var(--bg-card);
+    background-color: var(--surface-slab);
     border: 1px solid var(--border-color);
-    border-radius: var(--tactile-radius);
-    box-shadow: var(--component-shadow);
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='4' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.02'/%3E%3C/svg%3E");
+    border-radius: 12px;
+    background-image: var(--micro-grain);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3), inset 0 1px 1px var(--edge-highlight);
     transition: transform var(--transition-smooth), border-color var(--transition-smooth), box-shadow var(--transition-smooth);
 }
 .material-component:hover {
     border-color: var(--accent);
     transform: translateY(-4px);
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), inset 0 1px 0 var(--border-highlight);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5), inset 0 1px 1px var(--edge-highlight);
 }
+/* ========================================================== */
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html { scrollbar-width: none; scroll-behavior: smooth; }
@@ -101,113 +114,53 @@ body { font-family: var(--font-main); color: var(--text-primary); height: calc(1
 .search-btn:hover { color: var(--accent); }
 
 /* ========================================================== */
-/* THE PURE MECHANICAL METAL TOGGLE                           */
+/* PURE MECHANICAL METAL TOGGLE (CNC MILLED TRAY)             */
 /* ========================================================== */
 .theme-toggle {
-    width: 64px; 
-    height: 32px; 
-    background: var(--bg-card); 
-    border: 1px solid var(--border-color); 
-    border-radius: 32px; 
-    position: relative; 
-    display: flex; 
-    align-items: center; 
-    justify-content: space-between; 
-    padding: 0 6px; 
-    cursor: pointer; 
-    /* Mechanical indentation track */
-    box-shadow: inset 0 2px 4px rgba(0,0,0,0.4); 
+    width: 64px; height: 32px; border-radius: 32px; 
+    position: relative; display: flex; align-items: center; justify-content: space-between; 
+    padding: 0 6px; cursor: pointer; 
+    /* Inherits CNC Recessed Tray Logic */
+    background-color: var(--surface-recessed);
+    background-image: var(--micro-grain);
+    box-shadow: inset 0 3px 6px -1px var(--cut-shadow-dark), inset 0 -1px 1px 0 var(--edge-highlight);
+    border: none; border-top: 1px solid rgba(0,0,0,0.8);
 }
+.light-mode .theme-toggle { border-top: 1px solid rgba(0,0,0,0.15); }
 
-/* The icons sitting quietly on the track */
-.theme-toggle .material-symbols-outlined { 
-    font-size: 16px; 
-    z-index: 2; 
-    color: var(--text-secondary); 
-    pointer-events: none; 
-    transition: color 0.3s ease;
-}
+.theme-toggle .material-symbols-outlined { font-size: 16px; z-index: 2; color: var(--text-secondary); pointer-events: none; transition: color 0.3s ease; }
 
-/* The Solid Metal Sliding Bead */
 .toggle-slider {
-    position: absolute; 
-    top: 2px; 
-    left: 2px; 
-    width: 26px; 
-    height: 26px; 
-    border-radius: 50%; 
-    z-index: 1; 
-    /* Pure horizontal slide transition */
-    transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), background-color 0.4s ease; 
-    
-    /* Dark Mode State: Matte Blue */
+    position: absolute; top: 2px; left: 2px; width: 26px; height: 26px; border-radius: 50%; z-index: 1; 
+    transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), background-color 0.3s ease; 
     background-color: #4a68f5; 
-    box-shadow: 0 2px 4px rgba(0,0,0,0.3), inset 0 1px 1px rgba(255,255,255,0.2);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.4), inset 0 1px 1px rgba(255,255,255,0.2);
 }
+.light-mode .toggle-slider { transform: translateX(33px); background-color: var(--accent); }
 
-.light-mode .toggle-slider { 
-    /* Slide to the right */
-    transform: translateX(32px); 
-    /* Light Mode State: Matte Orange */
-    background-color: var(--accent); /* #fa5b1c */
-}
-
-/* Make the active icon turn crisp white so it pops perfectly over the sliding bead */
 body:not(.light-mode) .dark-icon { color: #ffffff; }
 body.light-mode .light-icon { color: #ffffff; }
 /* ========================================================== */
 
-
-
 /* ========================================================== */
-/* VERTICAL STACK HERO & SLIDE ANIMATION                      */
+/* VERTICAL STACK HERO & FAST SLIDE ANIMATION                 */
 /* ========================================================== */
-.dynamic-hero { 
-    position: fixed; top: 0; left: 0; width: 100%; height: 100vh; 
-    display: flex; align-items: center; justify-content: center; z-index: 101; pointer-events: none; 
-}
+.dynamic-hero { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; display: flex; align-items: center; justify-content: center; z-index: 101; pointer-events: none; }
+.hero-wrapper { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; width: 100%; padding: 0 20px; }
 
-/* Strict vertical alignment */
-.hero-wrapper { 
-    display: flex; flex-direction: column; align-items: center; justify-content: center; 
-    gap: 16px; width: 100%; padding: 0 20px;
-}
-
-/* Increased font size for the greeting line */
 .hero-l1 { 
-    font-size: clamp(32px, 6vw, 64px); 
+    font-size: clamp(32px, 6vw, 64px); /* Increased prominence */
     font-weight: 700; line-height: 1; letter-spacing: 0.1em; 
-    color: var(--powder-grey); text-align: center;
-    transition: opacity 0.5s ease;
+    color: var(--powder-grey); text-align: center; transition: opacity 0.5s ease;
 }
 
-/* Mechanical Window for Sliding Text */
-.slide-mask {
-    display: inline-flex;
-    overflow: hidden; 
-    vertical-align: bottom;
-    height: 1.1em;
-    align-items: center;
-}
+.slide-mask { display: inline-flex; overflow: hidden; vertical-align: bottom; height: 1.1em; align-items: center; }
+#slide-text { display: inline-block; color: var(--accent); will-change: transform, opacity; }
 
-#slide-text {
-    display: inline-block;
-    color: var(--accent);
-    will-change: transform, opacity;
-}
-
-/* Faster, snappier vertical slide curves (0.25s) */
 .sliding-out { animation: slideOut 0.25s cubic-bezier(0.8, 0, 0.2, 1) forwards; }
 .sliding-in { animation: slideIn 0.25s cubic-bezier(0.8, 0, 0.2, 1) forwards; }
-
-@keyframes slideOut {
-    0% { transform: translateY(0); opacity: 1; }
-    100% { transform: translateY(-100%); opacity: 0; }
-}
-@keyframes slideIn {
-    0% { transform: translateY(100%); opacity: 0; }
-    100% { transform: translateY(0); opacity: 1; }
-}
+@keyframes slideOut { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(-100%); opacity: 0; } }
+@keyframes slideIn { 0% { transform: translateY(100%); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
 
 .hero-l2 { 
     font-size: clamp(50px, 11vw, 160px); 
@@ -215,25 +168,14 @@ body.light-mode .light-icon { color: #ffffff; }
     color: var(--text-primary); text-align: center; margin: 10px 0;
 }
 
-/* Perfectly centred flex line */
 .hero-l3 { 
     font-family: monospace; font-size: clamp(12px, 1.5vw, 18px); 
     font-weight: 700; letter-spacing: 0.2em; 
     color: var(--powder-grey); text-transform: uppercase;
-    display: flex; align-items: center; justify-content: center; gap: 16px;
-    flex-wrap: wrap; text-align: center;
+    display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap; text-align: center;
 }
-
-/* Static, solid machined orange dots (Pulse removed) */
-.status-dot {
-    color: var(--accent);
-}
+.status-dot { color: var(--accent); } /* Static, clean hardware dot */
 /* ========================================================== */
-
-
-
-
-.cypher-char { color: var(--accent); }
 
 .capsule-nav { position: fixed; top: 50%; transform: translateY(-50%); left: calc(var(--edge-pad) / 2); display: flex; flex-direction: column; gap: 20px; z-index: 105; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
 .capsule-nav.visible { opacity: 1; pointer-events: auto; }
@@ -248,7 +190,7 @@ body.light-mode .light-icon { color: #ffffff; }
 
 .capsule-container { 
     position: fixed; top: calc(var(--v-gap) * 2 + var(--ui-height)); left: var(--edge-pad); width: calc(100% - (var(--edge-pad) * 2)); height: calc(100vh - (var(--v-gap) * 4 + var(--ui-height) * 2)); z-index: 50; 
-    border-radius: 20px; box-shadow: var(--capsule-shadow);
+    border-radius: 16px; /* Precise tool bit radius */
     overflow-y: auto; scrollbar-width: none; transform: translateY(100vh); opacity: 0; pointer-events: none; scroll-behavior: smooth;
 }
 .capsule-container::-webkit-scrollbar { display: none; }
@@ -301,11 +243,11 @@ body.light-mode .light-icon { color: #ffffff; }
 .workshop-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; width: 100%; margin-top: 40px; }
 .workshop-card { position: relative; width: 100%; aspect-ratio: 4/5; overflow: hidden; }
 .card-layer { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding: 40px; }
-.card-label { position: absolute; bottom: 30px; left: 30px; font-size: 14px; font-weight: 700; letter-spacing: 0.1em; z-index: 10; background: var(--bg-static); padding: 12px 20px; border-radius: 8px; border: 1px solid var(--border-color); box-shadow: 0 4px 10px rgba(0,0,0,0.5); text-transform: uppercase; }
+.card-label { position: absolute; bottom: 30px; left: 30px; font-size: 14px; font-weight: 700; letter-spacing: 0.1em; z-index: 10; background: var(--surface-slab); padding: 12px 20px; border-radius: 8px; border: 1px solid var(--border-color); box-shadow: 0 4px 10px rgba(0,0,0,0.5); text-transform: uppercase; }
 .text-layer { font-family: monospace; font-size: 14px; color: var(--powder-grey); line-height: 1.8; justify-content: flex-start; align-items: flex-start; z-index: 2; }
 .text-layer .blink-cursor { color: var(--accent); }
 .blueprint-layer { z-index: 1; opacity: 0.5; }
-.placeholder-img { width: 100%; height: 100%; background: var(--bg-static); display: flex; align-items: center; justify-content: center; text-align: center; font-family: monospace; font-size: 12px; color: var(--text-secondary); border: 1px solid var(--border-color); border-radius: 8px; }
+.placeholder-img { width: 100%; height: 100%; background: var(--surface-slab); display: flex; align-items: center; justify-content: center; text-align: center; font-family: monospace; font-size: 12px; color: var(--text-secondary); border: 1px solid var(--border-color); border-radius: 8px; }
 
 .marquee-container { width: 100%; position: relative; overflow: hidden; padding: 40px 0; }
 .marquee-content { display: flex; white-space: nowrap; animation: scroll-marquee 30s linear infinite; gap: 40px; align-items: center; font-size: 24px; font-weight: 700; color: var(--text-primary); text-transform: uppercase; }
@@ -339,9 +281,9 @@ body.light-mode .light-icon { color: #ffffff; }
 
 @media (max-width: 768px) {
     :root { --edge-pad: 16px; --v-gap: 16px; } 
-    .hero-l1 { font-size: clamp(80px, 15vw, 150px); top: 38%; } 
-    .hero-l2 { font-size: clamp(40px, 8vw, 80px); }
-    .hero-l3 { font-size: 12px; margin-top: 12px; }
+    .hero-l1 { font-size: clamp(28px, 6vw, 40px); } 
+    .hero-l2 { font-size: clamp(40px, 11vw, 80px); }
+    .hero-l3 { font-size: 10px; }
     
     .capsule-nav { display: none; } 
     .standard-section { padding: 80px 24px; } 

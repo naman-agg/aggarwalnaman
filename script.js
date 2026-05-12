@@ -105,25 +105,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // ==========================================
-    // VERTICAL SLIDE CLOCK LOGIC (Updated Speeds & Array)
+    // FAST VERTICAL SLIDE LOGIC
     // ==========================================
     const slideTextEl = document.getElementById('slide-text');
     const greetings = ['HELLO', 'नमस्ते', 'CIAO', 'こんにちは', 'HALLO', '안녕하세요'];
     let greetIndex = 0;
 
     setInterval(() => {
-        // Trigger the upward slide out
+        // Trigger fast slide out
         slideTextEl.classList.add('sliding-out');
         
-        // Timeout reduced to 250ms to match the new snappier CSS animation
+        // Wait 250ms for CSS animation to finish
         setTimeout(() => {
             greetIndex = (greetIndex + 1) % greetings.length;
             slideTextEl.textContent = greetings[greetIndex];
             
-            // Remove slide out, trigger slide in from the bottom
+            // Remove out class, trigger in class
             slideTextEl.classList.remove('sliding-out');
             slideTextEl.classList.add('sliding-in');
             
+            // Cleanup classes
             setTimeout(() => {
                 slideTextEl.classList.remove('sliding-in');
             }, 250); 
@@ -131,6 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 250); 
     }, 3500); 
     // ==========================================
+
 
     const dynamicHero = document.getElementById('dynamic-hero');
     const heroL1 = document.getElementById('hero-l1'); 
