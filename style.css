@@ -282,63 +282,8 @@ body.light-mode .light-icon { color: #ffffff; }
 .marquee-content span:nth-child(even) { color: var(--accent); font-family: monospace; font-size: 30px; }
 @keyframes scroll-marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
-/* ========================================================== */
-/* ENHANCED WORLD CLOCK DASHBOARD                             */
-/* ========================================================== */
-.site-footer {
-    position: fixed; bottom: var(--v-gap); left: 0; width: 100%; height: var(--ui-height);
-    display: grid; grid-template-columns: 1.5fr 1fr 1fr; /* Shifted weight to the clock area */
-    align-items: center;
-    padding: 0 var(--edge-pad); background: transparent; border: none; z-index: 100; pointer-events: none; 
-}
-.site-footer > * { pointer-events: auto; } 
 
-.footer-left { display: flex; justify-content: flex-start; }
-.footer-centre { display: flex; justify-content: center; gap: 32px; } 
-.footer-right { display: flex; justify-content: flex-end; }
 
-.world-clock { 
-    display: flex; 
-    gap: 32px; /* Increased gap between cities */
-}
-
-.clock-item { 
-    display: flex; 
-    flex-direction: column; 
-    line-height: 1.1; 
-    min-width: 60px; 
-}
-
-.clock-label { 
-    font-size: 10px; /* Slightly clearer label */
-    font-weight: 800; 
-    letter-spacing: 0.12em; 
-    color: var(--text-secondary); 
-    margin-bottom: 4px; 
-}
-
-.clock-time { 
-    font-family: monospace; 
-    font-size: 18px; /* Increased from 14px for better visibility */
-    font-weight: 600; 
-    color: var(--accent); 
-    letter-spacing: -0.02em; /* Tighter tracking for a high-end digital look */
-}
-
-/* Social icons and links refined for the new footer weight */
-.social-icon { color: var(--text-secondary); transition: color 0.3s ease, transform 0.3s ease; display: flex; }
-.social-icon:hover { color: var(--accent-secondary); transform: translateY(-2px); }
-
-.resume-link { 
-    color: var(--text-primary); 
-    text-decoration: none; 
-    font-size: 14px; 
-    font-weight: 800; 
-    letter-spacing: 0.1em; 
-    transition: opacity 0.3s ease; 
-    border-bottom: 2px solid transparent;
-}
-.resume-link:hover { border-bottom: 2px solid var(--accent); }
 
 /* Technical Specs Overlay */
 .capsule-specs-left, .capsule-specs-right {
@@ -376,10 +321,109 @@ body.light-mode .light-icon { color: #ffffff; }
     opacity: 1;
 }
 
+
+
+
+/* ========================================================== */
+/* ABSOLUTE CENTRE FOOTER ALIGNMENT                           */
+/* ========================================================== */
+.site-footer {
+    position: fixed; 
+    bottom: var(--v-gap); 
+    left: 0; 
+    width: 100%; 
+    height: var(--ui-height);
+    display: flex; /* Switched from grid to flex for better centering */
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 var(--edge-pad); 
+    background: transparent; 
+    z-index: 100; 
+    pointer-events: none; 
+}
+
+.site-footer > * { pointer-events: auto; } 
+
+/* Fixed width containers for the sides to prevent the centre from drifting */
+.footer-left, .footer-right { 
+    flex: 1; 
+    display: flex; 
+    align-items: center;
+}
+
+.footer-left { justify-content: flex-start; }
+.footer-right { justify-content: flex-end; }
+
+/* The Centre block is now mathematically locked to the screen's midline */
+.footer-centre { 
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex; 
+    justify-content: center; 
+    gap: 32px; 
+}
+
+.world-clock { 
+    display: flex; 
+    gap: 32px; 
+}
+
+.clock-item { 
+    display: flex; 
+    flex-direction: column; 
+    line-height: 1.1; 
+}
+
+.clock-label { 
+    font-size: 10px; 
+    font-weight: 800; 
+    letter-spacing: 0.12em; 
+    color: var(--text-secondary); 
+    margin-bottom: 4px; 
+}
+
+.clock-time { 
+    font-family: monospace; 
+    font-size: 18px; 
+    font-weight: 600; 
+    color: var(--accent); 
+    letter-spacing: -0.02em; 
+}
+
+.social-icon { 
+    color: var(--text-secondary); 
+    transition: color 0.3s ease, transform 0.3s ease; 
+    display: flex; 
+}
+.social-icon:hover { color: var(--accent-secondary); transform: translateY(-2px); }
+
+.resume-link { 
+    color: var(--text-primary); 
+    text-decoration: none; 
+    font-size: 14px; 
+    font-weight: 800; 
+    letter-spacing: 0.1em; 
+    transition: opacity 0.3s ease; 
+    border-bottom: 2px solid transparent;
+}
+.resume-link:hover { border-bottom: 2px solid var(--accent); }
+
+@media (max-width: 1024px) {
+    /* Hide specific clocks on tablets/small laptops to protect the centre icons */
+    .mobile-hide { display: none !important; }
+}
+
 @media (max-width: 768px) {
-    .site-footer { grid-template-columns: 1fr 1fr; }
-    .clock-time { font-size: 15px; } /* Slightly smaller for mobile screens */
-    .world-clock { gap: 16px; }
+    .site-footer { padding: 0 16px; }
+    .footer-centre { 
+        position: static; 
+        transform: none; 
+        gap: 16px;
+    }
+    .footer-right { display: none; } /* Hide resume on mobile footer to keep it clean */
+    .world-clock { gap: 12px; }
+    .clock-time { font-size: 14px; }
 }
 
 @media (max-width: 768px) {
@@ -398,6 +442,5 @@ body.light-mode .light-icon { color: #ffffff; }
     .sticky-view { mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%); }
 
     .workshop-grid { grid-template-columns: 1fr; }
-    .footer-centre { display: none; }
     .mobile-hide { display: none !important; }
 }
