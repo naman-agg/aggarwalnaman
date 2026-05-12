@@ -340,6 +340,42 @@ body.light-mode .light-icon { color: #ffffff; }
 }
 .resume-link:hover { border-bottom: 2px solid var(--accent); }
 
+/* Technical Specs Overlay */
+.capsule-specs-left, .capsule-specs-right {
+    position: sticky;
+    top: 20px;
+    font-family: monospace;
+    font-size: 9px;
+    font-weight: 800;
+    color: var(--accent);
+    opacity: 0.4;
+    letter-spacing: 0.1em;
+    z-index: 100;
+    pointer-events: none;
+}
+.capsule-specs-left { float: left; margin-left: 20px; }
+.capsule-specs-right { float: right; margin-right: 20px; }
+
+/* Refined Card Interaction (The Flashlight Effect) */
+.material-component {
+    position: relative;
+    overflow: hidden;
+}
+
+.material-component::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(255,255,255,0.06) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.material-component:hover::after {
+    opacity: 1;
+}
+
 @media (max-width: 768px) {
     .site-footer { grid-template-columns: 1fr 1fr; }
     .clock-time { font-size: 15px; } /* Slightly smaller for mobile screens */
