@@ -105,16 +105,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // ==========================================
-    // VERTICAL SLIDE CLOCK LOGIC
+    // VERTICAL SLIDE CLOCK LOGIC (Updated Speeds & Array)
     // ==========================================
     const slideTextEl = document.getElementById('slide-text');
-    const greetings = ['HELLO', 'HALLO', 'BONJOUR', 'HOLA', 'CIAO'];
+    const greetings = ['HELLO', 'नमस्ते', 'CIAO', 'こんにちは', 'HALLO', '안녕하세요'];
     let greetIndex = 0;
 
     setInterval(() => {
         // Trigger the upward slide out
         slideTextEl.classList.add('sliding-out');
         
+        // Timeout reduced to 250ms to match the new snappier CSS animation
         setTimeout(() => {
             greetIndex = (greetIndex + 1) % greetings.length;
             slideTextEl.textContent = greetings[greetIndex];
@@ -125,9 +126,9 @@ document.addEventListener('DOMContentLoaded', () => {
             
             setTimeout(() => {
                 slideTextEl.classList.remove('sliding-in');
-            }, 400); 
+            }, 250); 
             
-        }, 400); 
+        }, 250); 
     }, 3500); 
     // ==========================================
 
@@ -160,7 +161,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const endScale = isMobile ? 0.35 : 0.25; 
         const currentScale = 1 - ((1 - endScale) * progress);
         
-        // Dynamic Parallax: Pulls the top text up and the bottom text down like opening a vault
         heroL1.style.opacity = Math.max(0, 1 - (progress * 2));
         heroL1.style.transform = `translateY(-${progress * 60}px)`;
 

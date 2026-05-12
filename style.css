@@ -173,8 +173,9 @@ body.light-mode .light-icon { color: #ffffff; }
     gap: 16px; width: 100%; padding: 0 20px;
 }
 
+/* Increased font size for the greeting line */
 .hero-l1 { 
-    font-size: clamp(24px, 4vw, 40px); 
+    font-size: clamp(32px, 6vw, 64px); 
     font-weight: 700; line-height: 1; letter-spacing: 0.1em; 
     color: var(--powder-grey); text-align: center;
     transition: opacity 0.5s ease;
@@ -183,7 +184,7 @@ body.light-mode .light-icon { color: #ffffff; }
 /* Mechanical Window for Sliding Text */
 .slide-mask {
     display: inline-flex;
-    overflow: hidden; /* Hides the text when it slides outside the bounding box */
+    overflow: hidden; 
     vertical-align: bottom;
     height: 1.1em;
     align-items: center;
@@ -195,9 +196,9 @@ body.light-mode .light-icon { color: #ffffff; }
     will-change: transform, opacity;
 }
 
-/* Smooth vertical slide curves */
-.sliding-out { animation: slideOut 0.4s cubic-bezier(0.8, 0, 0.2, 1) forwards; }
-.sliding-in { animation: slideIn 0.4s cubic-bezier(0.8, 0, 0.2, 1) forwards; }
+/* Faster, snappier vertical slide curves (0.25s) */
+.sliding-out { animation: slideOut 0.25s cubic-bezier(0.8, 0, 0.2, 1) forwards; }
+.sliding-in { animation: slideIn 0.25s cubic-bezier(0.8, 0, 0.2, 1) forwards; }
 
 @keyframes slideOut {
     0% { transform: translateY(0); opacity: 1; }
@@ -223,17 +224,14 @@ body.light-mode .light-icon { color: #ffffff; }
     flex-wrap: wrap; text-align: center;
 }
 
-/* Dynamic LED Status Indicators */
+/* Static, solid machined orange dots (Pulse removed) */
 .status-dot {
     color: var(--accent);
-    animation: pulseDot 2s infinite ease-in-out;
-}
-
-@keyframes pulseDot {
-    0%, 100% { opacity: 0.4; transform: scale(0.8); }
-    50% { opacity: 1; transform: scale(1.2); text-shadow: 0 0 8px var(--accent); }
 }
 /* ========================================================== */
+
+
+
 
 .cypher-char { color: var(--accent); }
 
