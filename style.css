@@ -21,19 +21,16 @@
     --text-secondary: #a0a0a0;
     
     --border-color: rgba(255, 255, 255, 0.08);
-    --border-highlight: rgba(255, 255, 255, 0.12); /* Machined top edge highlight */
+    --border-highlight: rgba(255, 255, 255, 0.12);
     
-    /* Physical object shadow, not a digital blur */
     --capsule-shadow: 0 30px 60px rgba(0, 0, 0, 0.8), 0 0 0 1px var(--border-color);
     --component-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 1px 0 var(--border-highlight);
     
-    /* Dieter Rams Tactile Radius */
     --tactile-radius: 12px;
 }
 
 .light-mode {
-    /* Light Mode (Cork / Anodized Aluminum) */
-    --bg-static: #e6dfd3; /* Warm cork/paper off-white */
+    --bg-static: #e6dfd3; 
     --bg-capsule: #f5f5f3; 
     --bg-card: #ffffff; 
     
@@ -48,18 +45,13 @@
     --component-shadow: 0 10px 20px rgba(0, 0, 0, 0.04), inset 0 1px 0 var(--border-highlight);
 }
 
-/* ========================================================== */
-/* TEXTURE ENGINE: POWDER COATING & SUEDE                     */
-/* ========================================================== */
 .material-base {
     background-color: var(--bg-static);
-    /* Subtle SVG Noise for fine grain powder coating */
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
 }
 
 .material-surface {
     background-color: var(--bg-capsule);
-    /* Suede effect: Mixes noise with a very soft ambient radial gradient lighting */
     background-image: 
         radial-gradient(circle at 50% 0%, rgba(255,255,255,0.03), transparent 70%),
         url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
@@ -70,7 +62,6 @@
     border: 1px solid var(--border-color);
     border-radius: var(--tactile-radius);
     box-shadow: var(--component-shadow);
-    /* Solid object with fine grain */
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
     transition: transform var(--transition-smooth), border-color var(--transition-smooth), box-shadow var(--transition-smooth);
 }
@@ -79,12 +70,10 @@
     transform: translateY(-4px);
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), inset 0 1px 0 var(--border-highlight);
 }
-/* ========================================================== */
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html { scrollbar-width: none; scroll-behavior: smooth; }
 ::-webkit-scrollbar { display: none; }
-
 body { font-family: var(--font-main); color: var(--text-primary); height: calc(100vh + 500px); overflow-x: hidden; cursor: auto; }
 
 .architectural-grid {
@@ -110,22 +99,42 @@ body { font-family: var(--font-main); color: var(--text-primary); height: calc(1
 .search-btn { background: none; border: none; color: var(--text-primary); transition: color 0.3s ease; cursor: pointer; }
 .search-btn:hover { color: var(--accent); }
 
-/* Switch Toggle - Squirkle/Tactile feel */
+/* ========================================================== */
+/* THE NEW METALLIC PILL TOGGLE                               */
+/* ========================================================== */
 .theme-toggle {
-    width: 60px; height: 32px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--tactile-radius); position: relative; display: flex; align-items: center; justify-content: space-between; padding: 0 6px; cursor: pointer; box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+    width: 64px; height: 32px; /* Original size preserved */
+    background: var(--bg-card); 
+    border: 1px solid var(--border-color); 
+    border-radius: 32px; /* Pill shape */
+    position: relative; display: flex; align-items: center; justify-content: space-between; 
+    padding: 0 6px; cursor: pointer; 
+    /* Physical indentation shadow */
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.6), inset 0 -1px 2px rgba(255,255,255,0.05); 
 }
 .theme-toggle .material-symbols-outlined { font-size: 16px; z-index: 2; color: var(--text-secondary); pointer-events: none; }
+
 .toggle-slider {
-    position: absolute; top: 3px; left: 3px; width: 24px; height: 24px; border-radius: 8px; background: var(--accent); z-index: 1; transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1); box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+    position: absolute; top: 2px; left: 2px; 
+    width: 26px; height: 26px; 
+    border-radius: 50%; /* Perfect circle for the slider */
+    /* Metallic powder-coated gradient */
+    background: radial-gradient(circle at 30% 30%, #ffa580, var(--accent) 60%, #bd3f0e); 
+    z-index: 1; transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1); 
+    /* 3D button highlights and shadows */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.5), inset 0 2px 3px rgba(255,255,255,0.4), inset 0 -2px 3px rgba(0,0,0,0.3);
 }
-.light-mode .toggle-slider { transform: translateX(28px); background: #333333; }
+.light-mode .toggle-slider { 
+    transform: translateX(32px); 
+    background: radial-gradient(circle at 30% 30%, #666, #222 60%, #000); 
+}
 body:not(.light-mode) .dark-icon { color: var(--text-primary); }
 body.light-mode .light-icon { color: var(--bg-static); }
+/* ========================================================== */
 
 .dynamic-hero { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; z-index: 101; pointer-events: none; }
 .hero-wrapper { position: relative; display: inline-flex; flex-direction: column; align-items: center; justify-content: center; }
 
-/* Ghost text - Minimal blur, cleaner typography */
 .hero-l1 { 
     position: absolute; bottom: 50%; left: 50%; transform: translateX(-50%); width: 100vw; 
     font-size: clamp(100px, 16vw, 260px); font-weight: 900; line-height: 1; letter-spacing: -0.05em; white-space: nowrap;
@@ -142,7 +151,6 @@ body.light-mode .light-icon { color: var(--bg-static); }
 }
 .cypher-char { color: var(--accent); }
 
-/* Floating Nav - Pill shaped to match Rams */
 .capsule-nav { position: fixed; top: 50%; transform: translateY(-50%); left: calc(var(--edge-pad) / 2); display: flex; flex-direction: column; gap: 20px; z-index: 105; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
 .capsule-nav.visible { opacity: 1; pointer-events: auto; }
 .nav-dot { width: 8px; height: 16px; border-radius: 4px; background: var(--text-muted); cursor: pointer; position: relative; transition: all 0.3s ease; box-shadow: inset 0 1px 2px rgba(0,0,0,0.5); }
@@ -154,7 +162,6 @@ body.light-mode .light-icon { color: var(--bg-static); }
 .nav-dot.active { background: var(--accent); transform: scaleY(1.5); box-shadow: 0 0 10px rgba(250, 91, 28, 0.4); }
 .nav-dot.active .nav-label { opacity: 1; transform: translateY(-50%) translateX(5px); color: var(--text-primary); }
 
-/* Main Container - Physical block */
 .capsule-container { 
     position: fixed; top: calc(var(--v-gap) * 2 + var(--ui-height)); left: var(--edge-pad); width: calc(100% - (var(--edge-pad) * 2)); height: calc(100vh - (var(--v-gap) * 4 + var(--ui-height) * 2)); z-index: 50; 
     border-radius: 20px; box-shadow: var(--capsule-shadow);
@@ -165,14 +172,10 @@ body.light-mode .light-icon { color: var(--bg-static); }
 .footer-spacer { height: 120px; clear: both; } 
 .text-center { text-align: center; }
 
-/* Typography tags */
 .spec-tag { font-family: monospace; font-size: 12px; font-weight: 700; letter-spacing: 0.2em; color: var(--accent); display: block; margin-bottom: 20px; text-transform: uppercase; }
 .standard-section { padding: 120px 80px; max-width: 1200px; margin: 0 auto; clear: both; }
 .section-heading { font-size: clamp(32px, 5vw, 48px); font-weight: 900; letter-spacing: -0.02em; margin-bottom: 60px; color: var(--text-primary); }
 
-/* ========================================================== */
-/* METHODOLOGY / DIETER RAMS SECTION                          */
-/* ========================================================== */
 .philosophy-section { padding-top: 150px; }
 .philosophy-header { max-width: 800px; margin-bottom: 80px; }
 .philosophy-intro { font-size: 20px; line-height: 1.6; color: var(--powder-grey); }
@@ -183,17 +186,12 @@ body.light-mode .light-icon { color: var(--bg-static); }
 .principle-card h4 { font-size: 20px; font-weight: 700; margin-bottom: 12px; color: var(--text-primary); }
 .principle-card p { font-size: 14px; line-height: 1.6; color: var(--text-secondary); }
 
-/* Accent card for Principle 10 */
 .accent-card { background-color: var(--accent); border-color: var(--accent); color: #000; box-shadow: 0 10px 30px rgba(250, 91, 28, 0.2); background-image: none; }
 .accent-card .p-num { color: #000; border-color: rgba(0,0,0,0.2); }
 .accent-card h4 { color: #000; }
 .accent-card p { color: rgba(0,0,0,0.8); }
 .accent-card:hover { border-color: var(--accent); transform: translateY(-4px); box-shadow: 0 15px 35px rgba(250, 91, 28, 0.4); }
 
-
-/* ========================================================== */
-/* HORIZONTAL SCROLL JOURNEY SECTION                          */
-/* ========================================================== */
 .journey-section { padding-top: 20px; padding-bottom: 40px; max-width: 100%; }
 .horizontal-scroll-wrapper { height: 400vh; position: relative; width: 100%; }
 .sticky-view {
@@ -216,10 +214,6 @@ body.light-mode .light-icon { color: var(--bg-static); }
 .journey-subtitle { font-size: 20px; font-weight: 500; color: var(--accent-secondary); margin-bottom: 30px; }
 .journey-detail { font-size: 16px; line-height: 1.6; color: var(--powder-grey); }
 
-
-/* ========================================================== */
-/* THE WORKSHOP                                               */
-/* ========================================================== */
 .workshop-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; width: 100%; margin-top: 40px; }
 .workshop-card { position: relative; width: 100%; aspect-ratio: 4/5; overflow: hidden; }
 .card-layer { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding: 40px; }
@@ -229,14 +223,11 @@ body.light-mode .light-icon { color: var(--bg-static); }
 .blueprint-layer { z-index: 1; opacity: 0.5; }
 .placeholder-img { width: 100%; height: 100%; background: var(--bg-static); display: flex; align-items: center; justify-content: center; text-align: center; font-family: monospace; font-size: 12px; color: var(--text-secondary); border: 1px solid var(--border-color); border-radius: 8px; }
 
-/* Education & Marquee */
 .marquee-container { width: 100%; position: relative; overflow: hidden; padding: 40px 0; }
 .marquee-content { display: flex; white-space: nowrap; animation: scroll-marquee 30s linear infinite; gap: 40px; align-items: center; font-size: 24px; font-weight: 700; color: var(--text-primary); text-transform: uppercase; }
 .marquee-content span:nth-child(even) { color: var(--accent); font-family: monospace; font-size: 30px; }
 @keyframes scroll-marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
-
-/* Footer */
 .site-footer {
     position: fixed; bottom: var(--v-gap); left: 0; width: 100%; height: var(--ui-height);
     display: grid; grid-template-columns: 1fr 1fr 1fr; align-items: center;
@@ -262,7 +253,6 @@ body.light-mode .light-icon { color: var(--bg-static); }
 .fade-up { opacity: 0; transform: translateY(40px); transition: opacity 0.8s ease, transform 0.8s ease; }
 .fade-up.in-view { opacity: 1; transform: translateY(0); }
 
-/* MOBILE RESPONSIVENESS */
 @media (max-width: 768px) {
     :root { --edge-pad: 16px; --v-gap: 16px; } 
     .hero-l1 { font-size: clamp(80px, 15vw, 150px); top: 38%; } 
