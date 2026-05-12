@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    // --- 1. Inverted Trailing Cursor & Architectural Spotlight ---
     const cursorTrail = document.getElementById('cursor-trail');
     const archGrid = document.getElementById('arch-grid');
     
@@ -26,7 +25,6 @@ document.addEventListener('DOMContentLoaded', () => {
         el.addEventListener('mouseleave', () => { cursorTrail.classList.remove('hovering'); });
     });
 
-    // --- 2. Theme Toggle ---
     const themeToggle = document.getElementById('themeToggle');
     const body = document.body;
     themeToggle.addEventListener('click', () => {
@@ -34,7 +32,6 @@ document.addEventListener('DOMContentLoaded', () => {
         body.classList.toggle('light-mode');
     });
 
-    // --- 3. Global Terminal Clock ---
     const zones = [
         { id: 'time-lon', tz: 'Europe/London' },
         { id: 'time-del', tz: 'Asia/Kolkata' },
@@ -54,22 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     setInterval(updateClocks, 1000); updateClocks();
 
-    // --- 4. Word-by-Word Reveal Setup ---
-    const manifestoTextEl = document.getElementById('manifesto-text');
-    const words = manifestoTextEl.innerText.trim().split(/\s+/);
-    manifestoTextEl.innerHTML = ''; 
-    
-    words.forEach(word => {
-        const span = document.createElement('span');
-        span.innerText = word;
-        manifestoTextEl.appendChild(span);
-        manifestoTextEl.appendChild(document.createTextNode(' '));
-    });
-    const wordSpans = manifestoTextEl.querySelectorAll('span');
-
-    // --- 5. Capsule Internal Scroll Engine (Scrubbing, Nav, & Sticky Horizontal Track) ---
     const capsule = document.getElementById('capsule-container');
-    const manifestoTrigger = document.getElementById('manifesto-trigger');
     const navDots = document.querySelectorAll('.capsule-nav .nav-dot');
     const spySections = document.querySelectorAll('.scroll-spy-section');
     
@@ -81,35 +63,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const scrollY = capsule.scrollTop;
         const capsuleHeight = capsule.clientHeight;
 
-        // A. Paragraph Scrubbing
-        const manifestoTop = manifestoTrigger.offsetTop; 
-        const manifestoHeight = manifestoTrigger.offsetHeight;
-        const startScrub = manifestoTop;
-        const endScrub = manifestoTop + manifestoHeight - capsuleHeight;
-
-        if (scrollY >= startScrub && scrollY <= endScrub) {
-            let progress = (scrollY - startScrub) / (endScrub - startScrub);
-            let activeWordIndex = progress <= 0.01 ? -1 : Math.floor(progress * wordSpans.length);
-
-            wordSpans.forEach((span, index) => {
-                if (index <= activeWordIndex) span.classList.add('active-word');
-                else span.classList.remove('active-word');
-            });
-        } else if (scrollY < startScrub) {
-            wordSpans.forEach(span => span.classList.remove('active-word'));
-        }
-
-        // B. Sticky Horizontal Journey Track (Hardware-accelerated sliding)
         if (hWrapper && stickyView && cardsTrack) {
-            // The scroll distance required before the section pins to the screen
             const startHScroll = hWrapper.offsetTop - (capsuleHeight * 0.1); 
-            // Total vertical scroll distance available to drive the animation
             const maxScroll = hWrapper.offsetHeight - stickyView.offsetHeight;
             const endHScroll = startHScroll + maxScroll;
 
             if (scrollY >= startHScroll && scrollY <= endHScroll) {
                 const progress = (scrollY - startHScroll) / maxScroll;
-                // Calculate the exact distance to slide left so the last card aligns flawlessly in the center
                 const maxTranslate = cardsTrack.scrollWidth - stickyView.clientWidth; 
                 cardsTrack.style.transform = `translate3d(-${progress * maxTranslate}px, 0, 0)`;
             } else if (scrollY < startHScroll) {
@@ -120,7 +80,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // C. Scroll-Spy Nav Updates
         spySections.forEach((sec, index) => {
             const secTop = sec.offsetTop - 100;
             const secBottom = secTop + sec.offsetHeight;
@@ -145,7 +104,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
 
 
-    // --- 6. Matrix Role Scramble Engine ---
     const scrambleEl = document.getElementById('hero-l3');
     const phrases = ["A PRODUCT MANAGER", "A DESIGNER", "AN INVENTOR"];
     const chars = "><[]{}*&^%$#@!ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"; 
@@ -211,7 +169,6 @@ document.addEventListener('DOMContentLoaded', () => {
     runScrambleLoop();
 
 
-    // --- 7. Outer Window Scroll Engine (State Change) ---
     const dynamicHero = document.getElementById('dynamic-hero');
     const heroL1 = document.getElementById('hero-l1'); 
     const heroL2 = document.getElementById('hero-l2'); 
@@ -243,7 +200,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const endScale = isMobile ? 0.35 : 0.25; 
         const currentScale = 1 - ((1 - endScale) * progress);
         
-        // CSS manages layout centre. JS strictly manages vertical fade offset
         heroL1.style.opacity = Math.max(0, 1 - (progress * 2));
         heroL1.style.transform = `translateX(-50%) translateY(-${progress * 40}px)`;
 

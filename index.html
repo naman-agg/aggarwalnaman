@@ -12,7 +12,7 @@
     <script src="script.js" defer></script>
 </head>
 
-<body class="dark-mode">
+<body class="dark-mode material-base">
     <div class="static-background"></div>
 
     <div class="architectural-grid" id="arch-grid"></div>
@@ -38,8 +38,8 @@
     </div>
 
     <nav class="capsule-nav" id="capsule-nav">
-        <div class="nav-dot active interactive-element" data-target="manifesto-trigger">
-            <span class="nav-label">About Me</span>
+        <div class="nav-dot active interactive-element" data-target="philosophy-section">
+            <span class="nav-label">Methodology</span>
         </div>
         <div class="nav-dot interactive-element" data-target="journey-section">
             <span class="nav-label">Journey</span>
@@ -52,13 +52,66 @@
         </div>
     </nav>
 
-    <main class="capsule-container" id="capsule-container">
+    <main class="capsule-container material-surface" id="capsule-container">
         
-        <section class="manifesto-section scroll-spy-section" id="manifesto-trigger">
-            <div class="sticky-content flex-center">
-                <p class="manifesto-text" id="manifesto-text">
-                    With a foundation in Mechanical Engineering and an MBA, I bridge the gap between tangible hardware and scalable digital ecosystems. From architecting supply chain programmes to inventing physical interfaces, I engineer products that demand attention.
-                </p>
+        <section class="standard-section philosophy-section scroll-spy-section" id="philosophy-section">
+            <div class="philosophy-header fade-up">
+                <span class="spec-tag">METHODOLOGY // 01</span>
+                <h2 class="section-heading">Less, but better.</h2>
+                <p class="philosophy-intro">My approach to product management and engineering is grounded in the belief that design elevates the essential functions of a product. I adhere to the ten principles of good design.</p>
+            </div>
+
+            <div class="principles-grid fade-up">
+                <div class="principle-card material-component">
+                    <span class="p-num">01</span>
+                    <h4>Is innovative</h4>
+                    <p>Imaginative design develops in tandem with improving technology, and can never be an end in itself.</p>
+                </div>
+                <div class="principle-card material-component">
+                    <span class="p-num">02</span>
+                    <h4>Makes a product useful</h4>
+                    <p>Good design emphasizes usefulness whilst disregarding anything that could detract from it.</p>
+                </div>
+                <div class="principle-card material-component">
+                    <span class="p-num">03</span>
+                    <h4>Is aesthetic</h4>
+                    <p>The aesthetic quality is integral to usefulness. Only well-executed objects can be beautiful.</p>
+                </div>
+                <div class="principle-card material-component">
+                    <span class="p-num">04</span>
+                    <h4>Makes a product understandable</h4>
+                    <p>It clarifies structure and makes the product clearly express its function using user intuition.</p>
+                </div>
+                <div class="principle-card material-component">
+                    <span class="p-num">05</span>
+                    <h4>Is unobtrusive</h4>
+                    <p>Products are like tools. Their design should be neutral and restrained to leave room for the user.</p>
+                </div>
+                <div class="principle-card material-component">
+                    <span class="p-num">06</span>
+                    <h4>Is honest</h4>
+                    <p>It does not attempt to manipulate the consumer with promises that cannot be kept.</p>
+                </div>
+                <div class="principle-card material-component">
+                    <span class="p-num">07</span>
+                    <h4>Is long-lasting</h4>
+                    <p>It avoids being fashionable and therefore never appears antiquated, lasting many years.</p>
+                </div>
+                <div class="principle-card material-component">
+                    <span class="p-num">08</span>
+                    <h4>Is thorough down to the last detail</h4>
+                    <p>Nothing must be arbitrary. Care and accuracy in the design process show respect to the consumer.</p>
+                </div>
+                <div class="principle-card material-component">
+                    <span class="p-num">09</span>
+                    <h4>Is environmentally friendly</h4>
+                    <p>It conserves resources and minimizes physical and visual pollution throughout the lifecycle.</p>
+                </div>
+                <div class="principle-card material-component accent-card">
+                    <span class="p-num">10</span>
+                    <h4>Is as little design as possible</h4>
+                    <p>Simple as possible but not simpler. Concentrating on the essential aspects.</p>
+                </div>
             </div>
         </section>
 
@@ -70,7 +123,7 @@
 
                     <div class="cards-track" id="cards-track">
                         
-                        <div class="journey-card">
+                        <div class="journey-card material-component">
                             <div class="card-logo-placeholder">GGSIPU</div>
                             <span class="journey-year">2015 — 2019</span>
                             <h3 class="journey-title">Bachelors in Mechanical and Automation Engineering</h3>
@@ -78,7 +131,7 @@
                             <p class="journey-detail">Graduated as Top Student. Engineered a core foundation in physical mechanics, automation, and hardcore product development.</p>
                         </div>
 
-                        <div class="journey-card">
+                        <div class="journey-card material-component">
                             <div class="card-logo-placeholder">VIVO</div>
                             <span class="journey-year">2019 — 2022</span>
                             <h3 class="journey-title">Associate Product Manager</h3>
@@ -86,7 +139,7 @@
                             <p class="journey-detail">Managed high-velocity consumer technology product lifecycles, translating hardware capabilities into precise market demands.</p>
                         </div>
 
-                        <div class="journey-card">
+                        <div class="journey-card material-component">
                             <div class="card-logo-placeholder">LBORO</div>
                             <span class="journey-year">2022 — 2023</span>
                             <h3 class="journey-title">Master of Business Administration (MBA)</h3>
@@ -94,7 +147,7 @@
                             <p class="journey-detail">Graduated as Top Student. Synthesised my tangible engineering background with scalable, high-level business strategy.</p>
                         </div>
 
-                        <div class="journey-card">
+                        <div class="journey-card material-component">
                             <div class="card-logo-placeholder">IOSH</div>
                             <span class="journey-year">2024 — 2026</span>
                             <h3 class="journey-title">Assistant Product Manager</h3>
@@ -108,18 +161,19 @@
         </section>
 
         <section class="standard-section workshop-section scroll-spy-section" id="workshop-section">
-            <h2 class="section-heading fade-up">The Workshop</h2>
+            <span class="spec-tag">PROJECTS // 02</span>
+            <h2 class="section-heading">The Workshop</h2>
             <div class="workshop-grid fade-up">
-                <div class="workshop-card" id="ai-card">
+                <div class="workshop-card material-component" id="ai-card">
                     <div class="card-layer text-layer" id="ai-text">
                         &gt; System prompt initialised.<br/>
-                        &gt; Generating Liquid UI components.<br/>
-                        &gt; Applying glassmorphism aesthetic...<br/>
+                        &gt; Material sciences applied.<br/>
+                        &gt; Rendering structural topography...<br/>
                         <span class="blink-cursor">_</span>
                     </div>
-                    <h3 class="card-label">AI Web Architecture</h3>
+                    <h3 class="card-label">Hardware Architecture</h3>
                 </div>
-                <div class="workshop-card" id="print-card">
+                <div class="workshop-card material-component" id="print-card">
                     <div class="card-layer blueprint-layer">
                         <div class="placeholder-img wireframe">CAD Prototyping</div>
                     </div>
@@ -129,11 +183,12 @@
         </section>
 
         <section class="standard-section skills-section scroll-spy-section" id="skills-section">
-            <h2 class="section-heading fade-up">Education & Stack</h2>
-            <div class="marquee-container mt-large fade-up">
+            <span class="spec-tag">TECH STACK // 03</span>
+            <h2 class="section-heading">Education & Tools</h2>
+            <div class="marquee-container mt-large fade-up material-component">
                 <div class="marquee-content">
-                    <span>Liquid UI</span><span>•</span><span>CAD Modelling</span><span>•</span><span>Programme Management</span><span>•</span><span>3D Prototyping</span><span>•</span><span>Prompt Engineering</span><span>•</span><span>Agile Logistics</span><span>•</span>
-                    <span>Liquid UI</span><span>•</span><span>CAD Modelling</span><span>•</span><span>Programme Management</span><span>•</span><span>3D Prototyping</span><span>•</span><span>Prompt Engineering</span><span>•</span><span>Agile Logistics</span><span>•</span>
+                    <span>Industrial Design</span><span>•</span><span>CAD Modelling</span><span>•</span><span>Programme Management</span><span>•</span><span>3D Prototyping</span><span>•</span><span>Agile Logistics</span><span>•</span>
+                    <span>Industrial Design</span><span>•</span><span>CAD Modelling</span><span>•</span><span>Programme Management</span><span>•</span><span>3D Prototyping</span><span>•</span><span>Agile Logistics</span><span>•</span>
                 </div>
             </div>
         </section>
