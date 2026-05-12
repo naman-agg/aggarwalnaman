@@ -67,16 +67,21 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     const wordSpans = manifestoTextEl.querySelectorAll('span');
 
-    // --- 5. Capsule Internal Scroll Logic (Scrubbing & Spy Nav) ---
+    // --- 5. Capsule Internal Scroll Logic (Scrubbing, Spy Nav & Horizontal Track) ---
     const capsule = document.getElementById('capsule-container');
     const manifestoTrigger = document.getElementById('manifesto-trigger');
     const navDots = document.querySelectorAll('.capsule-nav .nav-dot');
     const spySections = document.querySelectorAll('.scroll-spy-section');
     
+    // Horizontal Track Elements
+    const hWrapper = document.getElementById('horizontal-wrapper');
+    const cardsTrack = document.getElementById('cards-track');
+
     capsule.addEventListener('scroll', () => {
         const scrollY = capsule.scrollTop;
         const capsuleHeight = capsule.clientHeight;
 
+        // A. Scrubbing Logic
         const manifestoTop = manifestoTrigger.offsetTop; 
         const manifestoHeight = manifestoTrigger.offsetHeight;
         const startScrub = manifestoTop;
@@ -94,6 +99,27 @@ document.addEventListener('DOMContentLoaded', () => {
             wordSpans.forEach(span => span.classList.remove('active-word'));
         }
 
+        // B. Sticky Horizontal Journey Track Logic
+        if (hWrapper && cardsTrack) {
+            // Start scrolling the track right before it hits the top of the capsule
+            const startHScroll = hWrapper.offsetTop - 50; 
+            const maxScroll = hWrapper.offsetHeight - capsuleHeight;
+            const endHScroll = startHScroll + maxScroll;
+
+            if (scrollY >= startHScroll && scrollY <= endHScroll) {
+                const progress = (scrollY - startHScroll) / maxScroll;
+                // Calculate max distance the track can move left
+                const maxTranslate = cardsTrack.scrollWidth - capsule.clientWidth + 80; 
+                cardsTrack.style.transform = `translateX(-${progress * maxTranslate}px)`;
+            } else if (scrollY < startHScroll) {
+                cardsTrack.style.transform = `translateX(0px)`;
+            } else if (scrollY > endHScroll) {
+                const maxTranslate = cardsTrack.scrollWidth - capsule.clientWidth + 80;
+                cardsTrack.style.transform = `translateX(-${maxTranslate}px)`;
+            }
+        }
+
+        // C. Spy Navigation Logic
         spySections.forEach((sec, index) => {
             const secTop = sec.offsetTop - 100;
             const secBottom = secTop + sec.offsetHeight;
@@ -216,9 +242,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const endScale = isMobile ? 0.35 : 0.25; 
         const currentScale = 1 - ((1 - endScale) * progress);
         
-        // Fades L1 & L3 without changing CSS anchored layout center
         heroL1.style.opacity = Math.max(0, 1 - (progress * 2));
+        heroL1.style.transform = `translateX(-50%) translateY(-${progress * 40}px)`;
+
         heroL3.style.opacity = Math.max(0, 1 - (progress * 2));
+        heroL3.style.transform = `translateX(-50%) translateY(${progress * 40}px)`;
 
         dynamicHero.style.transform = `translateY(-${moveDist * progress}px)`;
         heroL2.style.transform = `scale(${currentScale})`;
@@ -229,7 +257,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (progress === 1) {
             capsule.style.pointerEvents = 'auto';
             capsuleNav.classList.add('visible');
-            // Hide custom ring so only native cursor remains inside the reading capsule
             cursorTrail.style.display = 'none'; 
         } else {
             capsule.style.pointerEvents = 'none';
