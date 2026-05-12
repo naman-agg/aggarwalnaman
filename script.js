@@ -104,69 +104,34 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
 
 
-    const scrambleEl = document.getElementById('hero-l3');
-    const phrases = ["A PRODUCT MANAGER", "A DESIGNER", "AN INVENTOR"];
-    const chars = "><[]{}*&^%$#@!ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"; 
-    let phraseIndex = 0;
-    
-    class CypherScrambler {
-        constructor(el) { this.el = el; }
-        async scramble(newText) {
-            const oldText = this.el.innerText;
-            const maxLength = Math.max(oldText.length, newText.length);
-            const promise = new Promise(resolve => this.resolvePromise = resolve);
-            this.queue = [];
-            for (let i = 0; i < maxLength; i++) {
-                const startChars = oldText[i] || '';
-                const endChar = newText[i] || '';
-                const startScramble = Math.floor(Math.random() * 15); 
-                const endScramble = startScramble + Math.floor(Math.random() * 15);
-                this.queue.push({ startChars, endChar, startScramble, endScramble });
-            }
-            this.frame = 0;
-            this.update();
-            return promise;
-        }
-        update() {
-            if (!this.lastTime) this.lastTime = Date.now();
-            const now = Date.now();
-            const dt = now - this.lastTime;
+    // ==========================================
+    // MECHANICAL FLIPBOARD CLOCK LOGIC
+    // ==========================================
+    const flipTextEl = document.getElementById('flip-text');
+    const greetings = ['HELLO', 'HALLO', 'BONJOUR', 'HOLA', 'CIAO'];
+    let greetIndex = 0;
 
-            if (dt < 50) { 
-                requestAnimationFrame(this.update.bind(this));
-                return;
-            }
-            this.lastTime = now;
-            this.frame++;
-
-            let output = '';
-            let complete = 0;
+    setInterval(() => {
+        // Trigger the flip down (rotateX -90deg)
+        flipTextEl.classList.add('flipping-out');
+        
+        // Wait for the exact middle of the flip to swap the text
+        setTimeout(() => {
+            greetIndex = (greetIndex + 1) % greetings.length;
+            flipTextEl.textContent = greetings[greetIndex];
             
-            for (let i = 0; i < this.queue.length; i++) {
-                const { startChars, endChar, startScramble, endScramble } = this.queue[i];
-                if (this.frame >= endScramble) {
-                    complete++; output += endChar;
-                } else if (this.frame >= startScramble) {
-                    const char = chars[Math.floor(Math.random() * chars.length)];
-                    output += `<span class="cypher-char">${char}</span>`;
-                } else { output += startChars; }
-            }
-            this.el.innerHTML = output;
+            // Remove flip out, trigger flip in (rotateX 90deg to 0)
+            flipTextEl.classList.remove('flipping-out');
+            flipTextEl.classList.add('flipping-in');
             
-            if (complete === this.queue.length) { this.resolvePromise(); } 
-            else { requestAnimationFrame(this.update.bind(this)); }
-        }
-    }
-
-    const scrambler = new CypherScrambler(scrambleEl);
-    async function runScrambleLoop() {
-        while(true) {
-            await scrambler.scramble(phrases[phraseIndex]);
-            phraseIndex = (phraseIndex + 1) % phrases.length;
-            await new Promise(r => setTimeout(r, 2500)); 
-        }
-    }
-    runScrambleLoop();
+            // Clean up classes after animation finishes
+            setTimeout(() => {
+                flipTextEl.classList.remove('flipping-in');
+            }, 200); 
+            
+        }, 200); 
+    }, 3500); // Flips every 3.5 seconds
+    // ==========================================
 
 
     const dynamicHero = document.getElementById('dynamic-hero');
