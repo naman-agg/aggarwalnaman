@@ -137,7 +137,6 @@ body.light-mode .light-icon { color: var(--bg-static); }
 .footer-spacer { height: 120px; clear: both; } 
 .text-center { text-align: center; }
 
-/* FIX: Tighter height to eliminate dead scrolling gap */
 .manifesto-section { height: 110vh; position: relative; } 
 .sticky-content {
     position: sticky; top: 0; height: 80vh; 
@@ -151,52 +150,64 @@ body.light-mode .light-icon { color: var(--bg-static); }
 }
 .manifesto-text span.active-word { color: var(--text-primary); transform: translateY(0); }
 
-/* Standard tighter padding */
 .standard-section { padding: 60px 40px; max-width: 900px; margin: 0 auto; clear: both; }
-.section-heading { font-size: clamp(32px, 4vw, 40px); margin-bottom: 60px; text-align: center; }
 
-
-/* ========================================= */
-/* THE NEW HORIZONTAL SCROLL JOURNEY SECTION */
-/* ========================================= */
+/* HORIZONTAL SCROLL JOURNEY SECTION */
 .journey-section {
     padding-top: 20px;
     padding-bottom: 40px;
-    max-width: 100%; /* Overrides standard section width to bleed to edges */
+    max-width: 100%; 
 }
 
 .horizontal-scroll-wrapper {
-    height: 400vh; /* Determines how long the user must scroll to move the cards */
+    height: 400vh; 
     position: relative;
     width: 100%;
 }
 
 .sticky-view {
     position: sticky;
-    top: 10%; /* Vertically centers the track inside the capsule */
-    height: 80vh;
+    top: 5vh; 
+    height: 90vh; /* Taller sticky area to fit massive heading and massive cards */
     width: 100%;
     overflow: hidden;
     display: flex;
-    align-items: center;
-    /* FIX: Architectural gradient fade on the left and right edges */
+    flex-direction: column; /* Stacks heading and track vertically */
+    justify-content: center;
     -webkit-mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%);
     mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%);
+}
+
+/* FIX: The massive pinned heading inside the journey section */
+.journey-sticky-heading {
+    position: absolute;
+    top: 20px;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    font-size: clamp(50px, 8vw, 100px);
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    color: var(--text-primary);
+    opacity: 0.1; /* Super subtle background element */
+    z-index: 1;
+    pointer-events: none;
 }
 
 .cards-track {
     display: flex;
     gap: 60px;
-    /* FIX: Perfectly centres the first card by calculating exactly half the parent minus half the card width (225px) */
-    padding: 0 calc(50% - 225px); 
+    /* FIX: Perfectly centres the new 500px card */
+    padding: 0 calc(50% - 250px); 
     width: max-content;
     will-change: transform;
+    z-index: 2; /* Sits above the giant heading */
 }
 
 .journey-card {
-    /* FIX: Super big cards */
-    flex: 0 0 450px; 
-    height: 550px;
+    /* FIX: Upscaled cards to massive proportions */
+    flex: 0 0 500px; 
+    height: 600px;
     background: var(--bg-card);
     border: 1px solid var(--border-color);
     border-radius: 20px;
@@ -238,7 +249,7 @@ body.light-mode .light-icon { color: var(--bg-static); }
 }
 
 .journey-title {
-    font-size: 28px;
+    font-size: 32px; /* Bigger titles */
     font-weight: 700;
     line-height: 1.2;
     margin-bottom: 12px;
@@ -246,7 +257,7 @@ body.light-mode .light-icon { color: var(--bg-static); }
 }
 
 .journey-subtitle {
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 500;
     color: var(--text-secondary);
     margin-bottom: 30px;
@@ -258,8 +269,6 @@ body.light-mode .light-icon { color: var(--bg-static); }
     color: var(--text-secondary);
 }
 
-
-/* The Workshop */
 .workshop-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; width: 100%; margin-top: 40px; }
 .workshop-card { position: relative; width: 100%; aspect-ratio: 4/5; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 24px; overflow: hidden; }
 .card-layer { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding: 40px; }
@@ -268,7 +277,6 @@ body.light-mode .light-icon { color: var(--bg-static); }
 .blueprint-layer { z-index: 1; opacity: 0.5; }
 .placeholder-img { width: 100%; height: 100%; background: #1e293b; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 12px; color: #94a3b8; border-radius: 12px; }
 
-/* Education & Marquee */
 .education-block { display: flex; justify-content: space-around; margin-bottom: 100px; text-align: center; flex-wrap: wrap; gap: 30px; }
 .edu-item h4 { font-size: 20px; font-weight: 500; color: var(--text-secondary); }
 
@@ -277,7 +285,6 @@ body.light-mode .light-icon { color: var(--bg-static); }
 .marquee-content span:nth-child(even) { color: var(--accent); }
 @keyframes scroll-marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
-/* Footer Grid Logic */
 .site-footer {
     position: fixed; bottom: var(--v-gap); left: 0; width: 100%; height: var(--ui-height);
     display: grid; grid-template-columns: 1fr 1fr 1fr; align-items: center;
@@ -303,7 +310,6 @@ body.light-mode .light-icon { color: var(--bg-static); }
 .fade-up { opacity: 0; transform: translateY(40px); transition: opacity 0.8s ease, transform 0.8s ease; }
 .fade-up.in-view { opacity: 1; transform: translateY(0); }
 
-/* MOBILE RESPONSIVENESS */
 @media (max-width: 768px) {
     :root { 
         --edge-pad: 16px; 
@@ -316,10 +322,10 @@ body.light-mode .light-icon { color: var(--bg-static); }
     .capsule-nav { display: none; } 
     .sticky-content, .standard-section { padding: 60px 16px; } 
     
-    /* Responsive Journey Cards */
+    .journey-sticky-heading { font-size: 60px; top: 10px; }
     .journey-card { flex: 0 0 320px; height: 450px; padding: 30px; }
     .journey-title { font-size: 22px; }
-    .cards-track { padding: 0 calc(50% - 160px); } /* Centers the smaller 320px card */
+    .cards-track { padding: 0 calc(50% - 160px); } 
     .sticky-view { mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%); }
 
     .workshop-grid { grid-template-columns: 1fr; }
