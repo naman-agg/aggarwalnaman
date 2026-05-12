@@ -137,9 +137,10 @@ body.light-mode .light-icon { color: var(--bg-static); }
 .footer-spacer { height: 120px; clear: both; } 
 .text-center { text-align: center; }
 
-.manifesto-section { height: 150vh; position: relative; } 
+/* FIX: Tighter height to eliminate dead scrolling gap */
+.manifesto-section { height: 110vh; position: relative; } 
 .sticky-content {
-    position: sticky; top: 0; height: calc(100vh - (var(--v-gap) * 4 + var(--ui-height) * 2)); 
+    position: sticky; top: 0; height: 80vh; 
     padding: 0 40px; overflow: hidden; display: flex; justify-content: center; align-items: center;
 }
 .manifesto-text {
@@ -150,51 +151,69 @@ body.light-mode .light-icon { color: var(--bg-static); }
 }
 .manifesto-text span.active-word { color: var(--text-primary); transform: translateY(0); }
 
-.standard-section { padding: 100px 40px; max-width: 900px; margin: 0 auto; clear: both; }
-.section-heading { font-size: clamp(32px, 4vw, 40px); margin-bottom: 80px; text-align: center; }
+/* Standard tighter padding */
+.standard-section { padding: 60px 40px; max-width: 900px; margin: 0 auto; clear: both; }
+.section-heading { font-size: clamp(32px, 4vw, 40px); margin-bottom: 60px; text-align: center; }
 
-/* HORIZONTAL SCROLL JOURNEY SECTION */
+
+/* ========================================= */
+/* THE NEW HORIZONTAL SCROLL JOURNEY SECTION */
+/* ========================================= */
 .journey-section {
-    padding-top: 100px;
-    /* Remove horizontal padding so cards can bleed to the edge */
+    padding-top: 20px;
+    padding-bottom: 40px;
+    max-width: 100%; /* Overrides standard section width to bleed to edges */
 }
+
 .horizontal-scroll-wrapper {
-    /* Height creates the scrolling distance needed to move the cards horizontally */
-    height: 3000px; 
+    height: 400vh; /* Determines how long the user must scroll to move the cards */
     position: relative;
     width: 100%;
 }
+
 .sticky-view {
     position: sticky;
-    top: 15vh; /* Places the track beautifully in the center of the capsule */
-    height: 450px;
+    top: 10%; /* Vertically centers the track inside the capsule */
+    height: 80vh;
     width: 100%;
-    overflow: hidden; /* Hides cards outside the bounds */
+    overflow: hidden;
     display: flex;
     align-items: center;
+    /* FIX: Architectural gradient fade on the left and right edges */
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%);
 }
+
 .cards-track {
     display: flex;
-    gap: 40px;
-    padding: 0 80px; /* Starting padding */
+    gap: 60px;
+    /* FIX: Perfectly centres the first card by calculating exactly half the parent minus half the card width (225px) */
+    padding: 0 calc(50% - 225px); 
     width: max-content;
     will-change: transform;
-    /* Adds a buttery inertia to the scroll */
-    transition: transform 0.1s cubic-bezier(0.25, 1, 0.5, 1); 
 }
+
 .journey-card {
-    position: relative;
-    flex: 0 0 400px; /* Fixed width for standardisation */
-    height: 380px;
+    /* FIX: Super big cards */
+    flex: 0 0 450px; 
+    height: 550px;
     background: var(--bg-card);
     border: 1px solid var(--border-color);
     border-radius: 20px;
-    padding: 40px;
+    padding: 50px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    position: relative;
+    transition: transform 0.3s ease, border-color 0.3s ease;
 }
+
+.journey-card:hover {
+    border-color: rgba(56, 189, 248, 0.5);
+    transform: translateY(-5px);
+}
+
 .card-logo-placeholder {
     position: absolute;
     top: 30px;
@@ -208,34 +227,39 @@ body.light-mode .light-icon { color: var(--bg-static); }
     letter-spacing: 0.1em;
     background: rgba(0,0,0,0.2);
 }
+
 .journey-year {
     font-family: monospace;
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 700;
     color: var(--accent);
-    margin-bottom: 16px;
+    margin-bottom: 20px;
     letter-spacing: 0.1em;
 }
+
 .journey-title {
-    font-size: 24px;
+    font-size: 28px;
     font-weight: 700;
     line-height: 1.2;
-    margin-bottom: 8px;
+    margin-bottom: 12px;
     color: var(--text-primary);
 }
+
 .journey-subtitle {
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 500;
     color: var(--text-secondary);
-    margin-bottom: 24px;
+    margin-bottom: 30px;
 }
+
 .journey-detail {
-    font-size: 14px;
+    font-size: 16px;
     line-height: 1.6;
     color: var(--text-secondary);
 }
 
 
+/* The Workshop */
 .workshop-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; width: 100%; margin-top: 40px; }
 .workshop-card { position: relative; width: 100%; aspect-ratio: 4/5; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 24px; overflow: hidden; }
 .card-layer { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding: 40px; }
@@ -244,6 +268,7 @@ body.light-mode .light-icon { color: var(--bg-static); }
 .blueprint-layer { z-index: 1; opacity: 0.5; }
 .placeholder-img { width: 100%; height: 100%; background: #1e293b; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 12px; color: #94a3b8; border-radius: 12px; }
 
+/* Education & Marquee */
 .education-block { display: flex; justify-content: space-around; margin-bottom: 100px; text-align: center; flex-wrap: wrap; gap: 30px; }
 .edu-item h4 { font-size: 20px; font-weight: 500; color: var(--text-secondary); }
 
@@ -252,6 +277,7 @@ body.light-mode .light-icon { color: var(--bg-static); }
 .marquee-content span:nth-child(even) { color: var(--accent); }
 @keyframes scroll-marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
+/* Footer Grid Logic */
 .site-footer {
     position: fixed; bottom: var(--v-gap); left: 0; width: 100%; height: var(--ui-height);
     display: grid; grid-template-columns: 1fr 1fr 1fr; align-items: center;
@@ -283,15 +309,18 @@ body.light-mode .light-icon { color: var(--bg-static); }
         --edge-pad: 16px; 
         --v-gap: 16px; 
     } 
-    .hero-l1 { font-size: clamp(80px, 15vw, 150px); filter: blur(4px); } 
+    .hero-l1 { font-size: clamp(80px, 15vw, 150px); filter: blur(4px); top: 38%; } 
     .hero-l2 { font-size: clamp(40px, 8vw, 80px); }
     .hero-l3 { font-size: 12px; margin-top: 12px; }
     
     .capsule-nav { display: none; } 
     .sticky-content, .standard-section { padding: 60px 16px; } 
     
-    .journey-card { flex: 0 0 300px; height: 350px; padding: 24px; }
-    .journey-title { font-size: 20px; }
+    /* Responsive Journey Cards */
+    .journey-card { flex: 0 0 320px; height: 450px; padding: 30px; }
+    .journey-title { font-size: 22px; }
+    .cards-track { padding: 0 calc(50% - 160px); } /* Centers the smaller 320px card */
+    .sticky-view { mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%); }
 
     .workshop-grid { grid-template-columns: 1fr; }
     

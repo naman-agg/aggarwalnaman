@@ -67,21 +67,21 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     const wordSpans = manifestoTextEl.querySelectorAll('span');
 
-    // --- 5. Capsule Internal Scroll Logic (Scrubbing, Spy Nav & Horizontal Track) ---
+    // --- 5. Capsule Internal Scroll Engine (Scrubbing, Nav, & Sticky Horizontal Track) ---
     const capsule = document.getElementById('capsule-container');
     const manifestoTrigger = document.getElementById('manifesto-trigger');
     const navDots = document.querySelectorAll('.capsule-nav .nav-dot');
     const spySections = document.querySelectorAll('.scroll-spy-section');
     
-    // Horizontal Track Elements
     const hWrapper = document.getElementById('horizontal-wrapper');
+    const stickyView = document.getElementById('sticky-view');
     const cardsTrack = document.getElementById('cards-track');
 
     capsule.addEventListener('scroll', () => {
         const scrollY = capsule.scrollTop;
         const capsuleHeight = capsule.clientHeight;
 
-        // A. Scrubbing Logic
+        // A. Paragraph Scrubbing
         const manifestoTop = manifestoTrigger.offsetTop; 
         const manifestoHeight = manifestoTrigger.offsetHeight;
         const startScrub = manifestoTop;
@@ -99,27 +99,28 @@ document.addEventListener('DOMContentLoaded', () => {
             wordSpans.forEach(span => span.classList.remove('active-word'));
         }
 
-        // B. Sticky Horizontal Journey Track Logic
-        if (hWrapper && cardsTrack) {
-            // Start scrolling the track right before it hits the top of the capsule
-            const startHScroll = hWrapper.offsetTop - 50; 
-            const maxScroll = hWrapper.offsetHeight - capsuleHeight;
+        // B. Sticky Horizontal Journey Track (Hardware-accelerated sliding)
+        if (hWrapper && stickyView && cardsTrack) {
+            // The scroll distance required before the section pins to the screen
+            const startHScroll = hWrapper.offsetTop - (capsuleHeight * 0.1); 
+            // Total vertical scroll distance available to drive the animation
+            const maxScroll = hWrapper.offsetHeight - stickyView.offsetHeight;
             const endHScroll = startHScroll + maxScroll;
 
             if (scrollY >= startHScroll && scrollY <= endHScroll) {
                 const progress = (scrollY - startHScroll) / maxScroll;
-                // Calculate max distance the track can move left
-                const maxTranslate = cardsTrack.scrollWidth - capsule.clientWidth + 80; 
-                cardsTrack.style.transform = `translateX(-${progress * maxTranslate}px)`;
+                // Calculate the exact distance to slide left so the last card aligns flawlessly in the center
+                const maxTranslate = cardsTrack.scrollWidth - stickyView.clientWidth; 
+                cardsTrack.style.transform = `translate3d(-${progress * maxTranslate}px, 0, 0)`;
             } else if (scrollY < startHScroll) {
-                cardsTrack.style.transform = `translateX(0px)`;
+                cardsTrack.style.transform = `translate3d(0px, 0, 0)`;
             } else if (scrollY > endHScroll) {
-                const maxTranslate = cardsTrack.scrollWidth - capsule.clientWidth + 80;
-                cardsTrack.style.transform = `translateX(-${maxTranslate}px)`;
+                const maxTranslate = cardsTrack.scrollWidth - stickyView.clientWidth; 
+                cardsTrack.style.transform = `translate3d(-${maxTranslate}px, 0, 0)`;
             }
         }
 
-        // C. Spy Navigation Logic
+        // C. Scroll-Spy Nav Updates
         spySections.forEach((sec, index) => {
             const secTop = sec.offsetTop - 100;
             const secBottom = secTop + sec.offsetHeight;
@@ -242,6 +243,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const endScale = isMobile ? 0.35 : 0.25; 
         const currentScale = 1 - ((1 - endScale) * progress);
         
+        // CSS manages layout centre. JS strictly manages vertical fade offset
         heroL1.style.opacity = Math.max(0, 1 - (progress * 2));
         heroL1.style.transform = `translateX(-50%) translateY(-${progress * 40}px)`;
 
