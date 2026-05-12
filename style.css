@@ -7,13 +7,13 @@
     --ui-height: 40px;
     
     /* MATERIAL SCIENCE PALETTE */
-    --accent: #fa5b1c; /* Industrial Orange */
-    --accent-secondary: #ff106a; /* Magenta Hover */
+    --accent: #fa5b1c; 
+    --accent-secondary: #ff106a; 
     
     /* Dark Mode (Heavy Anodised Metals) */
-    --bg-static: #111111; /* Lighter outer metal desk */
-    --bg-capsule: #080808; /* Darker recessed cavity */
-    --bg-card: #161616; /* Machined components inside */
+    --bg-static: #111111; 
+    --bg-capsule: #080808; 
+    --bg-card: #161616; 
     --powder-grey: #a3a3a3;
     
     --text-primary: #f5f5f5;
@@ -23,21 +23,19 @@
     --border-color: rgba(255, 255, 255, 0.05);
     --border-highlight: rgba(255, 255, 255, 0.08); 
     
-    /* THE EMBEDDED CAVITY SHADOW (Debossed) */
     --capsule-shadow: 
-        inset 0 40px 80px rgba(0, 0, 0, 0.9),  /* Deep internal cavity shadow */
-        inset 0 4px 12px rgba(0, 0, 0, 0.9),   /* Sharp inner lip */
-        0 1px 0 rgba(255, 255, 255, 0.05);     /* Faint light catching the outer top edge of the cut */
+        inset 0 40px 80px rgba(0, 0, 0, 0.9),  
+        inset 0 4px 12px rgba(0, 0, 0, 0.9),   
+        0 1px 0 rgba(255, 255, 255, 0.05);     
         
-    /* Components sitting inside the cavity */
     --component-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), inset 0 1px 0 var(--border-highlight);
     
     --tactile-radius: 12px;
 }
 
 .light-mode {
-    --bg-static: #e2e2e2; /* Light brushed aluminium */
-    --bg-capsule: #d5d5d5; /* Recessed tray */
+    --bg-static: #e2e2e2; 
+    --bg-capsule: #d5d5d5; 
     --bg-card: #ececec; 
     
     --text-primary: #111111;
@@ -60,7 +58,6 @@
 /* ========================================================== */
 .material-base {
     background-color: var(--bg-static);
-    /* Brushed metal effect using horizontal linear gradients + noise */
     background-image: 
         linear-gradient(90deg, rgba(255,255,255,0.02) 0%, rgba(0,0,0,0.03) 50%, rgba(255,255,255,0.02) 100%),
         url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
@@ -68,7 +65,6 @@
 
 .material-surface {
     background-color: var(--bg-capsule);
-    /* Darker ambient gradient at the top to sell the depth of the recessed tray */
     background-image: 
         linear-gradient(180deg, rgba(0,0,0,0.3) 0%, transparent 15%),
         url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.06'/%3E%3C/svg%3E");
@@ -87,9 +83,6 @@
     transform: translateY(-4px);
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8), inset 0 1px 0 var(--border-highlight);
 }
-/* ========================================================== */
-
-
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html { scrollbar-width: none; scroll-behavior: smooth; }
@@ -120,36 +113,94 @@ body { font-family: var(--font-main); color: var(--text-primary); height: calc(1
 .search-btn:hover { color: var(--accent); }
 
 /* ========================================================== */
-/* THE NEW METALLIC PILL TOGGLE                               */
+/* THE NEUMORPHIC DAY/NIGHT TOGGLE (1:1 Reference Match)      */
 /* ========================================================== */
 .theme-toggle {
-    width: 64px; height: 32px; /* Original size preserved */
-    background: var(--bg-card); 
-    border: 1px solid var(--border-color); 
-    border-radius: 32px; /* Pill shape */
-    position: relative; display: flex; align-items: center; justify-content: space-between; 
-    padding: 0 6px; cursor: pointer; 
-    /* Physical indentation shadow */
-    box-shadow: inset 0 2px 4px rgba(0,0,0,0.6), inset 0 -1px 2px rgba(255,255,255,0.05); 
+    width: 84px; 
+    height: 42px; 
+    border-radius: 42px;
+    position: relative; 
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between; 
+    padding: 0 12px; 
+    cursor: pointer; 
+    border: none;
+    /* Dark Mode Track (Slate Blue/Grey) */
+    background: #394053; 
+    box-shadow: inset 4px 4px 8px rgba(0,0,0,0.4), inset -4px -4px 8px rgba(255,255,255,0.08); 
 }
-.theme-toggle .material-symbols-outlined { font-size: 16px; z-index: 2; color: var(--text-secondary); pointer-events: none; }
 
+.light-mode .theme-toggle {
+    /* Light Mode Track (Soft Grey) */
+    background: #e4e7ec;
+    box-shadow: inset 4px 4px 8px rgba(0,0,0,0.1), inset -4px -4px 8px #ffffff;
+}
+
+/* Background Track Icons */
+.track-icon {
+    width: 20px;
+    height: 20px;
+    color: rgba(255,255,255,0.15); /* Dark mode ghost */
+    transition: color 0.4s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.light-mode .track-icon {
+    color: rgba(0,0,0,0.15); /* Light mode ghost */
+}
+.track-icon svg { width: 100%; height: 100%; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+/* The Raised Chamfered Thumb */
 .toggle-slider {
-    position: absolute; top: 2px; left: 2px; 
-    width: 26px; height: 26px; 
-    border-radius: 50%; /* Perfect circle for the slider */
-    /* Metallic powder-coated gradient */
-    background: radial-gradient(circle at 30% 30%, #ffa580, var(--accent) 60%, #bd3f0e); 
-    z-index: 1; transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1); 
-    /* 3D button highlights and shadows */
-    box-shadow: 0 2px 4px rgba(0,0,0,0.5), inset 0 2px 3px rgba(255,255,255,0.4), inset 0 -2px 3px rgba(0,0,0,0.3);
+    position: absolute;
+    top: 3px;
+    left: 4px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1), background 0.5s, box-shadow 0.5s;
+
+    /* Dark Mode Thumb (Blue) */
+    background: #4a68f5;
+    box-shadow:  4px 4px 8px rgba(0,0,0,0.3),
+                -2px -2px 6px rgba(255,255,255,0.1),
+                inset 1px 1px 2px rgba(255,255,255,0.4); /* The Chamfered Lip Highlights */
 }
-.light-mode .toggle-slider { 
-    transform: translateX(32px); 
-    background: radial-gradient(circle at 30% 30%, #666, #222 60%, #000); 
+
+.light-mode .toggle-slider {
+    transform: translateX(40px); /* Slide distance */
+    /* Light Mode Thumb (White) */
+    background: #ffffff;
+    box-shadow:  4px 4px 8px rgba(0,0,0,0.15),
+                -4px -4px 8px #ffffff,
+                inset 1px 1px 2px rgba(255,255,255,0.8);
 }
-body:not(.light-mode) .dark-icon { color: var(--text-primary); }
-body.light-mode .light-icon { color: var(--bg-static); }
+
+/* Icons inside the moving Thumb */
+.slider-icon {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    transition: opacity 0.4s, transform 0.5s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.slider-icon svg { width: 100%; height: 100%; stroke: currentColor; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+
+/* Dark Mode State Logic */
+.moon-active { opacity: 1; color: #ffffff; transform: rotate(0); }
+.sun-active { opacity: 0; color: #ff9800; transform: rotate(-90deg); }
+
+/* Light Mode State Logic */
+.light-mode .moon-active { opacity: 0; transform: rotate(90deg); }
+.light-mode .sun-active { opacity: 1; transform: rotate(0); }
 /* ========================================================== */
 
 .dynamic-hero { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; z-index: 101; pointer-events: none; }
