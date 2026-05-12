@@ -159,70 +159,79 @@ body.light-mode .light-icon { color: #ffffff; }
 
 
 
-/* MECHANICAL HERO TYPOGRAPHY & FLIPBOARD                     */
 /* ========================================================== */
-.dynamic-hero { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; z-index: 101; pointer-events: none; }
-.hero-wrapper { position: relative; display: inline-flex; flex-direction: column; align-items: center; justify-content: center; }
+/* VERTICAL STACK HERO & SLIDE ANIMATION                      */
+/* ========================================================== */
+.dynamic-hero { 
+    position: fixed; top: 0; left: 0; width: 100%; height: 100vh; 
+    display: flex; align-items: center; justify-content: center; z-index: 101; pointer-events: none; 
+}
 
-/* The Greeting Line */
+/* Strict vertical alignment */
+.hero-wrapper { 
+    display: flex; flex-direction: column; align-items: center; justify-content: center; 
+    gap: 16px; width: 100%; padding: 0 20px;
+}
+
 .hero-l1 { 
-    position: absolute; bottom: 55%; left: 50%; transform: translateX(-50%); width: 100vw; 
-    font-size: clamp(40px, 8vw, 100px); /* Scaled down slightly to let the name dominate */
-    font-weight: 900; line-height: 1; letter-spacing: -0.05em; white-space: nowrap;
-    text-align: center; z-index: -1; pointer-events: none; 
-    color: var(--powder-grey); opacity: 0.8;
+    font-size: clamp(24px, 4vw, 40px); 
+    font-weight: 700; line-height: 1; letter-spacing: 0.1em; 
+    color: var(--powder-grey); text-align: center;
     transition: opacity 0.5s ease;
 }
 
-/* Mechanical Split-Flap Wrapper */
-.flip-wrapper {
-    display: inline-block;
-    min-width: 1.5em; /* Gives enough space for longer words like BONJOUR */
-    text-align: right;
-    color: var(--accent);
-    perspective: 1000px;
+/* Mechanical Window for Sliding Text */
+.slide-mask {
+    display: inline-flex;
+    overflow: hidden; /* Hides the text when it slides outside the bounding box */
+    vertical-align: bottom;
+    height: 1.1em;
+    align-items: center;
 }
 
-#flip-text {
+#slide-text {
     display: inline-block;
-    transform-origin: center center;
+    color: var(--accent);
     will-change: transform, opacity;
 }
 
-/* Sharp, snappy mechanical animation curves */
-.flipping-out { animation: flipOut 0.2s cubic-bezier(0.55, 0.085, 0.68, 0.53) forwards; }
-.flipping-in { animation: flipIn 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
+/* Smooth vertical slide curves */
+.sliding-out { animation: slideOut 0.4s cubic-bezier(0.8, 0, 0.2, 1) forwards; }
+.sliding-in { animation: slideIn 0.4s cubic-bezier(0.8, 0, 0.2, 1) forwards; }
 
-@keyframes flipOut {
-    0% { transform: rotateX(0deg); opacity: 1; }
-    100% { transform: rotateX(-90deg); opacity: 0; }
+@keyframes slideOut {
+    0% { transform: translateY(0); opacity: 1; }
+    100% { transform: translateY(-100%); opacity: 0; }
 }
-@keyframes flipIn {
-    0% { transform: rotateX(90deg); opacity: 0; }
-    100% { transform: rotateX(0deg); opacity: 1; }
+@keyframes slideIn {
+    0% { transform: translateY(100%); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
 }
 
-/* The Absurdly Big Name */
 .hero-l2 { 
-    font-size: clamp(80px, 15vw, 240px); /* Massive increase in scale */
-    font-weight: 900; 
-    letter-spacing: -0.06em; 
-    line-height: 0.85; /* Extremely tight leading */
-    color: var(--text-primary); 
-    position: relative; 
-    white-space: normal; /* Allows wrapping on small screens so it stays huge */
-    max-width: 95vw;
+    font-size: clamp(50px, 11vw, 160px); 
+    font-weight: 900; letter-spacing: -0.05em; line-height: 0.9; 
+    color: var(--text-primary); text-align: center; margin: 10px 0;
 }
 
-/* The Printed Spec Line (No more cypher) */
+/* Perfectly centred flex line */
 .hero-l3 { 
-    margin-top: 24px;
-    font-family: monospace; 
-    font-size: clamp(12px, 1.5vw, 20px); 
-    font-weight: 700; 
-    letter-spacing: 0.4em; 
-    color: var(--powder-grey); 
-    text-transform: uppercase;
+    font-family: monospace; font-size: clamp(12px, 1.5vw, 18px); 
+    font-weight: 700; letter-spacing: 0.2em; 
+    color: var(--powder-grey); text-transform: uppercase;
+    display: flex; align-items: center; justify-content: center; gap: 16px;
+    flex-wrap: wrap; text-align: center;
+}
+
+/* Dynamic LED Status Indicators */
+.status-dot {
+    color: var(--accent);
+    animation: pulseDot 2s infinite ease-in-out;
+}
+
+@keyframes pulseDot {
+    0%, 100% { opacity: 0.4; transform: scale(0.8); }
+    50% { opacity: 1; transform: scale(1.2); text-shadow: 0 0 8px var(--accent); }
 }
 /* ========================================================== */
 

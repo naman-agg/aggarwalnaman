@@ -105,34 +105,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // ==========================================
-    // MECHANICAL FLIPBOARD CLOCK LOGIC
+    // VERTICAL SLIDE CLOCK LOGIC
     // ==========================================
-    const flipTextEl = document.getElementById('flip-text');
-    const greetings = ['HELLO', 'नमस्ते', 'BONJOUR', 'こんにちは', 'Hallo', 'CIAO'];
+    const slideTextEl = document.getElementById('slide-text');
+    const greetings = ['HELLO', 'HALLO', 'BONJOUR', 'HOLA', 'CIAO'];
     let greetIndex = 0;
 
     setInterval(() => {
-        // Trigger the flip down (rotateX -90deg)
-        flipTextEl.classList.add('flipping-out');
+        // Trigger the upward slide out
+        slideTextEl.classList.add('sliding-out');
         
-        // Wait for the exact middle of the flip to swap the text
         setTimeout(() => {
             greetIndex = (greetIndex + 1) % greetings.length;
-            flipTextEl.textContent = greetings[greetIndex];
+            slideTextEl.textContent = greetings[greetIndex];
             
-            // Remove flip out, trigger flip in (rotateX 90deg to 0)
-            flipTextEl.classList.remove('flipping-out');
-            flipTextEl.classList.add('flipping-in');
+            // Remove slide out, trigger slide in from the bottom
+            slideTextEl.classList.remove('sliding-out');
+            slideTextEl.classList.add('sliding-in');
             
-            // Clean up classes after animation finishes
             setTimeout(() => {
-                flipTextEl.classList.remove('flipping-in');
-            }, 200); 
+                slideTextEl.classList.remove('sliding-in');
+            }, 400); 
             
-        }, 200); 
-    }, 3500); // Flips every 3.5 seconds
+        }, 400); 
+    }, 3500); 
     // ==========================================
-
 
     const dynamicHero = document.getElementById('dynamic-hero');
     const heroL1 = document.getElementById('hero-l1'); 
@@ -144,12 +141,10 @@ document.addEventListener('DOMContentLoaded', () => {
     function calculateHeroMath() {
         const l2Rect = heroL2.getBoundingClientRect();
         const l2CenterY = l2Rect.top + (l2Rect.height / 2); 
-        
         const isMobile = window.innerWidth <= 768;
         const vGap = isMobile ? 16 : 24;
         const uiHeight = 40;
         const endCenterY = vGap + (uiHeight / 2); 
-        
         moveDist = l2CenterY - endCenterY; 
     }
     setTimeout(calculateHeroMath, 100); window.addEventListener('resize', calculateHeroMath);
@@ -165,11 +160,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const endScale = isMobile ? 0.35 : 0.25; 
         const currentScale = 1 - ((1 - endScale) * progress);
         
+        // Dynamic Parallax: Pulls the top text up and the bottom text down like opening a vault
         heroL1.style.opacity = Math.max(0, 1 - (progress * 2));
-        heroL1.style.transform = `translateX(-50%) translateY(-${progress * 40}px)`;
+        heroL1.style.transform = `translateY(-${progress * 60}px)`;
 
         heroL3.style.opacity = Math.max(0, 1 - (progress * 2));
-        heroL3.style.transform = `translateX(-50%) translateY(${progress * 40}px)`;
+        heroL3.style.transform = `translateY(${progress * 60}px)`;
 
         dynamicHero.style.transform = `translateY(-${moveDist * progress}px)`;
         heroL2.style.transform = `scale(${currentScale})`;
