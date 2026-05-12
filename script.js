@@ -108,7 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // MECHANICAL FLIPBOARD CLOCK LOGIC
     // ==========================================
     const flipTextEl = document.getElementById('flip-text');
-    const greetings = ['HELLO', 'HALLO', 'BONJOUR', 'HOLA', 'CIAO'];
+    const greetings = ['HELLO', 'नमस्ते', 'BONJOUR', 'こんにちは', 'Hallo', 'CIAO'];
     let greetIndex = 0;
 
     setInterval(() => {
