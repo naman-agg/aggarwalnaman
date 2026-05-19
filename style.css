@@ -393,3 +393,97 @@ body.light-mode .light-icon { color: #ffffff; }
     transition: width 0.05s linear; 
 }
 /* ========================================================== */
+/* ========================================================== */
+/* OVERVIEW / ABOUT DOSSIER                                   */
+/* ========================================================== */
+.about-grid { 
+    display: grid; 
+    grid-template-columns: 1.5fr 1fr; 
+    gap: 80px; 
+    align-items: start; 
+}
+
+.about-lead { 
+    font-size: 24px; 
+    font-weight: 500; 
+    line-height: 1.5; 
+    color: var(--text-primary); 
+    margin-bottom: 24px; 
+    letter-spacing: -0.01em; 
+}
+
+.about-detail { 
+    font-size: 16px; 
+    line-height: 1.8; 
+    color: var(--powder-grey); 
+    margin-bottom: 20px; 
+}
+
+/* The Specification Panel */
+.about-specs { 
+    padding: 40px; 
+    display: flex; 
+    flex-direction: column; 
+}
+
+.spec-heading { 
+    font-family: monospace; 
+    font-size: 14px; 
+    font-weight: 700; 
+    color: var(--accent); 
+    margin-bottom: 30px; 
+    letter-spacing: 0.15em; 
+    text-transform: uppercase; 
+    border-bottom: 1px solid var(--border-color); 
+    padding-bottom: 16px; 
+}
+
+.spec-list { 
+    list-style: none; 
+    display: flex; 
+    flex-direction: column; 
+    gap: 24px; 
+}
+
+.spec-list li { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 8px; 
+    border-bottom: 1px dashed var(--border-color); 
+    padding-bottom: 16px; 
+}
+
+.spec-list li:last-child { 
+    border-bottom: none; 
+    padding-bottom: 0; 
+}
+
+.spec-label { 
+    font-family: monospace; 
+    font-size: 11px; 
+    font-weight: 700; 
+    color: var(--text-secondary); 
+    letter-spacing: 0.1em; 
+}
+
+.spec-value { 
+    font-size: 15px; 
+    font-weight: 600; 
+    color: var(--text-primary); 
+}
+
+/* Responsive collapse for laptops and mobile */
+@media (max-width: 1024px) {
+    .about-grid { gap: 40px; }
+}
+
+@media (max-width: 768px) {
+    .about-grid { 
+        grid-template-columns: 1fr; 
+        gap: 60px; 
+    }
+    .about-specs { 
+        padding: 30px; 
+    }
+}
+/* ========================================================== */
