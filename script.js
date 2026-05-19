@@ -327,71 +327,134 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     // ==========================================
-    // 6. COMMAND TERMINAL (SEARCH OVERLAY)
+    // 6. SPOTLIGHT SEARCH ENGINE & ROUTING
     // ==========================================
-    const searchBtn = document.querySelector('.search-btn');
-    const terminal = document.getElementById('command-terminal');
-    const closeTerminalBtn = document.getElementById('close-terminal');
-    const terminalInput = document.getElementById('terminal-input');
-    const suggestionItems = document.querySelectorAll('.suggestion-item');
+    const searchBtnNode = document.querySelector('.search-btn');
+    const searchOverlay = document.getElementById('search-overlay');
+    const closeSearchBtn = document.getElementById('close-search');
+    const searchInput = document.getElementById('search-input');
+    const searchResults = document.getElementById('search-results');
 
-    function openTerminal() {
-        terminal.classList.add('active');
-        // Small delay ensures the transition starts before focusing
-        setTimeout(() => terminalInput.focus(), 50); 
-    }
+    // 1. Build the Search Index from actual DOM content
+    const searchableSections = [
+        { id: 'about-section', title: 'Overview' },
+        { id: 'philosophy-section', title: 'Methodology' },
+        { id: 'journey-section', title: 'Timeline' },
+        { id: 'workshop-section', title: 'Workshop' }
+    ];
 
-    function closeTerminal() {
-        terminal.classList.remove('active');
-        terminalInput.value = ''; // Clear input on close
-        filterSuggestions('');    // Reset list
-    }
-
-    // Event Listeners for Open/Close
-    if (searchBtn) searchBtn.addEventListener('click', openTerminal);
-    if (closeTerminalBtn) closeTerminalBtn.addEventListener('click', closeTerminal);
+    let searchIndex = [];
     
-    // Close on ESC key or clicking outside the container
+    // Slight delay to ensure DOM is fully rendered before indexing text
+    setTimeout(() => {
+        searchIndex = searchableSections.map(sec => {
+            const el = document.getElementById(sec.id);
+            return {
+                id: sec.id,
+                title: sec.title,
+                // Extract all raw text from the section for deep searching
+                text: el ? el.innerText.replace(/\n/g, ' ') : ''
+            };
+        });
+    }, 500);
+
+    function openSearch() {
+        searchOverlay.classList.add('active');
+        setTimeout(() => searchInput.focus(), 50); 
+        renderDefaultResults();
+    }
+
+    function closeSearch() {
+        searchOverlay.classList.remove('active');
+        searchInput.value = ''; 
+    }
+
+    if (searchBtnNode) searchBtnNode.addEventListener('click', openSearch);
+    if (closeSearchBtn) closeSearchBtn.addEventListener('click', closeSearch);
+    
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && terminal.classList.contains('active')) {
-            closeTerminal();
-        }
+        if (e.key === 'Escape' && searchOverlay.classList.contains('active')) closeSearch();
     });
     
-    terminal.addEventListener('click', (e) => {
-        if (e.target === terminal) closeTerminal();
+    searchOverlay.addEventListener('click', (e) => {
+        if (e.target === searchOverlay) closeSearch();
     });
 
-    // Handle executing commands (Clicking suggestions)
-    suggestionItems.forEach(item => {
-        item.addEventListener('click', () => {
-            if (item.id === 'cmd-print') {
-                window.print();
-            } else {
-                const targetId = item.getAttribute('data-target');
-                const targetSec = document.getElementById(targetId);
-                if (targetSec && capsule) {
-                    capsule.scrollTo({ top: targetSec.offsetTop, behavior: 'smooth' });
-                }
-            }
-            closeTerminal();
-        });
-    });
+    // 2. Routing Logic (Fixes the Landing Page scroll bug)
+    function routeToSection(targetId) {
+        closeSearch();
+        
+        // Force the window parallax to complete if the user is still on the landing page
+        if (window.scrollY < 500) {
+            window.scrollTo({ top: 600, behavior: 'instant' });
+        }
 
-    // Live filtering of directives as the user types
-    function filterSuggestions(query) {
-        const q = query.toLowerCase();
-        suggestionItems.forEach(item => {
-            const text = item.textContent.toLowerCase();
-            if (text.includes(q)) {
-                item.style.display = 'flex';
-            } else {
-                item.style.display = 'none';
+        // Wait a micro-tick for the pointer-events to unlock, then scroll the capsule
+        setTimeout(() => {
+            const targetSec = document.getElementById(targetId);
+            if (targetSec && capsule) {
+                capsule.scrollTo({ top: targetSec.offsetTop, behavior: 'smooth' });
             }
+        }, 50);
+    }
+
+    // 3. Dynamic Search Filtering & Snippet Generation
+    function renderDefaultResults() {
+        searchResults.innerHTML = '';
+        // Show sections as defaults when empty
+        searchIndex.forEach(item => {
+            const li = document.createElement('li');
+            li.className = 'result-item interactive-element';
+            li.innerHTML = `<span class="result-title">${item.title}</span>`;
+            li.addEventListener('click', () => routeToSection(item.id));
+            searchResults.appendChild(li);
         });
     }
 
-    terminalInput.addEventListener('input', (e) => {
-        filterSuggestions(e.target.value);
+    searchInput.addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase().trim();
+        searchResults.innerHTML = '';
+
+        if (!query) {
+            renderDefaultResults();
+            return;
+        }
+
+        const matches = searchIndex.filter(item => 
+            item.text.toLowerCase().includes(query) || item.title.toLowerCase().includes(query)
+        );
+
+        if (matches.length === 0) {
+            searchResults.innerHTML = `<li class="result-item"><span class="result-title">No results found for "${query}"</span></li>`;
+            return;
+        }
+
+        matches.forEach(match => {
+            const li = document.createElement('li');
+            li.className = 'result-item interactive-element';
+            
+            // Generate a smart text snippet around the searched word
+            let snippet = '';
+            const matchIndex = match.text.toLowerCase().indexOf(query);
+            if (matchIndex > -1) {
+                const start = Math.max(0, matchIndex - 40);
+                const end = Math.min(match.text.length, matchIndex + query.length + 40);
+                snippet = match.text.substring(start, end);
+                if (start > 0) snippet = '...' + snippet;
+                if (end < match.text.length) snippet = snippet + '...';
+                
+                // Bold the matched word
+                const regex = new RegExp(`(${query})`, 'gi');
+                snippet = snippet.replace(regex, '<span class="snippet-highlight">$1</span>');
+            }
+
+            li.innerHTML = `
+                <span class="result-title">${match.title}</span>
+                ${snippet ? `<span class="result-snippet">${snippet}</span>` : ''}
+            `;
+            
+            li.addEventListener('click', () => routeToSection(match.id));
+            searchResults.appendChild(li);
+        });
     });
 });

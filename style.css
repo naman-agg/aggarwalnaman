@@ -612,115 +612,84 @@ body.scanner-active, body.scanner-active * {
 }
 .flash-copied { animation: copiedFlash 0.5s ease; }
 /* ========================================================== */
-/* COMMAND TERMINAL (SEARCH OVERLAY)                          */
+/* SPOTLIGHT SEARCH (APPLE GLASSMORPHISM)                     */
 /* ========================================================== */
-.command-terminal {
-    position: fixed;
-    top: 0; left: 0; width: 100vw; height: 100vh;
-    background: rgba(10, 10, 10, 0.85); /* Deep tint */
-    backdrop-filter: blur(16px); /* Heavy hardware frosting */
-    -webkit-backdrop-filter: blur(16px);
+.spotlight-overlay {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(0, 0, 0, 0.4); 
     z-index: 9000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s ease;
+    display: flex; align-items: flex-start; justify-content: center;
+    padding-top: 15vh; /* Hangs nicely from the top like macOS Spotlight */
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.2s ease;
 }
 
-.light-mode .command-terminal {
-    background: rgba(245, 245, 245, 0.85);
+.spotlight-overlay.active {
+    opacity: 1; pointer-events: auto;
 }
 
-.command-terminal.active {
-    opacity: 1;
-    pointer-events: auto;
+/* The true Glassmorphism Panel */
+.spotlight-modal {
+    width: 100%; max-width: 680px;
+    background: rgba(30, 30, 32, 0.65);
+    backdrop-filter: blur(40px) saturate(180%);
+    -webkit-backdrop-filter: blur(40px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(0,0,0,0.2);
+    overflow: hidden;
+    transform: scale(0.98);
+    transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+}
+.spotlight-overlay.active .spotlight-modal { transform: scale(1); }
+
+.light-mode .spotlight-modal {
+    background: rgba(250, 250, 250, 0.75);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.1);
 }
 
-.terminal-container {
-    width: 100%;
-    max-width: 800px;
-    padding: 0 40px;
+.spotlight-header {
+    display: flex; align-items: center;
+    padding: 20px 24px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
+.light-mode .spotlight-header { border-bottom: 1px solid rgba(0, 0, 0, 0.05); }
 
-.terminal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 40px;
-    font-family: var(--font-mono);
-    font-size: 11px;
-    letter-spacing: 0.2em;
-    color: var(--accent);
-}
+.search-icon { font-size: 24px; color: var(--text-secondary); margin-right: 16px; }
 
-.terminal-close {
-    background: none; border: none;
-    color: var(--text-secondary);
-    font-family: var(--font-mono);
-    font-size: 11px; letter-spacing: 0.1em;
-    cursor: pointer; transition: color 0.2s ease;
-}
-.terminal-close:hover { color: var(--text-primary); }
-
-.input-wrapper {
-    display: flex;
-    align-items: center;
-    gap: 24px;
-    border-bottom: 2px solid var(--border-color);
-    padding-bottom: 16px;
-    margin-bottom: 40px;
-}
-
-.input-prefix {
-    font-family: var(--font-mono);
-    font-size: clamp(32px, 5vw, 64px);
-    font-weight: 700;
-    color: var(--accent);
-}
-
-.terminal-input {
-    width: 100%;
-    background: transparent;
-    border: none; outline: none;
-    font-family: var(--font-mono);
-    font-size: clamp(24px, 4vw, 48px);
-    font-weight: 600;
+.spotlight-input {
+    flex: 1; background: transparent; border: none; outline: none;
+    font-family: var(--font-main);
+    font-size: 24px; font-weight: 500;
     color: var(--text-primary);
-    text-transform: uppercase;
 }
-.terminal-input::placeholder { color: var(--text-muted); }
+.spotlight-input::placeholder { color: var(--text-muted); }
 
-.terminal-suggestions {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
+.spotlight-close {
+    background: rgba(255, 255, 255, 0.1); border: none; border-radius: 6px;
+    padding: 4px 8px;
+    color: var(--text-secondary); font-family: var(--font-mono); font-size: 11px; font-weight: 600;
+    cursor: pointer; transition: all 0.2s ease;
 }
+.spotlight-close:hover { background: rgba(255, 255, 255, 0.2); color: var(--text-primary); }
+.light-mode .spotlight-close { background: rgba(0, 0, 0, 0.05); }
 
-.suggestion-label {
-    font-family: var(--font-mono);
-    font-size: 11px; font-weight: 600;
-    color: var(--text-secondary);
-    letter-spacing: 0.1em;
+.spotlight-results-container {
+    max-height: 50vh; overflow-y: auto; scrollbar-width: none;
 }
+.spotlight-results-container::-webkit-scrollbar { display: none; }
 
-.suggestion-list {
-    list-style: none; display: flex; flex-direction: column; gap: 16px;
-}
+.spotlight-results { list-style: none; padding: 12px; display: flex; flex-direction: column; gap: 4px; }
 
-.suggestion-item {
-    font-family: var(--font-mono); font-size: 14px; font-weight: 500;
-    color: var(--text-primary); cursor: pointer;
-    transition: transform 0.2s ease, color 0.2s ease;
-    display: flex; gap: 12px; align-items: center;
+.result-item {
+    padding: 16px; border-radius: 8px; cursor: pointer;
+    display: flex; flex-direction: column; gap: 6px;
+    transition: background 0.2s ease;
 }
-.suggestion-item:hover {
-    color: var(--accent); transform: translateX(10px);
-}
-.sugg-cmd { color: var(--powder-grey); font-size: 11px; }
+.result-item:hover, .result-item.selected { background: var(--accent); }
+.result-item:hover .result-title, .result-item:hover .result-snippet, .result-item.selected * { color: #fff; }
 
-@media (max-width: 768px) {
-    .terminal-container { padding: 0 20px; }
-    .input-wrapper { gap: 16px; }
-}
+.result-title { font-size: 14px; font-weight: 600; color: var(--text-primary); }
+.result-snippet { font-size: 12px; color: var(--text-secondary); line-height: 1.4; }
+.snippet-highlight { font-weight: 800; text-decoration: underline; }
