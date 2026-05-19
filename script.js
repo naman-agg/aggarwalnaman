@@ -209,124 +209,77 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.addEventListener('scroll', () => { requestAnimationFrame(onWindowScroll); });
     onWindowScroll(); 
-    // ==========================================
-    // 7. LIVE HEX SCANNER ENGINE
-    // ==========================================
-    const scannerBtn = document.getElementById('hex-scanner-btn');
-    let isScannerActive = false;
 
-    // Create and inject the HUD
-    const scannerHud = document.createElement('div');
-    scannerHud.id = 'scanner-hud';
-    scannerHud.innerHTML = `
-        <div class="scan-row">
-            <span class="scan-label">FG</span>
-            <div class="scan-box" id="scan-fg-box"></div>
-            <span class="scan-hex" id="scan-fg-hex">-</span>
-        </div>
-        <div class="scan-row">
-            <span class="scan-label">BG</span>
-            <div class="scan-box" id="scan-bg-box"></div>
-            <span class="scan-hex" id="scan-bg-hex">-</span>
-        </div>
-    `;
-    document.body.appendChild(scannerHud);
 
-    const fgBox = document.getElementById('scan-fg-box');
-    const fgHex = document.getElementById('scan-fg-hex');
-    const bgBox = document.getElementById('scan-bg-box');
-    const bgHex = document.getElementById('scan-bg-hex');
+    // ==========================================
+    // 6. SPOTLIGHT SEARCH ENGINE & ROUTING
+    // ==========================================
+    const searchBtnNode = document.querySelector('.search-btn');
+    const searchOverlay = document.getElementById('search-overlay');
+    const closeSearchBtn = document.getElementById('close-search');
+    const searchInput = document.getElementById('search-input');
+    const searchResults = document.getElementById('search-results');
+
+    const searchableSections = [
+        { id: 'about-section', title: 'Overview' },
+        { id: 'philosophy-section', title: 'Methodology' },
+        { id: 'journey-section', title: 'Timeline' },
+        { id: 'workshop-section', title: 'Workshop' }
+    ];
+
+    let searchIndex = [];
     
-    // Internal variables to hold current colours for clipboard copying
-    let currentData = '';
-
-    // Mathematical RGB to HEX converter
-    function rgbToHex(rgb) {
-        if (rgb === 'rgba(0, 0, 0, 0)' || rgb === 'transparent') return 'CLEAR';
-        const match = rgb.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)/);
-        if (!match) return rgb;
-        return "#" + (1 << 24 | match[1] << 16 | match[2] << 8 | match[3]).toString(16).slice(1).toUpperCase();
-    }
-
-    // Toggle Scanner State
-    if (scannerBtn) {
-        scannerBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            isScannerActive = !isScannerActive;
-            document.body.classList.toggle('scanner-active', isScannerActive);
-            
-            if (isScannerActive) {
-                scannerBtn.style.color = 'var(--accent)';
-                scannerBtn.textContent = '[ SCANNING... ]';
-            } else {
-                scannerBtn.style.color = '';
-                scannerBtn.textContent = '[ HEX.SCANNER ]';
-                scannerHud.style.opacity = '0';
-            }
+    // Build the Search Index from actual DOM content
+    setTimeout(() => {
+        searchIndex = searchableSections.map(sec => {
+            const el = document.getElementById(sec.id);
+            return {
+                id: sec.id,
+                title: sec.title,
+                text: el ? el.innerText.replace(/\n/g, ' ') : ''
+            };
         });
+    }, 500);
+
+    function openSearch() {
+        searchOverlay.classList.add('active');
+        setTimeout(() => searchInput.focus(), 50); 
+        renderDefaultResults();
     }
 
-    // Live Tracking & Computation
-    document.addEventListener('mousemove', (e) => {
-        if (!isScannerActive) return;
+    function closeSearch() {
+        searchOverlay.classList.remove('active');
+        searchInput.value = ''; 
+    }
 
-        // Track cursor
-        scannerHud.style.left = `${e.clientX}px`;
-        scannerHud.style.top = `${e.clientY}px`;
-
-        // Identify the exact DOM node under the crosshair
-        const target = document.elementFromPoint(e.clientX, e.clientY);
-
-        // Ignore the HUD itself to prevent feedback loops
-        if (target && target.id !== 'scanner-hud' && !scannerHud.contains(target)) {
-            const computed = window.getComputedStyle(target);
-            
-            const fgColorRaw = computed.color;
-            const bgColorRaw = computed.backgroundColor;
-            
-            const fgHexVal = rgbToHex(fgColorRaw);
-            const bgHexVal = rgbToHex(bgColorRaw);
-
-            // Update HUD Visuals
-            fgBox.style.backgroundColor = fgHexVal === 'CLEAR' ? 'transparent' : fgHexVal;
-            fgHex.textContent = fgHexVal;
-            
-            bgBox.style.backgroundColor = bgHexVal === 'CLEAR' ? 'transparent' : bgHexVal;
-            bgHex.textContent = bgHexVal;
-
-            // Store data for copying
-            currentData = `FG: ${fgHexVal} | BG: ${bgHexVal}`;
-            
-            scannerHud.style.opacity = '1';
-        } else {
-            scannerHud.style.opacity = '0';
-        }
+    if (searchBtnNode) searchBtnNode.addEventListener('click', openSearch);
+    if (closeSearchBtn) closeSearchBtn.addEventListener('click', closeSearch);
+    
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && searchOverlay.classList.contains('active')) closeSearch();
+    });
+    
+    searchOverlay.addEventListener('click', (e) => {
+        if (e.target === searchOverlay) closeSearch();
     });
 
-    // Click to Copy and Exit
-    document.addEventListener('click', (e) => {
-        if (isScannerActive && e.target !== scannerBtn) {
-            // Copy to clipboard
-            navigator.clipboard.writeText(currentData).then(() => {
-                // Visual feedback on the button
-                scannerBtn.textContent = '[ COPIED TO CLIPBOARD ]';
-                scannerBtn.classList.add('flash-copied');
-                
-                // Shut down scanner
-                isScannerActive = false;
-                document.body.classList.remove('scanner-active');
-                scannerHud.style.opacity = '0';
-                
-                // Reset button after 2 seconds
-                setTimeout(() => {
-                    scannerBtn.textContent = '[ HEX.SCANNER ]';
-                    scannerBtn.style.color = '';
-                    scannerBtn.classList.remove('flash-copied');
-                }, 2000);
-            });
+    // Routing Logic (Fixes the Landing Page scroll bug)
+    function routeToSection(targetId) {
+        closeSearch();
+        
+        if (window.scrollY < 500) {
+            window.scrollTo({ top: 600, behavior: 'instant' });
         }
-    });
-    // 3. Dynamic Search Filtering & Snippet Generation
+
+        setTimeout(() => {
+            const targetSec = document.getElementById(targetId);
+            if (targetSec && capsule) {
+                capsule.scrollTo({ top: targetSec.offsetTop, behavior: 'smooth' });
+            }
+        }, 50);
+    }
+
+    // Dynamic Search Filtering & Snippet Generation
     function renderDefaultResults() {
         searchResults.innerHTML = '';
         
@@ -351,7 +304,6 @@ document.addEventListener('DOMContentLoaded', () => {
         actionsHeading.textContent = 'SYSTEM ACTIONS';
         searchResults.appendChild(actionsHeading);
 
-        // Print Action
         const printLi = document.createElement('li');
         printLi.className = 'result-item interactive-element';
         printLi.innerHTML = `
@@ -361,7 +313,6 @@ document.addEventListener('DOMContentLoaded', () => {
         printLi.addEventListener('click', () => { closeSearch(); window.print(); });
         searchResults.appendChild(printLi);
 
-        // Theme Toggle Action (Optional, but a great UX touch)
         const themeLi = document.createElement('li');
         themeLi.className = 'result-item interactive-element';
         themeLi.innerHTML = `
@@ -398,7 +349,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // --- CATEGORY: TOP HITS (When Searching) ---
+        // --- CATEGORY: TOP HITS ---
         const hitsHeading = document.createElement('li');
         hitsHeading.className = 'results-group-heading';
         hitsHeading.textContent = 'TOP HITS';
@@ -408,7 +359,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const li = document.createElement('li');
             li.className = 'result-item interactive-element';
             
-            // Generate a smart text snippet around the searched word
             let snippet = '';
             const matchIndex = match.text.toLowerCase().indexOf(query);
             if (matchIndex > -1) {
@@ -418,7 +368,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (start > 0) snippet = '...' + snippet;
                 if (end < match.text.length) snippet = snippet + '...';
                 
-                // Bold the matched word using the accent colour
                 const regex = new RegExp(`(${query})`, 'gi');
                 snippet = snippet.replace(regex, '<span class="snippet-highlight">$1</span>');
             }
@@ -432,4 +381,109 @@ document.addEventListener('DOMContentLoaded', () => {
             searchResults.appendChild(li);
         });
     });
+
+
+    // ==========================================
+    // 7. LIVE HEX SCANNER ENGINE
+    // ==========================================
+    const scannerBtn = document.getElementById('hex-scanner-btn');
+    let isScannerActive = false;
+
+    if (scannerBtn) {
+        const scannerHud = document.createElement('div');
+        scannerHud.id = 'scanner-hud';
+        scannerHud.innerHTML = `
+            <div class="scan-row">
+                <span class="scan-label">FG</span>
+                <div class="scan-box" id="scan-fg-box"></div>
+                <span class="scan-hex" id="scan-fg-hex">-</span>
+            </div>
+            <div class="scan-row">
+                <span class="scan-label">BG</span>
+                <div class="scan-box" id="scan-bg-box"></div>
+                <span class="scan-hex" id="scan-bg-hex">-</span>
+            </div>
+        `;
+        document.body.appendChild(scannerHud);
+
+        const fgBox = document.getElementById('scan-fg-box');
+        const fgHex = document.getElementById('scan-fg-hex');
+        const bgBox = document.getElementById('scan-bg-box');
+        const bgHex = document.getElementById('scan-bg-hex');
+        
+        let currentData = '';
+
+        function rgbToHex(rgb) {
+            if (rgb === 'rgba(0, 0, 0, 0)' || rgb === 'transparent') return 'CLEAR';
+            const match = rgb.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+            if (!match) return rgb;
+            return "#" + (1 << 24 | match[1] << 16 | match[2] << 8 | match[3]).toString(16).slice(1).toUpperCase();
+        }
+
+        scannerBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            isScannerActive = !isScannerActive;
+            document.body.classList.toggle('scanner-active', isScannerActive);
+            
+            if (isScannerActive) {
+                scannerBtn.style.color = 'var(--accent)';
+                scannerBtn.textContent = '[ SCANNING... ]';
+            } else {
+                scannerBtn.style.color = '';
+                scannerBtn.textContent = '[ HEX.SCANNER ]';
+                scannerHud.style.opacity = '0';
+            }
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isScannerActive) return;
+
+            scannerHud.style.left = `${e.clientX}px`;
+            scannerHud.style.top = `${e.clientY}px`;
+
+            const target = document.elementFromPoint(e.clientX, e.clientY);
+
+            if (target && target.id !== 'scanner-hud' && !scannerHud.contains(target)) {
+                const computed = window.getComputedStyle(target);
+                
+                const fgColorRaw = computed.color;
+                const bgColorRaw = computed.backgroundColor;
+                
+                const fgHexVal = rgbToHex(fgColorRaw);
+                const bgHexVal = rgbToHex(bgColorRaw);
+
+                fgBox.style.backgroundColor = fgHexVal === 'CLEAR' ? 'transparent' : fgHexVal;
+                fgHex.textContent = fgHexVal;
+                
+                bgBox.style.backgroundColor = bgHexVal === 'CLEAR' ? 'transparent' : bgHexVal;
+                bgHex.textContent = bgHexVal;
+
+                currentData = `FG: ${fgHexVal} | BG: ${bgHexVal}`;
+                
+                scannerHud.style.opacity = '1';
+            } else {
+                scannerHud.style.opacity = '0';
+            }
+        });
+
+        document.addEventListener('click', (e) => {
+            if (isScannerActive && e.target !== scannerBtn) {
+                navigator.clipboard.writeText(currentData).then(() => {
+                    scannerBtn.textContent = '[ COPIED TO CLIPBOARD ]';
+                    scannerBtn.classList.add('flash-copied');
+                    
+                    isScannerActive = false;
+                    document.body.classList.remove('scanner-active');
+                    scannerHud.style.opacity = '0';
+                    
+                    setTimeout(() => {
+                        scannerBtn.textContent = '[ HEX.SCANNER ]';
+                        scannerBtn.style.color = '';
+                        scannerBtn.classList.remove('flash-copied');
+                    }, 2000);
+                });
+            }
+        });
+    }
+
 });

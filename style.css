@@ -711,6 +711,7 @@ body.scanner-active, body.scanner-active * {
 
 /* The searched keyword takes the accent colour for a precise, technical pop */
 .snippet-highlight { font-weight: 800; color: var(--accent); }
+
 /* Spotlight Category Headings */
 .results-group-heading {
     font-family: var(--font-mono);
