@@ -200,4 +200,95 @@ document.querySelectorAll('.material-component').forEach(card => {
         card.style.setProperty('--y', `${y}%`);
     });
 });
+// ==========================================
+    // MAGNETIC FERROFLUID PHYSICS ENGINE
+    // ==========================================
+    const nameEl = document.getElementById('hero-l2');
+    const nameText = nameEl.textContent;
+    nameEl.innerHTML = ''; // Clear the static text
+    
+    const chars = [];
+
+    // Fracture the text into individual DOM elements
+    for (let char of nameText) {
+        if (char === ' ') {
+            const space = document.createElement('span');
+            space.innerHTML = '&nbsp;';
+            nameEl.appendChild(space);
+            continue;
+        }
+        const span = document.createElement('span');
+        span.textContent = char;
+        span.className = 'ferro-char';
+        nameEl.appendChild(span);
+        
+        // Initialize physics state for each letter
+        chars.push({
+            el: span,
+            x: 0, y: 0,       // Current position
+            vx: 0, vy: 0,     // Velocity
+            targetX: 0, targetY: 0 // Magnetic pull target
+        });
+    }
+
+    // Physics Calibration (Tune these to change the metal's weight)
+    const magnetRadius = 200; // How close the mouse needs to be to attract
+    const magneticForce = 45; // How far the letters stretch towards the mouse
+    const spring = 0.15;      // How aggressively they snap back to the grid (stiffness)
+    const friction = 0.75;    // How much they wobble before settling (damping)
+
+    function renderFerrofluid() {
+        chars.forEach(c => {
+            const rect = c.el.getBoundingClientRect();
+            // Calculate absolute center of the letter
+            const charCenterX = rect.left + rect.width / 2;
+            const charCenterY = rect.top + rect.height / 2;
+
+            // Distance from cursor to letter
+            const dx = mouseX - charCenterX;
+            const dy = mouseY - charCenterY;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+
+            c.targetX = 0;
+            c.targetY = 0;
+            let scale = 1;
+
+            if (dist < magnetRadius) {
+                // Inverse drop-off: Pulls harder the closer the magnet gets
+                const pullStrength = Math.pow((magnetRadius - dist) / magnetRadius, 2);
+                c.targetX = (dx / dist) * (pullStrength * magneticForce);
+                c.targetY = (dy / dist) * (pullStrength * magneticForce);
+                
+                // Slightly bloat the letter to simulate liquid expanding under magnetic stress
+                scale = 1 + (pullStrength * 0.15);
+                
+                // Shift colour towards safety orange at the epicentre of the magnetic field
+                const heat = Math.min(pullStrength * 1.5, 1);
+                c.el.style.color = `color-mix(in srgb, var(--accent) ${heat * 100}%, var(--text-primary))`;
+            } else {
+                c.el.style.color = 'var(--text-primary)';
+            }
+
+            // Calculate Spring Physics
+            c.vx += (c.targetX - c.x) * spring;
+            c.vy += (c.targetY - c.y) * spring;
+            
+            // Apply Friction
+            c.vx *= friction;
+            c.vy *= friction;
+            
+            // Update Position
+            c.x += c.vx;
+            c.y += c.vy;
+
+            // Render to DOM
+            c.el.style.transform = `translate3d(${c.x}px, ${c.y}px, 0) scale(${scale})`;
+        });
+
+        requestAnimationFrame(renderFerrofluid);
+    }
+    
+    // Boot the physics engine
+    renderFerrofluid();
+    // ==========================================
 });
