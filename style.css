@@ -364,3 +364,32 @@ body.light-mode .light-icon { color: #ffffff; }
     .world-clock { gap: 12px; }
     .clock-time { font-size: 14px; }
 }
+
+/* ========================================================== */
+/* HARDWARE SCROLL PROGRESS INDICATOR                         */
+/* ========================================================== */
+.scroll-progress-track {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100vw;
+    height: 4px; /* Thin, precision milled line */
+    background-color: rgba(0, 0, 0, 0.6); /* Dark recessed track */
+    z-index: 9999;
+    pointer-events: none;
+}
+
+.light-mode .scroll-progress-track {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.scroll-progress-fill {
+    height: 100%;
+    width: 0%; /* Starts empty */
+    background-color: var(--accent);
+    /* Creates a subtle optical glow against the dark metal */
+    box-shadow: 0 0 8px rgba(250, 91, 28, 0.6); 
+    /* Extremely fast linear transition for real-time 60fps tracking */
+    transition: width 0.05s linear; 
+}
+/* ========================================================== */

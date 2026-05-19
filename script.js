@@ -62,6 +62,15 @@ document.addEventListener('DOMContentLoaded', () => {
     capsule.addEventListener('scroll', () => {
         const scrollY = capsule.scrollTop;
         const capsuleHeight = capsule.clientHeight;
+        
+        // --- NEW: PROGRESS BAR LOGIC ---
+        // Calculate the maximum possible scroll distance
+        const maxCapsuleScroll = capsule.scrollHeight - capsule.clientHeight;
+        // Calculate the percentage, ensuring it doesn't break if maxCapsuleScroll is 0
+        const progressPercentage = maxCapsuleScroll > 0 ? (scrollY / maxCapsuleScroll) * 100 : 0;
+        // Apply the percentage to the CSS width
+        document.getElementById('scroll-progress').style.width = `${progressPercentage}%`;
+        // -------------------------------
 
         if (hWrapper && stickyView && cardsTrack) {
             const startHScroll = hWrapper.offsetTop - (capsuleHeight * 0.1); 
