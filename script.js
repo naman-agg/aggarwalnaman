@@ -209,4 +209,121 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.addEventListener('scroll', () => { requestAnimationFrame(onWindowScroll); });
     onWindowScroll(); 
+    // ==========================================
+    // 7. LIVE HEX SCANNER ENGINE
+    // ==========================================
+    const scannerBtn = document.getElementById('hex-scanner-btn');
+    let isScannerActive = false;
+
+    // Create and inject the HUD
+    const scannerHud = document.createElement('div');
+    scannerHud.id = 'scanner-hud';
+    scannerHud.innerHTML = `
+        <div class="scan-row">
+            <span class="scan-label">FG</span>
+            <div class="scan-box" id="scan-fg-box"></div>
+            <span class="scan-hex" id="scan-fg-hex">-</span>
+        </div>
+        <div class="scan-row">
+            <span class="scan-label">BG</span>
+            <div class="scan-box" id="scan-bg-box"></div>
+            <span class="scan-hex" id="scan-bg-hex">-</span>
+        </div>
+    `;
+    document.body.appendChild(scannerHud);
+
+    const fgBox = document.getElementById('scan-fg-box');
+    const fgHex = document.getElementById('scan-fg-hex');
+    const bgBox = document.getElementById('scan-bg-box');
+    const bgHex = document.getElementById('scan-bg-hex');
+    
+    // Internal variables to hold current colours for clipboard copying
+    let currentData = '';
+
+    // Mathematical RGB to HEX converter
+    function rgbToHex(rgb) {
+        if (rgb === 'rgba(0, 0, 0, 0)' || rgb === 'transparent') return 'CLEAR';
+        const match = rgb.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+        if (!match) return rgb;
+        return "#" + (1 << 24 | match[1] << 16 | match[2] << 8 | match[3]).toString(16).slice(1).toUpperCase();
+    }
+
+    // Toggle Scanner State
+    if (scannerBtn) {
+        scannerBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            isScannerActive = !isScannerActive;
+            document.body.classList.toggle('scanner-active', isScannerActive);
+            
+            if (isScannerActive) {
+                scannerBtn.style.color = 'var(--accent)';
+                scannerBtn.textContent = '[ SCANNING... ]';
+            } else {
+                scannerBtn.style.color = '';
+                scannerBtn.textContent = '[ HEX.SCANNER ]';
+                scannerHud.style.opacity = '0';
+            }
+        });
+    }
+
+    // Live Tracking & Computation
+    document.addEventListener('mousemove', (e) => {
+        if (!isScannerActive) return;
+
+        // Track cursor
+        scannerHud.style.left = `${e.clientX}px`;
+        scannerHud.style.top = `${e.clientY}px`;
+
+        // Identify the exact DOM node under the crosshair
+        const target = document.elementFromPoint(e.clientX, e.clientY);
+
+        // Ignore the HUD itself to prevent feedback loops
+        if (target && target.id !== 'scanner-hud' && !scannerHud.contains(target)) {
+            const computed = window.getComputedStyle(target);
+            
+            const fgColorRaw = computed.color;
+            const bgColorRaw = computed.backgroundColor;
+            
+            const fgHexVal = rgbToHex(fgColorRaw);
+            const bgHexVal = rgbToHex(bgColorRaw);
+
+            // Update HUD Visuals
+            fgBox.style.backgroundColor = fgHexVal === 'CLEAR' ? 'transparent' : fgHexVal;
+            fgHex.textContent = fgHexVal;
+            
+            bgBox.style.backgroundColor = bgHexVal === 'CLEAR' ? 'transparent' : bgHexVal;
+            bgHex.textContent = bgHexVal;
+
+            // Store data for copying
+            currentData = `FG: ${fgHexVal} | BG: ${bgHexVal}`;
+            
+            scannerHud.style.opacity = '1';
+        } else {
+            scannerHud.style.opacity = '0';
+        }
+    });
+
+    // Click to Copy and Exit
+    document.addEventListener('click', (e) => {
+        if (isScannerActive && e.target !== scannerBtn) {
+            // Copy to clipboard
+            navigator.clipboard.writeText(currentData).then(() => {
+                // Visual feedback on the button
+                scannerBtn.textContent = '[ COPIED TO CLIPBOARD ]';
+                scannerBtn.classList.add('flash-copied');
+                
+                // Shut down scanner
+                isScannerActive = false;
+                document.body.classList.remove('scanner-active');
+                scannerHud.style.opacity = '0';
+                
+                // Reset button after 2 seconds
+                setTimeout(() => {
+                    scannerBtn.textContent = '[ HEX.SCANNER ]';
+                    scannerBtn.style.color = '';
+                    scannerBtn.classList.remove('flash-copied');
+                }, 2000);
+            });
+        }
+    });
 });
