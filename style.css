@@ -11,7 +11,7 @@
     
     /* MATERIAL SCIENCE PALETTE: Anodised Aluminium */
     --surface-slab: #1c1c1e;        /* The outer metal body */
-    --surface-recessed: #151517;    /* The darker interior of the milled pocket */
+    --surface-recessed: #151517;    /* The darker interior */
     --bg-card: #222224;             /* Solid components inside */
     
     /* Precision CNC Lighting */
@@ -53,17 +53,13 @@
     background-image: var(--micro-grain);
 }
 
-/* THE RECESSED POCKET (Main Container & Toggle) */
+/* THE RECTANGLE (Main Container - Inset Shadows Removed) */
 .material-surface {
     background-color: var(--surface-recessed);
     background-image: 
         linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(255,255,255,0.02) 100%),
         var(--micro-grain);
-    box-shadow: 
-        inset 0 6px 12px -2px var(--cut-shadow-dark),
-        inset 0 2px 4px -1px var(--cut-shadow-mid),
-        inset 0 -1px 1px 0 var(--edge-highlight),
-        0 1px 0 0 rgba(255, 255, 255, 0.03);
+    box-shadow: none; /* Internal shadows eradicated */
     border: none;
     border-top: 1px solid rgba(0, 0, 0, 0.8);
 }
@@ -212,7 +208,6 @@ body.light-mode .light-icon { color: #ffffff; }
 }
 .status-dot { color: var(--accent); } /* Static, clean hardware dot */
 
-
 /* ========================================================== */
 
 .capsule-nav { position: fixed; top: 50%; transform: translateY(-50%); left: calc(var(--edge-pad) / 2); display: flex; flex-direction: column; gap: 20px; z-index: 105; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
@@ -292,48 +287,6 @@ body.light-mode .light-icon { color: #ffffff; }
 .marquee-content span:nth-child(even) { color: var(--accent); font-family: monospace; font-size: 30px; }
 @keyframes scroll-marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
-
-
-
-/* Technical Specs Overlay */
-.capsule-specs-left, .capsule-specs-right {
-    position: sticky;
-    top: 20px;
-    font-family: monospace;
-    font-size: 9px;
-    font-weight: 800;
-    color: var(--accent);
-    opacity: 0.4;
-    letter-spacing: 0.1em;
-    z-index: 100;
-    pointer-events: none;
-}
-.capsule-specs-left { float: left; margin-left: 20px; }
-.capsule-specs-right { float: right; margin-right: 20px; }
-
-/* Refined Card Interaction (The Flashlight Effect) */
-.material-component {
-    position: relative;
-    overflow: hidden;
-}
-
-.material-component::after {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(255,255,255,0.06) 0%, transparent 60%);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    pointer-events: none;
-}
-
-.material-component:hover::after {
-    opacity: 1;
-}
-
-
-
-
 /* ========================================================== */
 /* ABSOLUTE CENTRE FOOTER ALIGNMENT                           */
 /* ========================================================== */
@@ -343,7 +296,7 @@ body.light-mode .light-icon { color: #ffffff; }
     left: 0; 
     width: 100%; 
     height: var(--ui-height);
-    display: flex; /* Switched from grid to flex for better centering */
+    display: flex; 
     align-items: center;
     justify-content: space-between;
     padding: 0 var(--edge-pad); 
@@ -354,7 +307,6 @@ body.light-mode .light-icon { color: #ffffff; }
 
 .site-footer > * { pointer-events: auto; } 
 
-/* Fixed width containers for the sides to prevent the centre from drifting */
 .footer-left, .footer-right { 
     flex: 1; 
     display: flex; 
@@ -364,7 +316,6 @@ body.light-mode .light-icon { color: #ffffff; }
 .footer-left { justify-content: flex-start; }
 .footer-right { justify-content: flex-end; }
 
-/* The Centre block is now mathematically locked to the screen's midline */
 .footer-centre { 
     position: absolute;
     left: 50%;
@@ -374,66 +325,19 @@ body.light-mode .light-icon { color: #ffffff; }
     gap: 32px; 
 }
 
-.world-clock { 
-    display: flex; 
-    gap: 32px; 
-}
+.world-clock { display: flex; gap: 32px; }
+.clock-item { display: flex; flex-direction: column; line-height: 1.1; }
+.clock-label { font-size: 10px; font-weight: 800; letter-spacing: 0.12em; color: var(--text-secondary); margin-bottom: 4px; }
+.clock-time { font-family: monospace; font-size: 18px; font-weight: 600; color: var(--accent); letter-spacing: -0.02em; }
 
-.clock-item { 
-    display: flex; 
-    flex-direction: column; 
-    line-height: 1.1; 
-}
-
-.clock-label { 
-    font-size: 10px; 
-    font-weight: 800; 
-    letter-spacing: 0.12em; 
-    color: var(--text-secondary); 
-    margin-bottom: 4px; 
-}
-
-.clock-time { 
-    font-family: monospace; 
-    font-size: 18px; 
-    font-weight: 600; 
-    color: var(--accent); 
-    letter-spacing: -0.02em; 
-}
-
-.social-icon { 
-    color: var(--text-secondary); 
-    transition: color 0.3s ease, transform 0.3s ease; 
-    display: flex; 
-}
+.social-icon { color: var(--text-secondary); transition: color 0.3s ease, transform 0.3s ease; display: flex; }
 .social-icon:hover { color: var(--accent-secondary); transform: translateY(-2px); }
 
-.resume-link { 
-    color: var(--text-primary); 
-    text-decoration: none; 
-    font-size: 14px; 
-    font-weight: 800; 
-    letter-spacing: 0.1em; 
-    transition: opacity 0.3s ease; 
-    border-bottom: 2px solid transparent;
-}
+.resume-link { color: var(--text-primary); text-decoration: none; font-size: 14px; font-weight: 800; letter-spacing: 0.1em; transition: opacity 0.3s ease; border-bottom: 2px solid transparent; }
 .resume-link:hover { border-bottom: 2px solid var(--accent); }
 
 @media (max-width: 1024px) {
-    /* Hide specific clocks on tablets/small laptops to protect the centre icons */
     .mobile-hide { display: none !important; }
-}
-
-@media (max-width: 768px) {
-    .site-footer { padding: 0 16px; }
-    .footer-centre { 
-        position: static; 
-        transform: none; 
-        gap: 16px;
-    }
-    .footer-right { display: none; } /* Hide resume on mobile footer to keep it clean */
-    .world-clock { gap: 12px; }
-    .clock-time { font-size: 14px; }
 }
 
 @media (max-width: 768px) {
@@ -453,4 +357,10 @@ body.light-mode .light-icon { color: #ffffff; }
 
     .workshop-grid { grid-template-columns: 1fr; }
     .mobile-hide { display: none !important; }
+    
+    .site-footer { padding: 0 16px; }
+    .footer-centre { position: static; transform: none; gap: 16px; }
+    .footer-right { display: none; } 
+    .world-clock { gap: 12px; }
+    .clock-time { font-size: 14px; }
 }
