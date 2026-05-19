@@ -276,5 +276,41 @@
     <div class="scroll-progress-track">
         <div class="scroll-progress-fill" id="scroll-progress"></div>
     </div>
+    <div class="command-terminal" id="command-terminal">
+        <div class="terminal-container">
+            <div class="terminal-header">
+                <span class="terminal-title">SYS.QUERY_INTERFACE // v.2026</span>
+                <button class="terminal-close interactive-element" id="close-terminal" aria-label="Close Terminal">[ ESC ]</button>
+            </div>
+            
+            <div class="terminal-body">
+                <div class="input-wrapper">
+                    <span class="input-prefix">></span>
+                    <input type="text" class="terminal-input" id="terminal-input" placeholder="ENTER DIRECTIVE..." autocomplete="off" spellcheck="false">
+                </div>
+                
+                <div class="terminal-suggestions">
+                    <span class="suggestion-label">AVAILABLE_DIRECTIVES:</span>
+                    <ul class="suggestion-list" id="suggestion-list">
+                        <li class="suggestion-item interactive-element" data-target="about-section">
+                            <span class="sugg-cmd">EXECUTE:</span> // OVERVIEW
+                        </li>
+                        <li class="suggestion-item interactive-element" data-target="philosophy-section">
+                            <span class="sugg-cmd">EXECUTE:</span> // METHODOLOGY
+                        </li>
+                        <li class="suggestion-item interactive-element" data-target="journey-section">
+                            <span class="sugg-cmd">EXECUTE:</span> // TIMELINE
+                        </li>
+                        <li class="suggestion-item interactive-element" data-target="workshop-section">
+                            <span class="sugg-cmd">EXECUTE:</span> // WORKSHOP
+                        </li>
+                        <li class="suggestion-item interactive-element" id="cmd-print">
+                            <span class="sugg-cmd">EXECUTE:</span> // PRINT_DOSSIER
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

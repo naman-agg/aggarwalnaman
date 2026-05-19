@@ -326,4 +326,72 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
     });
+    // ==========================================
+    // 6. COMMAND TERMINAL (SEARCH OVERLAY)
+    // ==========================================
+    const searchBtn = document.querySelector('.search-btn');
+    const terminal = document.getElementById('command-terminal');
+    const closeTerminalBtn = document.getElementById('close-terminal');
+    const terminalInput = document.getElementById('terminal-input');
+    const suggestionItems = document.querySelectorAll('.suggestion-item');
+
+    function openTerminal() {
+        terminal.classList.add('active');
+        // Small delay ensures the transition starts before focusing
+        setTimeout(() => terminalInput.focus(), 50); 
+    }
+
+    function closeTerminal() {
+        terminal.classList.remove('active');
+        terminalInput.value = ''; // Clear input on close
+        filterSuggestions('');    // Reset list
+    }
+
+    // Event Listeners for Open/Close
+    if (searchBtn) searchBtn.addEventListener('click', openTerminal);
+    if (closeTerminalBtn) closeTerminalBtn.addEventListener('click', closeTerminal);
+    
+    // Close on ESC key or clicking outside the container
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && terminal.classList.contains('active')) {
+            closeTerminal();
+        }
+    });
+    
+    terminal.addEventListener('click', (e) => {
+        if (e.target === terminal) closeTerminal();
+    });
+
+    // Handle executing commands (Clicking suggestions)
+    suggestionItems.forEach(item => {
+        item.addEventListener('click', () => {
+            if (item.id === 'cmd-print') {
+                window.print();
+            } else {
+                const targetId = item.getAttribute('data-target');
+                const targetSec = document.getElementById(targetId);
+                if (targetSec && capsule) {
+                    capsule.scrollTo({ top: targetSec.offsetTop, behavior: 'smooth' });
+                }
+            }
+            closeTerminal();
+        });
+    });
+
+    // Live filtering of directives as the user types
+    function filterSuggestions(query) {
+        const q = query.toLowerCase();
+        suggestionItems.forEach(item => {
+            const text = item.textContent.toLowerCase();
+            if (text.includes(q)) {
+                item.style.display = 'flex';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+    }
+
+    terminalInput.addEventListener('input', (e) => {
+        filterSuggestions(e.target.value);
+    });
 });
