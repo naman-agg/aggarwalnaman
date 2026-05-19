@@ -53,16 +53,6 @@
     background-image: var(--micro-grain);
 }
 
-/* THE RECTANGLE (Main Container - Inset Shadows Removed) */
-.material-surface {
-    background-color: var(--surface-recessed);
-    background-image: 
-        linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(255,255,255,0.02) 100%),
-        var(--micro-grain);
-    box-shadow: none; /* Internal shadows eradicated */
-    border: none;
-    border-top: 1px solid rgba(0, 0, 0, 0.8);
-}
 .light-mode .material-surface { border-top: 1px solid rgba(0,0,0,0.15); }
 
 /* SOLID MACHINED COMPONENTS (Cards sitting in the tray) */
@@ -221,19 +211,42 @@ body.light-mode .light-icon { color: #ffffff; }
 .nav-dot.active { background: var(--accent); transform: scaleY(1.5); box-shadow: 0 0 10px rgba(250, 91, 28, 0.4); }
 .nav-dot.active .nav-label { opacity: 1; transform: translateY(-50%) translateX(5px); color: var(--text-primary); }
 
+/* ========================================================== */
+/* MONOLITHIC SCROLL PLANE & NAVIGATION                       */
+/* ========================================================== */
 .capsule-container { 
-    position: fixed; top: calc(var(--v-gap) * 2 + var(--ui-height)); left: var(--edge-pad); width: calc(100% - (var(--edge-pad) * 2)); height: calc(100vh - (var(--v-gap) * 4 + var(--ui-height) * 2)); z-index: 50; 
-    border-radius: 16px; /* Precise tool bit radius */
-    overflow-y: auto; scrollbar-width: none; transform: translateY(100vh); opacity: 0; pointer-events: none; scroll-behavior: smooth;
+    position: fixed; 
+    /* Stretches edge-to-edge horizontally */
+    left: 0; 
+    width: 100vw; 
+    /* Sits cleanly between the global controls and the footer */
+    top: calc(var(--v-gap) + var(--ui-height)); 
+    height: calc(100vh - (var(--v-gap) * 2 + var(--ui-height) * 2)); 
+    z-index: 50; 
+    overflow-y: auto; 
+    scrollbar-width: none; 
+    transform: translateY(100vh); 
+    opacity: 0; 
+    pointer-events: none; 
+    scroll-behavior: smooth;
+
+    /* Hardware Fade: Content softly fades into the metal before hitting header/footer */
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 5%, black 95%, transparent 100%);
+    mask-image: linear-gradient(to bottom, transparent 0%, black 5%, black 95%, transparent 100%);
 }
 .capsule-container::-webkit-scrollbar { display: none; }
 
 .footer-spacer { height: 120px; clear: both; } 
 .text-center { text-align: center; }
 
+/* SECTIONS */
 .spec-tag { font-family: monospace; font-size: 12px; font-weight: 700; letter-spacing: 0.2em; color: var(--accent); display: block; margin-bottom: 20px; text-transform: uppercase; }
-.standard-section { padding: 120px 80px; max-width: 1200px; margin: 0 auto; clear: both; }
+
+/* Adjusted padding to respect the full-width monolithic plane */
+.standard-section { padding: 120px calc(var(--edge-pad) * 2); max-width: 1200px; margin: 0 auto; clear: both; }
+
 .section-heading { font-size: clamp(32px, 5vw, 48px); font-weight: 900; letter-spacing: -0.02em; margin-bottom: 60px; color: var(--text-primary); }
+
 
 .philosophy-section { padding-top: 150px; }
 .philosophy-header { max-width: 800px; margin-bottom: 80px; }
