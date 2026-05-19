@@ -1,5 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
 
+    // ==========================================
+    // 1. CURSOR ENGINE
+    // ==========================================
     const cursorTrail = document.getElementById('cursor-trail');
     const archGrid = document.getElementById('arch-grid');
     
@@ -8,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     window.addEventListener('mousemove', (e) => {
         mouseX = e.clientX; mouseY = e.clientY;
+        // Subtle optical flashlight on the background grid
         archGrid.style.webkitMaskImage = `radial-gradient(circle 400px at ${mouseX}px ${mouseY}px, black 0%, transparent 100%)`;
         archGrid.style.maskImage = `radial-gradient(circle 400px at ${mouseX}px ${mouseY}px, black 0%, transparent 100%)`;
     });
@@ -25,6 +29,10 @@ document.addEventListener('DOMContentLoaded', () => {
         el.addEventListener('mouseleave', () => { cursorTrail.classList.remove('hovering'); });
     });
 
+
+    // ==========================================
+    // 2. THEME & CLOCKS
+    // ==========================================
     const themeToggle = document.getElementById('themeToggle');
     const body = document.body;
     themeToggle.addEventListener('click', () => {
@@ -51,27 +59,55 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     setInterval(updateClocks, 1000); updateClocks();
 
+
+    // ==========================================
+    // 3. FAST VERTICAL SLIDE GREETINGS
+    // ==========================================
+    const slideTextEl = document.getElementById('slide-text');
+    const greetings = ['HELLO', 'नमस्ते', 'CIAO', 'こんにちは', 'HALLO', '안녕하세요'];
+    let greetIndex = 0;
+
+    setInterval(() => {
+        slideTextEl.classList.add('sliding-out');
+        setTimeout(() => {
+            greetIndex = (greetIndex + 1) % greetings.length;
+            slideTextEl.textContent = greetings[greetIndex];
+            
+            slideTextEl.classList.remove('sliding-out');
+            slideTextEl.classList.add('sliding-in');
+            
+            setTimeout(() => {
+                slideTextEl.classList.remove('sliding-in');
+            }, 250); 
+        }, 250); 
+    }, 3500); 
+
+
+    // ==========================================
+    // 4. CAPSULE SCROLL PHYSICS & TELEMETRY
+    // ==========================================
     const capsule = document.getElementById('capsule-container');
-    const navDots = document.querySelectorAll('.capsule-nav .nav-dot');
+    const structuralIndex = document.getElementById('structural-index');
+    const indexItems = document.querySelectorAll('.structural-index .index-item');
     const spySections = document.querySelectorAll('.scroll-spy-section');
     
     const hWrapper = document.getElementById('horizontal-wrapper');
     const stickyView = document.getElementById('sticky-view');
     const cardsTrack = document.getElementById('cards-track');
+    const scrollProgress = document.getElementById('scroll-progress');
 
     capsule.addEventListener('scroll', () => {
         const scrollY = capsule.scrollTop;
         const capsuleHeight = capsule.clientHeight;
-        
-        // --- NEW: PROGRESS BAR LOGIC ---
-        // Calculate the maximum possible scroll distance
-        const maxCapsuleScroll = capsule.scrollHeight - capsule.clientHeight;
-        // Calculate the percentage, ensuring it doesn't break if maxCapsuleScroll is 0
-        const progressPercentage = maxCapsuleScroll > 0 ? (scrollY / maxCapsuleScroll) * 100 : 0;
-        // Apply the percentage to the CSS width
-        document.getElementById('scroll-progress').style.width = `${progressPercentage}%`;
-        // -------------------------------
 
+        // A. HARDWARE PROGRESS BAR LOGIC
+        if (scrollProgress) {
+            const maxCapsuleScroll = capsule.scrollHeight - capsule.clientHeight;
+            const progressPercentage = maxCapsuleScroll > 0 ? (scrollY / maxCapsuleScroll) * 100 : 0;
+            scrollProgress.style.width = `${progressPercentage}%`;
+        }
+
+        // B. HORIZONTAL SCROLL TIMELINE LOGIC
         if (hWrapper && stickyView && cardsTrack) {
             const startHScroll = hWrapper.offsetTop - (capsuleHeight * 0.1); 
             const maxScroll = hWrapper.offsetHeight - stickyView.offsetHeight;
@@ -89,19 +125,21 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
+        // C. STRUCTURAL INDEX SCROLL SPY LOGIC
         spySections.forEach((sec, index) => {
             const secTop = sec.offsetTop - 100;
             const secBottom = secTop + sec.offsetHeight;
             if (scrollY >= secTop && scrollY < secBottom) {
-                navDots.forEach(dot => dot.classList.remove('active'));
-                if(navDots[index]) navDots[index].classList.add('active');
+                indexItems.forEach(item => item.classList.remove('active'));
+                if(indexItems[index]) indexItems[index].classList.add('active');
             }
         });
     });
 
-    navDots.forEach(dot => {
-        dot.addEventListener('click', () => {
-            const targetId = dot.getAttribute('data-target');
+    // Click to navigate via Structural Index
+    indexItems.forEach(item => {
+        item.addEventListener('click', () => {
+            const targetId = item.getAttribute('data-target');
             const targetSec = document.getElementById(targetId);
             capsule.scrollTo({ top: targetSec.offsetTop, behavior: 'smooth' });
         });
@@ -114,40 +152,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // ==========================================
-    // FAST VERTICAL SLIDE LOGIC
+    // 5. WINDOW PARALLAX (HERO TO CAPSULE TRANSITION)
     // ==========================================
-    const slideTextEl = document.getElementById('slide-text');
-    const greetings = ['HELLO', 'नमस्ते', 'CIAO', 'こんにちは', 'HALLO', '안녕하세요'];
-    let greetIndex = 0;
-
-    setInterval(() => {
-        // Trigger fast slide out
-        slideTextEl.classList.add('sliding-out');
-        
-        // Wait 250ms for CSS animation to finish
-        setTimeout(() => {
-            greetIndex = (greetIndex + 1) % greetings.length;
-            slideTextEl.textContent = greetings[greetIndex];
-            
-            // Remove out class, trigger in class
-            slideTextEl.classList.remove('sliding-out');
-            slideTextEl.classList.add('sliding-in');
-            
-            // Cleanup classes
-            setTimeout(() => {
-                slideTextEl.classList.remove('sliding-in');
-            }, 250); 
-            
-        }, 250); 
-    }, 3500); 
-    // ==========================================
-
-
     const dynamicHero = document.getElementById('dynamic-hero');
     const heroL1 = document.getElementById('hero-l1'); 
     const heroL2 = document.getElementById('hero-l2'); 
     const heroL3 = document.getElementById('hero-l3'); 
-    const capsuleNav = document.getElementById('capsule-nav');
     
     let moveDist = 0;
     function calculateHeroMath() {
@@ -159,7 +169,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const endCenterY = vGap + (uiHeight / 2); 
         moveDist = l2CenterY - endCenterY; 
     }
-    setTimeout(calculateHeroMath, 100); window.addEventListener('resize', calculateHeroMath);
+    setTimeout(calculateHeroMath, 100); 
+    window.addEventListener('resize', calculateHeroMath);
 
     function onWindowScroll() {
         const scrollY = window.scrollY;
@@ -186,11 +197,11 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (progress === 1) {
             capsule.style.pointerEvents = 'auto';
-            capsuleNav.classList.add('visible');
+            if(structuralIndex) structuralIndex.classList.add('visible');
             cursorTrail.style.display = 'none'; 
         } else {
             capsule.style.pointerEvents = 'none';
-            capsuleNav.classList.remove('visible');
+            if(structuralIndex) structuralIndex.classList.remove('visible');
             cursorTrail.style.display = 'block'; 
         }
         requestAnimationFrame(onWindowScroll);
@@ -198,15 +209,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.addEventListener('scroll', () => { requestAnimationFrame(onWindowScroll); });
     onWindowScroll(); 
-
-    // Tactical Light Tracking
-document.querySelectorAll('.material-component').forEach(card => {
-    card.addEventListener('mousemove', (e) => {
-        const rect = card.getBoundingClientRect();
-        const x = ((e.clientX - rect.left) / rect.width) * 100;
-        const y = ((e.clientY - rect.top) / rect.height) * 100;
-        card.style.setProperty('--x', `${x}%`);
-        card.style.setProperty('--y', `${y}%`);
-    });
-});
 });
