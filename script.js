@@ -326,82 +326,16 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
     });
-    // ==========================================
-    // 6. SPOTLIGHT SEARCH ENGINE & ROUTING
-    // ==========================================
-    const searchBtnNode = document.querySelector('.search-btn');
-    const searchOverlay = document.getElementById('search-overlay');
-    const closeSearchBtn = document.getElementById('close-search');
-    const searchInput = document.getElementById('search-input');
-    const searchResults = document.getElementById('search-results');
-
-    // 1. Build the Search Index from actual DOM content
-    const searchableSections = [
-        { id: 'about-section', title: 'Overview' },
-        { id: 'philosophy-section', title: 'Methodology' },
-        { id: 'journey-section', title: 'Timeline' },
-        { id: 'workshop-section', title: 'Workshop' }
-    ];
-
-    let searchIndex = [];
-    
-    // Slight delay to ensure DOM is fully rendered before indexing text
-    setTimeout(() => {
-        searchIndex = searchableSections.map(sec => {
-            const el = document.getElementById(sec.id);
-            return {
-                id: sec.id,
-                title: sec.title,
-                // Extract all raw text from the section for deep searching
-                text: el ? el.innerText.replace(/\n/g, ' ') : ''
-            };
-        });
-    }, 500);
-
-    function openSearch() {
-        searchOverlay.classList.add('active');
-        setTimeout(() => searchInput.focus(), 50); 
-        renderDefaultResults();
-    }
-
-    function closeSearch() {
-        searchOverlay.classList.remove('active');
-        searchInput.value = ''; 
-    }
-
-    if (searchBtnNode) searchBtnNode.addEventListener('click', openSearch);
-    if (closeSearchBtn) closeSearchBtn.addEventListener('click', closeSearch);
-    
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && searchOverlay.classList.contains('active')) closeSearch();
-    });
-    
-    searchOverlay.addEventListener('click', (e) => {
-        if (e.target === searchOverlay) closeSearch();
-    });
-
-    // 2. Routing Logic (Fixes the Landing Page scroll bug)
-    function routeToSection(targetId) {
-        closeSearch();
-        
-        // Force the window parallax to complete if the user is still on the landing page
-        if (window.scrollY < 500) {
-            window.scrollTo({ top: 600, behavior: 'instant' });
-        }
-
-        // Wait a micro-tick for the pointer-events to unlock, then scroll the capsule
-        setTimeout(() => {
-            const targetSec = document.getElementById(targetId);
-            if (targetSec && capsule) {
-                capsule.scrollTo({ top: targetSec.offsetTop, behavior: 'smooth' });
-            }
-        }, 50);
-    }
-
     // 3. Dynamic Search Filtering & Snippet Generation
     function renderDefaultResults() {
         searchResults.innerHTML = '';
-        // Show sections as defaults when empty
+        
+        // --- CATEGORY 1: QUICK LINKS ---
+        const quickLinksHeading = document.createElement('li');
+        quickLinksHeading.className = 'results-group-heading';
+        quickLinksHeading.textContent = 'QUICK LINKS';
+        searchResults.appendChild(quickLinksHeading);
+
         searchIndex.forEach(item => {
             const li = document.createElement('li');
             li.className = 'result-item interactive-element';
@@ -409,6 +343,37 @@ document.addEventListener('DOMContentLoaded', () => {
             li.addEventListener('click', () => routeToSection(item.id));
             searchResults.appendChild(li);
         });
+
+        // --- CATEGORY 2: SYSTEM ACTIONS ---
+        const actionsHeading = document.createElement('li');
+        actionsHeading.className = 'results-group-heading';
+        actionsHeading.style.marginTop = '8px';
+        actionsHeading.textContent = 'SYSTEM ACTIONS';
+        searchResults.appendChild(actionsHeading);
+
+        // Print Action
+        const printLi = document.createElement('li');
+        printLi.className = 'result-item interactive-element';
+        printLi.innerHTML = `
+            <span class="result-title">Print Dossier</span>
+            <span class="result-snippet">Generate a physical copy of this document</span>
+        `;
+        printLi.addEventListener('click', () => { closeSearch(); window.print(); });
+        searchResults.appendChild(printLi);
+
+        // Theme Toggle Action (Optional, but a great UX touch)
+        const themeLi = document.createElement('li');
+        themeLi.className = 'result-item interactive-element';
+        themeLi.innerHTML = `
+            <span class="result-title">Toggle Interface Theme</span>
+            <span class="result-snippet">Switch between light and dark modes</span>
+        `;
+        themeLi.addEventListener('click', () => { 
+            closeSearch(); 
+            document.body.classList.toggle('dark-mode');
+            document.body.classList.toggle('light-mode');
+        });
+        searchResults.appendChild(themeLi);
     }
 
     searchInput.addEventListener('input', (e) => {
@@ -425,9 +390,19 @@ document.addEventListener('DOMContentLoaded', () => {
         );
 
         if (matches.length === 0) {
-            searchResults.innerHTML = `<li class="result-item"><span class="result-title">No results found for "${query}"</span></li>`;
+            searchResults.innerHTML = `
+                <li class="results-group-heading">RESULTS</li>
+                <li class="result-item" style="pointer-events: none;">
+                    <span class="result-title">No matches found for "${query}"</span>
+                </li>`;
             return;
         }
+
+        // --- CATEGORY: TOP HITS (When Searching) ---
+        const hitsHeading = document.createElement('li');
+        hitsHeading.className = 'results-group-heading';
+        hitsHeading.textContent = 'TOP HITS';
+        searchResults.appendChild(hitsHeading);
 
         matches.forEach(match => {
             const li = document.createElement('li');
@@ -443,7 +418,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (start > 0) snippet = '...' + snippet;
                 if (end < match.text.length) snippet = snippet + '...';
                 
-                // Bold the matched word
+                // Bold the matched word using the accent colour
                 const regex = new RegExp(`(${query})`, 'gi');
                 snippet = snippet.replace(regex, '<span class="snippet-highlight">$1</span>');
             }

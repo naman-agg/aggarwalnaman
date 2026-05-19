@@ -711,3 +711,14 @@ body.scanner-active, body.scanner-active * {
 
 /* The searched keyword takes the accent colour for a precise, technical pop */
 .snippet-highlight { font-weight: 800; color: var(--accent); }
+/* Spotlight Category Headings */
+.results-group-heading {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--text-secondary);
+    letter-spacing: 0.15em;
+    padding: 12px 16px 4px 16px;
+    text-transform: uppercase;
+    pointer-events: none; /* Prevents hovering */
+}
