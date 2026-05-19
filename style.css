@@ -616,45 +616,54 @@ body.scanner-active, body.scanner-active * {
 /* ========================================================== */
 .spotlight-overlay {
     position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-    background: rgba(0, 0, 0, 0.4); 
+    /* Slightly lighter backdrop to let the glass modal pop */
+    background: rgba(0, 0, 0, 0.3); 
     z-index: 9000;
     display: flex; align-items: flex-start; justify-content: center;
-    padding-top: 15vh; /* Hangs nicely from the top like macOS Spotlight */
+    padding-top: 15vh;
     opacity: 0; pointer-events: none;
-    transition: opacity 0.2s ease;
+    transition: opacity 0.3s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 .spotlight-overlay.active {
     opacity: 1; pointer-events: auto;
 }
 
-/* The true Glassmorphism Panel */
+/* 1. THE ENHANCED GLASSMORPHISM PANEL */
 .spotlight-modal {
     width: 100%; max-width: 680px;
-    background: rgba(30, 30, 32, 0.65);
-    backdrop-filter: blur(40px) saturate(180%);
-    -webkit-backdrop-filter: blur(40px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    
+    /* Dark Mode: High transparency, extreme blur, edge rim light */
+    background: rgba(25, 25, 28, 0.45);
+    backdrop-filter: blur(60px) saturate(200%);
+    -webkit-backdrop-filter: blur(60px) saturate(200%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 16px;
-    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(0,0,0,0.2);
+    box-shadow: 
+        0 30px 60px rgba(0, 0, 0, 0.5), 
+        inset 0 1px 1px rgba(255, 255, 255, 0.15); /* The glass edge */
+        
     overflow: hidden;
     transform: scale(0.98);
-    transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+    transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
 }
 .spotlight-overlay.active .spotlight-modal { transform: scale(1); }
 
+/* Light Mode Glass */
 .light-mode .spotlight-modal {
-    background: rgba(250, 250, 250, 0.75);
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 0.55);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    box-shadow: 
+        0 30px 60px rgba(0, 0, 0, 0.1), 
+        inset 0 1px 1px rgba(255, 255, 255, 0.8); /* Bright rim light */
 }
 
 .spotlight-header {
     display: flex; align-items: center;
     padding: 20px 24px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
-.light-mode .spotlight-header { border-bottom: 1px solid rgba(0, 0, 0, 0.05); }
+.light-mode .spotlight-header { border-bottom: 1px solid rgba(0, 0, 0, 0.06); }
 
 .search-icon { font-size: 24px; color: var(--text-secondary); margin-right: 16px; }
 
@@ -667,13 +676,14 @@ body.scanner-active, body.scanner-active * {
 .spotlight-input::placeholder { color: var(--text-muted); }
 
 .spotlight-close {
-    background: rgba(255, 255, 255, 0.1); border: none; border-radius: 6px;
+    background: rgba(255, 255, 255, 0.08); border: none; border-radius: 6px;
     padding: 4px 8px;
     color: var(--text-secondary); font-family: var(--font-mono); font-size: 11px; font-weight: 600;
     cursor: pointer; transition: all 0.2s ease;
 }
-.spotlight-close:hover { background: rgba(255, 255, 255, 0.2); color: var(--text-primary); }
+.spotlight-close:hover { background: rgba(255, 255, 255, 0.15); color: var(--text-primary); }
 .light-mode .spotlight-close { background: rgba(0, 0, 0, 0.05); }
+.light-mode .spotlight-close:hover { background: rgba(0, 0, 0, 0.1); }
 
 .spotlight-results-container {
     max-height: 50vh; overflow-y: auto; scrollbar-width: none;
@@ -687,9 +697,17 @@ body.scanner-active, body.scanner-active * {
     display: flex; flex-direction: column; gap: 6px;
     transition: background 0.2s ease;
 }
-.result-item:hover, .result-item.selected { background: var(--accent); }
-.result-item:hover .result-title, .result-item:hover .result-snippet, .result-item.selected * { color: #fff; }
+
+/* 2. THE SUBTLE HOVER STATE */
+.result-item:hover, .result-item.selected { 
+    background: rgba(255, 255, 255, 0.06); /* Soft white wash */
+}
+.light-mode .result-item:hover, .light-mode .result-item.selected {
+    background: rgba(0, 0, 0, 0.04); /* Soft dark wash */
+}
 
 .result-title { font-size: 14px; font-weight: 600; color: var(--text-primary); }
 .result-snippet { font-size: 12px; color: var(--text-secondary); line-height: 1.4; }
-.snippet-highlight { font-weight: 800; text-decoration: underline; }
+
+/* The searched keyword takes the accent colour for a precise, technical pop */
+.snippet-highlight { font-weight: 800; color: var(--accent); }
