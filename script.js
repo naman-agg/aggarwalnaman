@@ -158,13 +158,17 @@ document.addEventListener('DOMContentLoaded', () => {
             const rect = manifestoTextEl.getBoundingClientRect();
             const windowHeight = window.innerHeight;
             
-            // Defines the trigger zone: Starts highlighting at 85% down the screen, finishes at 35%
-            const startScrub = windowHeight * 0.85; 
-            const endScrub = windowHeight * 0.35; 
+            // Defines a massive trigger zone for slower, highly visible scrubbing
+            // Starts when text is 5% from the bottom, finishes 15% from the top
+            const startScrub = windowHeight * 0.95; 
+            const endScrub = windowHeight * 0.15; 
             
             let progress = (startScrub - rect.top) / (startScrub - endScrub);
+            
+            // Clamp the progress strictly between 0 and 1
             progress = Math.max(0, Math.min(1, progress)); 
             
+            // Calculate exactly how many words should be lit up
             const activeCount = Math.floor(progress * wordSpans.length);
             
             wordSpans.forEach((span, index) => {

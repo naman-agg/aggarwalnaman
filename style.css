@@ -727,10 +727,10 @@ body.scanner-active, body.scanner-active * {
 /* ABOUT ME: WORD-BY-WORD SCROLL SCRUBBING                    */
 /* ========================================================== */
 .about-container {
-    max-width: 1100px; /* Wide coverage area */
+    max-width: 1100px; 
     margin: 0 auto;
-    text-align: center; /* Centre aligned */
-    padding: 200px 0; /* Gives ample room to scroll through it */
+    text-align: center; 
+    padding: 250px 0; /* Huge padding gives you plenty of scroll room */
 }
 
 .about-manifesto-text {
@@ -739,19 +739,29 @@ body.scanner-active, body.scanner-active * {
     line-height: 1.4; 
     letter-spacing: -0.02em;
     margin: 0;
+    /* THIS IS THE FIX: Kills the whole-paragraph colour flash */
+    color: transparent !important; 
 }
 
 /* 1. The Starting State (Applied to each word by JS) */
 .about-manifesto-text span {
     display: inline-block;
     color: var(--text-secondary); /* Starts muted */
-    transform: translateY(12px); /* Pushed down initially */
-    transition: color 0.4s ease, transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    opacity: 0.15;
+    transform: translateY(15px); /* Pushed down initially */
+    
+    /* The premium liquid timing curve */
+    transition: color 0.4s ease, 
+                opacity 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+                transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    
     margin-right: 2px;
+    will-change: transform, opacity, color; /* Hardware acceleration */
 }
 
 /* 2. The Active State (Triggered word-by-word) */
 .about-manifesto-text span.active-word {
-    color: var(--text-primary);
+    color: var(--text-primary) !important;
+    opacity: 1;
     transform: translateY(0); /* Uplifts beautifully into place */
 }
