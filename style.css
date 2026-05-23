@@ -265,12 +265,11 @@ body.light-mode .light-icon { color: #ffffff; }
 /* ========================================================== */
 /* MONOLITHIC SCROLL PLANE & NAVIGATION                       */
 /* ========================================================== */
+/* 1. REPLACE THIS BLOCK (Removes the mask causing the lag) */
 .capsule-container { 
     position: fixed; 
-    /* Stretches edge-to-edge horizontally */
     left: 0; 
     width: 100vw; 
-    /* Sits cleanly between the global controls and the footer */
     top: calc(var(--v-gap) + var(--ui-height)); 
     height: calc(100vh - (var(--v-gap) * 2 + var(--ui-height) * 2)); 
     z-index: 50; 
@@ -280,10 +279,12 @@ body.light-mode .light-icon { color: #ffffff; }
     opacity: 0; 
     pointer-events: none; 
     scroll-behavior: smooth;
-
-    /* Hardware Fade: Content softly fades into the metal before hitting header/footer */
-    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 5%, black 95%, transparent 100%);
-    mask-image: linear-gradient(to bottom, transparent 0%, black 5%, black 95%, transparent 100%);
+    
+    /* Hardware Anti-Jitter Acceleration */
+    will-change: transform, opacity;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    transform-style: preserve-3d;
 }
 .capsule-container::-webkit-scrollbar { display: none; }
 
@@ -736,60 +737,27 @@ body.scanner-active, body.scanner-active * {
 /* ========================================================== */
 /* ABOUT ME: STICKY SCROLL TIMELINE                           */
 /* ========================================================== */
-.about-section {
-    padding: 0; /* Let the track handle the height */
-}
+.about-section { padding: 0; } 
 
-/* Creates a massive 250vh timeline for you to scroll through */
-.about-scroll-track {
-    height: 250vh; 
-    position: relative;
-    width: 100%;
-}
+.about-scroll-track { height: 250vh; position: relative; width: 100%; }
 
-/* Locks the text to the absolute center of the screen */
 .about-sticky-wrapper {
-    position: sticky;
-    top: 0;
-    height: 100vh; /* Fills the screen height */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
+    position: sticky; top: 0; height: 100vh; display: flex; align-items: center; justify-content: center; width: 100%;
 }
 
-.about-container {
-    max-width: 1100px; 
-    margin: 0 auto;
-    text-align: center; 
-    padding: 0 40px;
-}
+.about-container { max-width: 1100px; margin: 0 auto; text-align: center; padding: 0 40px; }
 
 .about-manifesto-text {
-    font-size: clamp(24px, 3.5vw, 48px); 
-    font-weight: 600; 
-    line-height: 1.4; 
-    letter-spacing: -0.02em;
-    margin: 0;
+    font-size: clamp(24px, 3.5vw, 48px); font-weight: 600; line-height: 1.4; letter-spacing: -0.02em; margin: 0;
     color: transparent !important; /* Kills the global flash */
 }
 
-/* 1. The Starting State (Frozen, Muted, Shifted Down) */
 .about-manifesto-text span {
-    display: inline-block;
-    color: var(--text-secondary);
-    opacity: 0.15;
-    transform: translateY(15px);
-    transition: color 0.4s ease, 
-                opacity 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275),
-                transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    margin-right: 2px;
-    will-change: transform, opacity, color; /* Smooth GPU scrubbing */
+    display: inline-block; color: var(--text-secondary); opacity: 0.15; transform: translateY(15px);
+    transition: color 0.4s ease, opacity 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    margin-right: 2px; will-change: transform, opacity, color; 
 }
 
-/* 2. The Active State */
 .about-manifesto-text span.active-word {
-    color: var(--text-primary) !important;
-    opacity: 1;
-    transform: translateY(0);
+    color: var(--text-primary) !important; opacity: 1; transform: translateY(0);
 }

@@ -153,12 +153,13 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // D. TEXT SCRUBBING LOGIC (STICKY VERSION)
+        // D. EXECUTE STICKY SCRUBBING
         const scrollTrack = document.getElementById('about-scroll-track');
-        
         if (manifestoTextEl && wordSpans.length > 0 && scrollTrack) {
             
-            // 1. Find exactly where the massive 250vh track starts in the document
+            const scrollY = capsule.scrollTop;
+            const capsuleHeight = capsule.clientHeight;
+            
             let trackTop = 0;
             let currentEl = scrollTrack;
             while (currentEl && currentEl !== capsule) {
@@ -167,30 +168,17 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             
             const trackHeight = scrollTrack.offsetHeight;
-            const viewportHeight = capsule.clientHeight;
-            
-            // The usable scroll distance where the text is locked to the screen
-            const maxScrollDistance = trackHeight - viewportHeight;
-            
-            // How many pixels you have scrolled into the timeline
-            const scrolledIntoTrack = scrollY - trackTop;
+            const maxScrollDistance = trackHeight - capsuleHeight;
             
             let progress = 0;
-            
-            // Only calculate progress if we have reached the track
-            if (scrolledIntoTrack > 0) {
-                progress = scrolledIntoTrack / maxScrollDistance;
+            if (scrollY > trackTop) {
+                progress = (scrollY - trackTop) / maxScrollDistance;
             }
             
-            // 2. The Padding Buffer: 
-            // This ensures the first word doesn't light up the millisecond it centers.
-            // It waits until you've scrolled 15% through the stickiness, and finishes at 85%.
-            let mappedProgress = (progress - 0.15) / (0.70);
-            
-            // Clamp the math strictly between 0 and 1 so it never bugs out
+            // Starts illuminating 20% in, ends at 80% to give a beautiful padded experience
+            let mappedProgress = (progress - 0.20) / 0.60;
             mappedProgress = Math.max(0, Math.min(1, mappedProgress));
             
-            // Apply it to the words
             const activeCount = Math.floor(mappedProgress * wordSpans.length);
             
             wordSpans.forEach((span, index) => {
