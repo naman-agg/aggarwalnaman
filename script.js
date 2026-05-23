@@ -167,10 +167,10 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // 2. Define the exact trigger points
             // Starts scrubbing when the top of the text enters the bottom 15% of the capsule view
-            const startPoint = elTop - (capsuleHeight * 0.85); 
+            const startPoint = elTop - (capsuleHeight * 0.99); 
             
             // Ends scrubbing when the BOTTOM of the text reaches the middle of the screen
-            const endPoint = (elTop + elHeight) - (capsuleHeight * 0.50); 
+            const endPoint = (elTop + elHeight) - (capsuleHeight * 0.10); 
             
             // 3. Calculate flawless progress from 0.0 to 1.0
             let progress = (scrollY - startPoint) / (endPoint - startPoint);
