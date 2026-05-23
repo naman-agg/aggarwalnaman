@@ -145,6 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // THIS IS THE ENGINE THAT DRIVES YOUR ABOUT ME ANIMATION
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('in-view'); });
     }, { root: capsule, threshold: 0.1 });
@@ -229,7 +230,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let searchIndex = [];
     
-    // Build the Search Index from actual DOM content
     setTimeout(() => {
         searchIndex = searchableSections.map(sec => {
             const el = document.getElementById(sec.id);
@@ -263,7 +263,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.target === searchOverlay) closeSearch();
     });
 
-    // Routing Logic (Fixes the Landing Page scroll bug)
     function routeToSection(targetId) {
         closeSearch();
         
@@ -279,11 +278,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 50);
     }
 
-    // Dynamic Search Filtering & Snippet Generation
     function renderDefaultResults() {
         searchResults.innerHTML = '';
         
-        // --- CATEGORY 1: QUICK LINKS ---
         const quickLinksHeading = document.createElement('li');
         quickLinksHeading.className = 'results-group-heading';
         quickLinksHeading.textContent = 'QUICK LINKS';
@@ -297,7 +294,6 @@ document.addEventListener('DOMContentLoaded', () => {
             searchResults.appendChild(li);
         });
 
-        // --- CATEGORY 2: SYSTEM ACTIONS ---
         const actionsHeading = document.createElement('li');
         actionsHeading.className = 'results-group-heading';
         actionsHeading.style.marginTop = '8px';
@@ -349,7 +345,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // --- CATEGORY: TOP HITS ---
         const hitsHeading = document.createElement('li');
         hitsHeading.className = 'results-group-heading';
         hitsHeading.textContent = 'TOP HITS';
@@ -484,35 +479,5 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
         });
-    }
-// ==========================================
-    // 8. BRUTE-FORCE KINETIC SCROLL TRIGGER
-    // ==========================================
-    const aboutText = document.getElementById('about-text');
-    const scrollCapsuleLocal = document.getElementById('capsule-container');
-
-    if (aboutText && scrollCapsuleLocal) {
-        
-        function calculateKineticPhysics() {
-            // Get the exact pixel position of the text relative to the screen
-            const textRect = aboutText.getBoundingClientRect();
-            
-            // Define the trigger line (85% down the screen)
-            const triggerLine = window.innerHeight * 0.85;
-            
-            // If the top of the text crosses the trigger line, fire the animation
-            if (textRect.top < triggerLine) {
-                aboutText.classList.add('is-active');
-            } else {
-                // Reverses the animation if you scroll back up
-                aboutText.classList.remove('is-active');
-            }
-        }
-
-        // Bind directly to the main scroll engine
-        scrollCapsuleLocal.addEventListener('scroll', calculateKineticPhysics);
-        
-        // Fire once on load to catch if it's already on screen
-        setTimeout(calculateKineticPhysics, 500);
     }
 });
