@@ -10,7 +10,7 @@
     --accent-secondary: #ff106a; 
     
     /* MATERIAL SCIENCE PALETTE: Anodised Aluminium */
-    --surface-slab: #131313;        /* The outer metal body */
+    --surface-slab: #0f0f0f;        /* The outer metal body */
     --surface-recessed: #151517;    /* The darker interior */
     --bg-card: #222224;             /* Solid components inside */
     
