@@ -155,20 +155,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // D. TEXT SCRUBBING LOGIC
         if (manifestoTextEl && wordSpans.length > 0) {
-            const rect = manifestoTextEl.getBoundingClientRect();
-            const windowHeight = window.innerHeight;
+            // 1. Calculate the true pixel depth of the text inside the capsule
+            let elTop = 0;
+            let currentEl = manifestoTextEl;
+            while (currentEl && currentEl !== capsule) {
+                elTop += currentEl.offsetTop;
+                currentEl = currentEl.offsetParent;
+            }
             
-            // Defines a massive trigger zone for slower, highly visible scrubbing
-            // Starts when text is 5% from the bottom, finishes 15% from the top
-            const startScrub = windowHeight * 0.99; 
-            const endScrub = windowHeight * 0.01; 
+            const elHeight = manifestoTextEl.offsetHeight;
             
-            let progress = (startScrub - rect.top) / (startScrub - endScrub);
+            // 2. Define the exact trigger points
+            // Starts scrubbing when the top of the text enters the bottom 15% of the capsule view
+            const startPoint = elTop - (capsuleHeight * 0.85); 
             
-            // Clamp the progress strictly between 0 and 1
+            // Ends scrubbing when the BOTTOM of the text reaches the middle of the screen
+            const endPoint = (elTop + elHeight) - (capsuleHeight * 0.50); 
+            
+            // 3. Calculate flawless progress from 0.0 to 1.0
+            let progress = (scrollY - startPoint) / (endPoint - startPoint);
             progress = Math.max(0, Math.min(1, progress)); 
             
-            // Calculate exactly how many words should be lit up
             const activeCount = Math.floor(progress * wordSpans.length);
             
             wordSpans.forEach((span, index) => {
