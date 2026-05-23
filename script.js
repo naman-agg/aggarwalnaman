@@ -95,9 +95,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const cardsTrack = document.getElementById('cards-track');
     const scrollProgress = document.getElementById('scroll-progress');
 
-    // --- SETUP: WORD-BY-WORD STICKY SCRUBBING ENGINE ---
+    // --- SETUP: WORD-BY-WORD SCRUBBING ENGINE ---
     const manifestoTextEl = document.getElementById('about-manifesto-text');
-    const scrollTrack = document.getElementById('about-scroll-track');
     let wordSpans = [];
 
     if (manifestoTextEl) {
@@ -108,50 +107,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const span = document.createElement('span');
             span.innerText = word;
             manifestoTextEl.appendChild(span);
+            // Add a space after each word (outside the span so the space doesn't animate)
             manifestoTextEl.appendChild(document.createTextNode(' '));
             wordSpans.push(span);
         });
     }
-
-    function calculateScrubbing() {
-        if (!manifestoTextEl || wordSpans.length === 0 || !scrollTrack) return;
-        
-        const scrollY = capsule.scrollTop;
-        const capsuleHeight = capsule.clientHeight;
-        
-        let trackTop = 0;
-        let currentEl = scrollTrack;
-        while (currentEl && currentEl !== capsule) {
-            trackTop += currentEl.offsetTop;
-            currentEl = currentEl.offsetParent;
-        }
-        
-        const trackHeight = scrollTrack.offsetHeight;
-        const maxScrollDistance = trackHeight - capsuleHeight;
-        
-        let progress = 0;
-        if (scrollY > trackTop) {
-            progress = (scrollY - trackTop) / maxScrollDistance;
-        }
-        
-        // Starts illuminating 20% in, ends at 80% to give a beautiful padded experience
-        let mappedProgress = (progress - 0.20) / 0.60;
-        mappedProgress = Math.max(0, Math.min(1, mappedProgress));
-        
-        const activeCount = Math.floor(mappedProgress * wordSpans.length);
-        
-        wordSpans.forEach((span, index) => {
-            if (index < activeCount) {
-                span.classList.add('active-word');
-            } else {
-                span.classList.remove('active-word');
-            }
-        });
-    }
-
-    // Initialize 0% state immediately on load
-    calculateScrubbing();
-    // ---------------------------------------------------
+    // --------------------------------------------
 
     capsule.addEventListener('scroll', () => {
         const scrollY = capsule.scrollTop;
@@ -192,8 +153,54 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // D. EXECUTE STICKY SCRUBBING
-        calculateScrubbing();
+        // D. TEXT SCRUBBING LOGIC (STICKY VERSION)
+        const scrollTrack = document.getElementById('about-scroll-track');
+        
+        if (manifestoTextEl && wordSpans.length > 0 && scrollTrack) {
+            
+            // 1. Find exactly where the massive 250vh track starts in the document
+            let trackTop = 0;
+            let currentEl = scrollTrack;
+            while (currentEl && currentEl !== capsule) {
+                trackTop += currentEl.offsetTop;
+                currentEl = currentEl.offsetParent;
+            }
+            
+            const trackHeight = scrollTrack.offsetHeight;
+            const viewportHeight = capsule.clientHeight;
+            
+            // The usable scroll distance where the text is locked to the screen
+            const maxScrollDistance = trackHeight - viewportHeight;
+            
+            // How many pixels you have scrolled into the timeline
+            const scrolledIntoTrack = scrollY - trackTop;
+            
+            let progress = 0;
+            
+            // Only calculate progress if we have reached the track
+            if (scrolledIntoTrack > 0) {
+                progress = scrolledIntoTrack / maxScrollDistance;
+            }
+            
+            // 2. The Padding Buffer: 
+            // This ensures the first word doesn't light up the millisecond it centers.
+            // It waits until you've scrolled 15% through the stickiness, and finishes at 85%.
+            let mappedProgress = (progress - 0.15) / (0.70);
+            
+            // Clamp the math strictly between 0 and 1 so it never bugs out
+            mappedProgress = Math.max(0, Math.min(1, mappedProgress));
+            
+            // Apply it to the words
+            const activeCount = Math.floor(mappedProgress * wordSpans.length);
+            
+            wordSpans.forEach((span, index) => {
+                if (index < activeCount) {
+                    span.classList.add('active-word');
+                } else {
+                    span.classList.remove('active-word');
+                }
+            });
+        }
     });
 
     // Click to navigate via Structural Index
