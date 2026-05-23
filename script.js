@@ -489,21 +489,21 @@ document.addEventListener('DOMContentLoaded', () => {
     // 8. KINETIC SCROLL TRIGGER (ABOUT SECTION)
     // ==========================================
     const aboutText = document.getElementById('about-text');
+    const scrollCapsule = document.getElementById('capsule-container'); // Using the correct scroll body
 
-    const kineticObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                // Add the active class when it enters the viewport
-                aboutText.classList.add('is-active');
-            } else {
-                // Optional: Remove it if you want the effect to reset on scroll-up
-                aboutText.classList.remove('is-active');
-            }
+    if (aboutText && scrollCapsule) {
+        const textObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    aboutText.classList.add('is-active');
+                }
+            });
+        }, {
+            root: scrollCapsule, 
+            threshold: 0.1, // Triggers immediately when 10% is visible. Bulletproof.
+            rootMargin: "0px 0px -5% 0px" 
         });
-    }, {
-        root: capsule, // Our capsule-container
-        threshold: 0.5 // Trigger when 50% of the text is visible
-    });
 
-    if (aboutText) kineticObserver.observe(aboutText);
+        textObserver.observe(aboutText);
+    }
 });

@@ -732,18 +732,22 @@ body.scanner-active, body.scanner-active * {
 }
 
 .about-kinetic-text {
-    font-size: 32px;
-    line-height: 1.4;
+    font-size: clamp(24px, 3vw, 32px); /* Responsive, authoritative sizing */
+    line-height: 1.5;
     font-weight: 400;
-    color: var(--text-secondary); /* Starts muted */
-    transform: translateY(40px);    /* Starts shifted down */
-    opacity: 0.3;                  /* Starts faded */
+    
+    /* 1. THE STARTING STATE (Muted and shifted down) */
+    color: var(--text-secondary); 
+    transform: translateY(40px);    
+    opacity: 0.2;                  
+    
+    /* The physics of the movement */
     transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-/* The state triggered by the scroll engine */
+/* 2. THE TRIGGERED STATE (Focus and slide up) */
 .about-kinetic-text.is-active {
-    color: var(--text-primary);     /* Fades to primary/accent */
-    transform: translateY(0px);     /* Slides up */
-    opacity: 1;                     /* Becomes fully visible */
+    color: var(--text-primary);     
+    transform: translateY(0px);     
+    opacity: 1;                     
 }
