@@ -11,7 +11,6 @@ document.addEventListener('DOMContentLoaded', () => {
     
     window.addEventListener('mousemove', (e) => {
         mouseX = e.clientX; mouseY = e.clientY;
-        // Subtle optical flashlight on the background grid
         archGrid.style.webkitMaskImage = `radial-gradient(circle 400px at ${mouseX}px ${mouseY}px, black 0%, transparent 100%)`;
         archGrid.style.maskImage = `radial-gradient(circle 400px at ${mouseX}px ${mouseY}px, black 0%, transparent 100%)`;
     });
@@ -96,6 +95,27 @@ document.addEventListener('DOMContentLoaded', () => {
     const cardsTrack = document.getElementById('cards-track');
     const scrollProgress = document.getElementById('scroll-progress');
 
+    // --- SETUP: TEXT SCRUBBING ENGINE ---
+    const scrubTextContainer = document.getElementById('about-scrub-text');
+    let scrubWords = [];
+
+    if (scrubTextContainer) {
+        const text = scrubTextContainer.innerText.trim();
+        const words = text.split(/\s+/);
+        scrubTextContainer.innerHTML = ''; 
+        
+        words.forEach(word => {
+            const span = document.createElement('span');
+            span.className = 'scrub-word';
+            span.innerText = word;
+            scrubTextContainer.appendChild(span);
+            // Append a native space to keep natural paragraph wrapping
+            scrubTextContainer.appendChild(document.createTextNode(' ')); 
+            scrubWords.push(span);
+        });
+    }
+    // ------------------------------------
+
     capsule.addEventListener('scroll', () => {
         const scrollY = capsule.scrollTop;
         const capsuleHeight = capsule.clientHeight;
@@ -134,9 +154,31 @@ document.addEventListener('DOMContentLoaded', () => {
                 if(indexItems[index]) indexItems[index].classList.add('active');
             }
         });
+
+        // D. TEXT SCRUBBING LOGIC
+        if (scrubTextContainer && scrubWords.length > 0) {
+            const rect = scrubTextContainer.getBoundingClientRect();
+            const windowHeight = window.innerHeight;
+            
+            // Defines the trigger zone: Starts highlighting at 80% down the screen, finishes at 35%
+            const startScrub = windowHeight * 0.80; 
+            const endScrub = windowHeight * 0.35; 
+            
+            let progress = (startScrub - rect.top) / (startScrub - endScrub);
+            progress = Math.max(0, Math.min(1, progress)); 
+            
+            const highlightedCount = Math.floor(progress * scrubWords.length);
+            
+            scrubWords.forEach((span, index) => {
+                if (index < highlightedCount) {
+                    span.classList.add('highlighted');
+                } else {
+                    span.classList.remove('highlighted');
+                }
+            });
+        }
     });
 
-    // Click to navigate via Structural Index
     indexItems.forEach(item => {
         item.addEventListener('click', () => {
             const targetId = item.getAttribute('data-target');
@@ -145,7 +187,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // THIS IS THE ENGINE THAT DRIVES YOUR ABOUT ME ANIMATION
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('in-view'); });
     }, { root: capsule, threshold: 0.1 });

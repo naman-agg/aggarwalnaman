@@ -724,34 +724,40 @@ body.scanner-active, body.scanner-active * {
     pointer-events: none; /* Prevents hovering */
 }
 /* ========================================================== */
-/* ABOUT ME: KINETIC SCROLL TEXT                              */
+/* ABOUT ME: WORD-BY-WORD SCROLL SCRUBBING                    */
 /* ========================================================== */
 .about-container {
-    max-width: 1000px; /* Made wider */
+    max-width: 1000px; 
     margin: 0 auto;
-    text-align: center; /* Centre-aligned */
-    padding: 100px 0; 
+    text-align: center; /* Centre aligned */
+    padding: 150px 0; /* Extra space to give you room to scroll through it */
 }
 
-/* 1. THE STARTING STATE */
-.about-text.fade-up {
-    font-size: clamp(24px, 3vw, 32px); 
-    line-height: 1.6;
-    font-weight: 400;
+.about-scrub-text {
+    font-size: clamp(24px, 3.5vw, 40px); /* Beautiful, wide typography */
+    line-height: 1.5;
+    font-weight: 500;
     margin: 0;
-    
-    color: var(--text-secondary); /* Starts grey */
-    transform: translateY(50px);  /* Starts shifted down */
-    opacity: 0.15;                /* Starts faded */
-    
-    transition: opacity 1s cubic-bezier(0.2, 0.8, 0.2, 1), 
-                transform 1s cubic-bezier(0.2, 0.8, 0.2, 1), 
-                color 1s ease;
 }
 
-/* 2. THE TRIGGERED STATE (Driven by our original JS) */
-.about-text.fade-up.in-view {
-    color: var(--text-primary);   /* Snaps to white/black */
-    transform: translateY(0px);   /* Slides into place */
-    opacity: 1;                   /* Fully visible */
+/* 1. The Starting State (Applied to each word by JavaScript) */
+.scrub-word {
+    display: inline-block;
+    color: var(--text-secondary);
+    opacity: 0.15;
+    transform: translateY(20px); /* Starts slightly lower */
+    
+    /* The premium liquid timing curve */
+    transition: color 0.4s ease,
+                opacity 0.4s cubic-bezier(0.2, 0.8, 0.2, 1),
+                transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+    
+    will-change: transform, opacity, color;
+}
+
+/* 2. The Active State (Triggered word-by-word as you scroll) */
+.scrub-word.highlighted {
+    color: var(--text-primary);
+    opacity: 1;
+    transform: translateY(0px); /* Floats up into place */
 }
