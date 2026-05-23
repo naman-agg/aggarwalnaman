@@ -485,5 +485,25 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+// ==========================================
+    // 8. KINETIC SCROLL TRIGGER (ABOUT SECTION)
+    // ==========================================
+    const aboutText = document.getElementById('about-text');
 
+    const kineticObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                // Add the active class when it enters the viewport
+                aboutText.classList.add('is-active');
+            } else {
+                // Optional: Remove it if you want the effect to reset on scroll-up
+                aboutText.classList.remove('is-active');
+            }
+        });
+    }, {
+        root: capsule, // Our capsule-container
+        threshold: 0.5 // Trigger when 50% of the text is visible
+    });
+
+    if (aboutText) kineticObserver.observe(aboutText);
 });

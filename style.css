@@ -723,3 +723,27 @@ body.scanner-active, body.scanner-active * {
     text-transform: uppercase;
     pointer-events: none; /* Prevents hovering */
 }
+/* ========================================================== */
+/* ABOUT ME: KINETIC SCROLL TEXT                              */
+/* ========================================================== */
+.about-kinetic-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.about-kinetic-text {
+    font-size: 32px;
+    line-height: 1.4;
+    font-weight: 400;
+    color: var(--text-secondary); /* Starts muted */
+    transform: translateY(40px);    /* Starts shifted down */
+    opacity: 0.3;                  /* Starts faded */
+    transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* The state triggered by the scroll engine */
+.about-kinetic-text.is-active {
+    color: var(--text-primary);     /* Fades to primary/accent */
+    transform: translateY(0px);     /* Slides up */
+    opacity: 1;                     /* Becomes fully visible */
+}
