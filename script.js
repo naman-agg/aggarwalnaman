@@ -95,26 +95,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const cardsTrack = document.getElementById('cards-track');
     const scrollProgress = document.getElementById('scroll-progress');
 
-    // --- SETUP: TEXT SCRUBBING ENGINE ---
-    const scrubTextContainer = document.getElementById('about-scrub-text');
-    let scrubWords = [];
+    // --- SETUP: WORD-BY-WORD SCRUBBING ENGINE ---
+    const manifestoTextEl = document.getElementById('about-manifesto-text');
+    let wordSpans = [];
 
-    if (scrubTextContainer) {
-        const text = scrubTextContainer.innerText.trim();
-        const words = text.split(/\s+/);
-        scrubTextContainer.innerHTML = ''; 
+    if (manifestoTextEl) {
+        const words = manifestoTextEl.innerText.trim().split(/\s+/);
+        manifestoTextEl.innerHTML = ''; 
         
         words.forEach(word => {
             const span = document.createElement('span');
-            span.className = 'scrub-word';
             span.innerText = word;
-            scrubTextContainer.appendChild(span);
-            // Append a native space to keep natural paragraph wrapping
-            scrubTextContainer.appendChild(document.createTextNode(' ')); 
-            scrubWords.push(span);
+            manifestoTextEl.appendChild(span);
+            // Add a space after each word (outside the span so the space doesn't animate)
+            manifestoTextEl.appendChild(document.createTextNode(' '));
+            wordSpans.push(span);
         });
     }
-    // ------------------------------------
+    // --------------------------------------------
 
     capsule.addEventListener('scroll', () => {
         const scrollY = capsule.scrollTop;
@@ -156,29 +154,30 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         // D. TEXT SCRUBBING LOGIC
-        if (scrubTextContainer && scrubWords.length > 0) {
-            const rect = scrubTextContainer.getBoundingClientRect();
+        if (manifestoTextEl && wordSpans.length > 0) {
+            const rect = manifestoTextEl.getBoundingClientRect();
             const windowHeight = window.innerHeight;
             
-            // Defines the trigger zone: Starts highlighting at 80% down the screen, finishes at 35%
-            const startScrub = windowHeight * 0.80; 
+            // Defines the trigger zone: Starts highlighting at 85% down the screen, finishes at 35%
+            const startScrub = windowHeight * 0.85; 
             const endScrub = windowHeight * 0.35; 
             
             let progress = (startScrub - rect.top) / (startScrub - endScrub);
             progress = Math.max(0, Math.min(1, progress)); 
             
-            const highlightedCount = Math.floor(progress * scrubWords.length);
+            const activeCount = Math.floor(progress * wordSpans.length);
             
-            scrubWords.forEach((span, index) => {
-                if (index < highlightedCount) {
-                    span.classList.add('highlighted');
+            wordSpans.forEach((span, index) => {
+                if (index < activeCount) {
+                    span.classList.add('active-word');
                 } else {
-                    span.classList.remove('highlighted');
+                    span.classList.remove('active-word');
                 }
             });
         }
     });
 
+    // Click to navigate via Structural Index
     indexItems.forEach(item => {
         item.addEventListener('click', () => {
             const targetId = item.getAttribute('data-target');
@@ -186,11 +185,6 @@ document.addEventListener('DOMContentLoaded', () => {
             capsule.scrollTo({ top: targetSec.offsetTop, behavior: 'smooth' });
         });
     });
-
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('in-view'); });
-    }, { root: capsule, threshold: 0.1 });
-    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
 
 
     // ==========================================
