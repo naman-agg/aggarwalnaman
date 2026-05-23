@@ -724,13 +724,45 @@ body.scanner-active, body.scanner-active * {
     pointer-events: none; /* Prevents hovering */
 }
 /* ========================================================== */
-/* ABOUT ME: WORD-BY-WORD SCROLL SCRUBBING                    */
+/* ANTI-JITTER GPU FIX                                        */
 /* ========================================================== */
+#capsule-container {
+    will-change: transform, opacity;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    transform-style: preserve-3d;
+}
+
+/* ========================================================== */
+/* ABOUT ME: STICKY SCROLL TIMELINE                           */
+/* ========================================================== */
+.about-section {
+    padding: 0; /* Let the track handle the height */
+}
+
+/* Creates a massive 250vh timeline for you to scroll through */
+.about-scroll-track {
+    height: 250vh; 
+    position: relative;
+    width: 100%;
+}
+
+/* Locks the text to the absolute center of the screen */
+.about-sticky-wrapper {
+    position: sticky;
+    top: 0;
+    height: 100vh; /* Fills the screen height */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
 .about-container {
     max-width: 1100px; 
     margin: 0 auto;
     text-align: center; 
-    padding: 250px 0; /* Huge padding gives you plenty of scroll room */
+    padding: 0 40px;
 }
 
 .about-manifesto-text {
@@ -739,29 +771,25 @@ body.scanner-active, body.scanner-active * {
     line-height: 1.4; 
     letter-spacing: -0.02em;
     margin: 0;
-    /* THIS IS THE FIX: Kills the whole-paragraph colour flash */
-    color: transparent !important; 
+    color: transparent !important; /* Kills the global flash */
 }
 
-/* 1. The Starting State (Applied to each word by JS) */
+/* 1. The Starting State (Frozen, Muted, Shifted Down) */
 .about-manifesto-text span {
     display: inline-block;
-    color: var(--text-secondary); /* Starts muted */
+    color: var(--text-secondary);
     opacity: 0.15;
-    transform: translateY(15px); /* Pushed down initially */
-    
-    /* The premium liquid timing curve */
+    transform: translateY(15px);
     transition: color 0.4s ease, 
                 opacity 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275),
                 transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    
     margin-right: 2px;
-    will-change: transform, opacity, color; /* Hardware acceleration */
+    will-change: transform, opacity, color; /* Smooth GPU scrubbing */
 }
 
-/* 2. The Active State (Triggered word-by-word) */
+/* 2. The Active State */
 .about-manifesto-text span.active-word {
     color: var(--text-primary) !important;
     opacity: 1;
-    transform: translateY(0); /* Uplifts beautifully into place */
+    transform: translateY(0);
 }

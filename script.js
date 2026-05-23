@@ -153,30 +153,45 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // D. TEXT SCRUBBING LOGIC
-        if (manifestoTextEl && wordSpans.length > 0) {
-            // 1. Calculate the true pixel depth of the text inside the capsule
-            let elTop = 0;
-            let currentEl = manifestoTextEl;
+        // D. TEXT SCRUBBING LOGIC (STICKY VERSION)
+        const scrollTrack = document.getElementById('about-scroll-track');
+        
+        if (manifestoTextEl && wordSpans.length > 0 && scrollTrack) {
+            
+            // 1. Find exactly where the massive 250vh track starts in the document
+            let trackTop = 0;
+            let currentEl = scrollTrack;
             while (currentEl && currentEl !== capsule) {
-                elTop += currentEl.offsetTop;
+                trackTop += currentEl.offsetTop;
                 currentEl = currentEl.offsetParent;
             }
             
-            const elHeight = manifestoTextEl.offsetHeight;
+            const trackHeight = scrollTrack.offsetHeight;
+            const viewportHeight = capsule.clientHeight;
             
-            // 2. Define the exact trigger points
-            // Starts scrubbing when the top of the text enters the bottom 15% of the capsule view
-            const startPoint = elTop - (capsuleHeight * 0.99); 
+            // The usable scroll distance where the text is locked to the screen
+            const maxScrollDistance = trackHeight - viewportHeight;
             
-            // Ends scrubbing when the BOTTOM of the text reaches the middle of the screen
-            const endPoint = (elTop + elHeight) - (capsuleHeight * 0.10); 
+            // How many pixels you have scrolled into the timeline
+            const scrolledIntoTrack = scrollY - trackTop;
             
-            // 3. Calculate flawless progress from 0.0 to 1.0
-            let progress = (scrollY - startPoint) / (endPoint - startPoint);
-            progress = Math.max(0, Math.min(1, progress)); 
+            let progress = 0;
             
-            const activeCount = Math.floor(progress * wordSpans.length);
+            // Only calculate progress if we have reached the track
+            if (scrolledIntoTrack > 0) {
+                progress = scrolledIntoTrack / maxScrollDistance;
+            }
+            
+            // 2. The Padding Buffer: 
+            // This ensures the first word doesn't light up the millisecond it centers.
+            // It waits until you've scrolled 15% through the stickiness, and finishes at 85%.
+            let mappedProgress = (progress - 0.15) / (0.70);
+            
+            // Clamp the math strictly between 0 and 1 so it never bugs out
+            mappedProgress = Math.max(0, Math.min(1, mappedProgress));
+            
+            // Apply it to the words
+            const activeCount = Math.floor(mappedProgress * wordSpans.length);
             
             wordSpans.forEach((span, index) => {
                 if (index < activeCount) {
