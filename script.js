@@ -160,8 +160,8 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // Defines a massive trigger zone for slower, highly visible scrubbing
             // Starts when text is 5% from the bottom, finishes 15% from the top
-            const startScrub = windowHeight * 0.95; 
-            const endScrub = windowHeight * 0.15; 
+            const startScrub = windowHeight * 0.99; 
+            const endScrub = windowHeight * 0.01; 
             
             let progress = (startScrub - rect.top) / (startScrub - endScrub);
             
