@@ -486,24 +486,33 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 // ==========================================
-    // 8. KINETIC SCROLL TRIGGER (ABOUT SECTION)
+    // 8. BRUTE-FORCE KINETIC SCROLL TRIGGER
     // ==========================================
     const aboutText = document.getElementById('about-text');
-    const scrollCapsule = document.getElementById('capsule-container'); // Using the correct scroll body
+    const scrollCapsuleLocal = document.getElementById('capsule-container');
 
-    if (aboutText && scrollCapsule) {
-        const textObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    aboutText.classList.add('is-active');
-                }
-            });
-        }, {
-            root: scrollCapsule, 
-            threshold: 0.1, // Triggers immediately when 10% is visible. Bulletproof.
-            rootMargin: "0px 0px -5% 0px" 
-        });
+    if (aboutText && scrollCapsuleLocal) {
+        
+        function calculateKineticPhysics() {
+            // Get the exact pixel position of the text relative to the screen
+            const textRect = aboutText.getBoundingClientRect();
+            
+            // Define the trigger line (85% down the screen)
+            const triggerLine = window.innerHeight * 0.85;
+            
+            // If the top of the text crosses the trigger line, fire the animation
+            if (textRect.top < triggerLine) {
+                aboutText.classList.add('is-active');
+            } else {
+                // Reverses the animation if you scroll back up
+                aboutText.classList.remove('is-active');
+            }
+        }
 
-        textObserver.observe(aboutText);
+        // Bind directly to the main scroll engine
+        scrollCapsuleLocal.addEventListener('scroll', calculateKineticPhysics);
+        
+        // Fire once on load to catch if it's already on screen
+        setTimeout(calculateKineticPhysics, 500);
     }
 });

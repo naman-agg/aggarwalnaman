@@ -729,23 +729,25 @@ body.scanner-active, body.scanner-active * {
 .about-kinetic-container {
     max-width: 800px;
     margin: 0 auto;
+    padding: 100px 0; /* Gives it physical space to scroll into */
 }
 
 .about-kinetic-text {
-    font-size: clamp(24px, 3vw, 32px); /* Responsive, authoritative sizing */
+    font-size: clamp(24px, 3vw, 32px); 
     line-height: 1.5;
     font-weight: 400;
     
-    /* 1. THE STARTING STATE (Muted and shifted down) */
+    /* THE STARTING STATE */
     color: var(--text-secondary); 
-    transform: translateY(40px);    
-    opacity: 0.2;                  
+    transform: translateY(60px);    
+    opacity: 0.15;                  
     
-    /* The physics of the movement */
-    transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+    transition: opacity 1s cubic-bezier(0.2, 0.8, 0.2, 1), 
+                transform 1s cubic-bezier(0.2, 0.8, 0.2, 1), 
+                color 1s ease;
 }
 
-/* 2. THE TRIGGERED STATE (Focus and slide up) */
+/* THE TRIGGERED STATE */
 .about-kinetic-text.is-active {
     color: var(--text-primary);     
     transform: translateY(0px);     
