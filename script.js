@@ -531,7 +531,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
    // ==========================================
-    // 5. ACADEMIC GLASSMORPHISM MODAL
+    // ACADEMIC GLASSMORPHISM MODAL LOGIC
     // ==========================================
     const academicModalOverlay = document.getElementById('academic-modal');
     const academicModalBody = document.getElementById('academic-modal-body');
@@ -543,12 +543,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const degreeData = {
         bachelors: `
             <span class="modal-degree-title">Bachelors of Technology<br>(Mechanical and Automation Engineering)</span>
-            <span class="modal-degree-duration">2015 &ndash; 2019</span>
+            <span class="modal-degree-duration">2015 – 2019</span>
             <span class="modal-degree-location">India</span>
         `,
         masters: `
             <span class="modal-degree-title">Masters of Business Administration</span>
-            <span class="modal-degree-duration">2022 &ndash; 2023</span>
+            <span class="modal-degree-duration">2022 – 2023</span>
             <span class="modal-degree-location">United Kingdom</span>
         `
     };
@@ -560,15 +560,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // Listens for clicks on the squares
     if (bachelorsCard) bachelorsCard.addEventListener('click', () => openAcademicModal('bachelors'));
     if (mastersCard) mastersCard.addEventListener('click', () => openAcademicModal('masters'));
     
+    // Close via the ESC button
     if (academicModalClose) {
         academicModalClose.addEventListener('click', () => {
             academicModalOverlay.classList.remove('active');
         });
     }
 
+    // Close on clicking the dark background overlay
     if (academicModalOverlay) {
         academicModalOverlay.addEventListener('click', (e) => {
             if (e.target === academicModalOverlay) academicModalOverlay.classList.remove('active');

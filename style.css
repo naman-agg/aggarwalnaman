@@ -773,12 +773,14 @@ body.scanner-active, body.scanner-active * {
 }
 
 .academic-square {
-    width: 250px;
-    height: 250px; /* Perfect square */
-    background-color: var(--bg-card);
-    background-image: var(--micro-grain);
+    /* 3. Made squares significantly bigger */
+    width: 320px; 
+    height: 320px; 
+    /* 4. Pure white background for transparent logos */
+    background-color: #ffffff; 
+    background-image: none; /* Removes the dark grain */
     border: 1px solid var(--border-color);
-    border-radius: 32px; /* Smooth, Apple-like rounded corners */
+    border-radius: 32px; 
     display: flex;
     align-items: center;
     justify-content: center;
@@ -786,6 +788,13 @@ body.scanner-active, body.scanner-active * {
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2), inset 0 1px 1px var(--edge-highlight);
     transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.3s ease;
     overflow: hidden;
+}
+
+.academic-square img {
+    /* Scales the image nicely inside the larger white box */
+    width: 70%; 
+    height: auto;
+    object-fit: contain;
 }
 
 .academic-square:hover {
