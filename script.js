@@ -577,8 +577,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 // ==========================================
-        // E. 3D STICKY STACK ENGINE (WORKSHOP)
-        // ==========================================
+// E. 3D STICKY STACK ENGINE (WORKSHOP)
+// ==========================================
         const stackCards = document.querySelectorAll('.glass-stack-card');
         const stickyTop = window.innerHeight * 0.15; // Matches the top: 15vh in CSS
 
