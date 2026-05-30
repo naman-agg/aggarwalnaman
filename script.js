@@ -529,23 +529,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-    // ==========================================
-    // 8. ACADEMIC TELEMETRY TOGGLE
-    // ==========================================
-    document.querySelectorAll('.academic-card').forEach(card => {
-        card.addEventListener('click', () => {
-            card.classList.toggle('deployed');
-            
-            const indicator = card.querySelector('.card-status-indicator');
-            if (indicator) {
-                if (card.classList.contains('deployed')) {
-                    indicator.textContent = '[ CLICK TO CONCEAL DATA ]';
-                } else {
-                    indicator.textContent = '[ CLICK TO DEPLOY DATA ]';
-                }
-            }
-        });
-    });
+
     // ==========================================
     // 8. ACADEMIC GLASSMORPHISM MODAL
     // ==========================================
