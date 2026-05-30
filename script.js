@@ -28,16 +28,17 @@ document.addEventListener('DOMContentLoaded', () => {
         el.addEventListener('mouseleave', () => { cursorTrail.classList.remove('hovering'); });
     });
 
-
     // ==========================================
     // 2. THEME & CLOCKS
     // ==========================================
     const themeToggle = document.getElementById('themeToggle');
     const body = document.body;
-    themeToggle.addEventListener('click', () => {
-        body.classList.toggle('dark-mode');
-        body.classList.toggle('light-mode');
-    });
+    if(themeToggle) {
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('dark-mode');
+            body.classList.toggle('light-mode');
+        });
+    }
 
     const zones = [
         { id: 'time-lon', tz: 'Europe/London' },
@@ -58,159 +59,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     setInterval(updateClocks, 1000); updateClocks();
 
-
     // ==========================================
-    // 3. FAST VERTICAL SLIDE GREETINGS
-    // ==========================================
-    const slideTextEl = document.getElementById('slide-text');
-    const greetings = ['HELLO', 'नमस्ते', 'CIAO', 'こんにちは', 'HALLO', '안녕하세요'];
-    let greetIndex = 0;
-
-    setInterval(() => {
-        slideTextEl.classList.add('sliding-out');
-        setTimeout(() => {
-            greetIndex = (greetIndex + 1) % greetings.length;
-            slideTextEl.textContent = greetings[greetIndex];
-            
-            slideTextEl.classList.remove('sliding-out');
-            slideTextEl.classList.add('sliding-in');
-            
-            setTimeout(() => {
-                slideTextEl.classList.remove('sliding-in');
-            }, 250); 
-        }, 250); 
-    }, 3500); 
-
-
-    // ==========================================
-    // 4. CAPSULE SCROLL PHYSICS & TELEMETRY
-    // ==========================================
-    const capsule = document.getElementById('capsule-container');
-    const structuralIndex = document.getElementById('structural-index');
-    const indexItems = document.querySelectorAll('.structural-index .index-item');
-    const spySections = document.querySelectorAll('.scroll-spy-section');
-    
-    const hWrapper = document.getElementById('horizontal-wrapper');
-    const stickyView = document.getElementById('sticky-view');
-    const cardsTrack = document.getElementById('cards-track');
-    const scrollProgress = document.getElementById('scroll-progress');
-
-    // --- SETUP: WORD-BY-WORD SCRUBBING ENGINE ---
-    const manifestoTextEl = document.getElementById('about-manifesto-text');
-    let wordSpans = [];
-
-    if (manifestoTextEl) {
-        const words = manifestoTextEl.innerText.trim().split(/\s+/);
-        manifestoTextEl.innerHTML = ''; 
-        
-        words.forEach(word => {
-            const span = document.createElement('span');
-            span.innerText = word;
-            manifestoTextEl.appendChild(span);
-            // Add a space after each word (outside the span so the space doesn't animate)
-            manifestoTextEl.appendChild(document.createTextNode(' '));
-            wordSpans.push(span);
-        });
-    }
-    // --------------------------------------------
-
-    capsule.addEventListener('scroll', () => {
-        const scrollY = capsule.scrollTop;
-        const capsuleHeight = capsule.clientHeight;
-
-        // A. HARDWARE PROGRESS BAR LOGIC
-        if (scrollProgress) {
-            const maxCapsuleScroll = capsule.scrollHeight - capsule.clientHeight;
-            const progressPercentage = maxCapsuleScroll > 0 ? (scrollY / maxCapsuleScroll) * 100 : 0;
-            scrollProgress.style.width = `${progressPercentage}%`;
-        }
-
-        // B. HORIZONTAL SCROLL TIMELINE LOGIC
-        if (hWrapper && stickyView && cardsTrack) {
-            const startHScroll = hWrapper.offsetTop - (capsuleHeight * 0.1); 
-            const maxScroll = hWrapper.offsetHeight - stickyView.offsetHeight;
-            const endHScroll = startHScroll + maxScroll;
-
-            if (scrollY >= startHScroll && scrollY <= endHScroll) {
-                const progress = (scrollY - startHScroll) / maxScroll;
-                const maxTranslate = cardsTrack.scrollWidth - stickyView.clientWidth; 
-                cardsTrack.style.transform = `translate3d(-${progress * maxTranslate}px, 0, 0)`;
-            } else if (scrollY < startHScroll) {
-                cardsTrack.style.transform = `translate3d(0px, 0, 0)`;
-            } else if (scrollY > endHScroll) {
-                const maxTranslate = cardsTrack.scrollWidth - stickyView.clientWidth; 
-                cardsTrack.style.transform = `translate3d(-${maxTranslate}px, 0, 0)`;
-            }
-        }
-
-        // C. STRUCTURAL INDEX SCROLL SPY LOGIC
-        spySections.forEach((sec, index) => {
-            const secTop = sec.offsetTop - 100;
-            const secBottom = secTop + sec.offsetHeight;
-            if (scrollY >= secTop && scrollY < secBottom) {
-                indexItems.forEach(item => item.classList.remove('active'));
-                if(indexItems[index]) indexItems[index].classList.add('active');
-            }
-        });
-
-        // D. EXECUTE STICKY SCRUBBING
-        const scrollTrack = document.getElementById('about-scroll-track');
-        if (manifestoTextEl && wordSpans.length > 0 && scrollTrack) {
-            
-            const scrollY = capsule.scrollTop;
-            const capsuleHeight = capsule.clientHeight;
-            
-            let trackTop = 0;
-            let currentEl = scrollTrack;
-            while (currentEl && currentEl !== capsule) {
-                trackTop += currentEl.offsetTop;
-                currentEl = currentEl.offsetParent;
-            }
-            
-            const trackHeight = scrollTrack.offsetHeight;
-            const maxScrollDistance = trackHeight - capsuleHeight;
-            
-            let progress = 0;
-            if (scrollY > trackTop) {
-                progress = (scrollY - trackTop) / maxScrollDistance;
-            }
-            
-            // Starts illuminating 20% in, ends at 80% to give a beautiful padded experience
-            let mappedProgress = (progress - 0.20) / 0.60;
-            mappedProgress = Math.max(0, Math.min(1, mappedProgress));
-            
-            const activeCount = Math.floor(mappedProgress * wordSpans.length);
-            
-            wordSpans.forEach((span, index) => {
-                if (index < activeCount) {
-                    span.classList.add('active-word');
-                } else {
-                    span.classList.remove('active-word');
-                }
-            });
-        }
-    });
-
-    // Click to navigate via Structural Index
-    indexItems.forEach(item => {
-        item.addEventListener('click', () => {
-            const targetId = item.getAttribute('data-target');
-            const targetSec = document.getElementById(targetId);
-            capsule.scrollTo({ top: targetSec.offsetTop, behavior: 'smooth' });
-        });
-    });
-
-
-    // ==========================================
-    // 5. WINDOW PARALLAX (HERO TO CAPSULE TRANSITION)
+    // 3. WINDOW PARALLAX (HERO TO CAPSULE TRANSITION)
     // ==========================================
     const dynamicHero = document.getElementById('dynamic-hero');
     const heroL1 = document.getElementById('hero-l1'); 
     const heroL2 = document.getElementById('hero-l2'); 
     const heroL3 = document.getElementById('hero-l3'); 
+    const capsule = document.getElementById('capsule-container');
     
     let moveDist = 0;
     function calculateHeroMath() {
+        if(!heroL2) return;
         const l2Rect = heroL2.getBoundingClientRect();
         const l2CenterY = l2Rect.top + (l2Rect.height / 2); 
         const isMobile = window.innerWidth <= 768;
@@ -233,36 +93,153 @@ document.addEventListener('DOMContentLoaded', () => {
         const endScale = isMobile ? 0.35 : 0.25; 
         const currentScale = 1 - ((1 - endScale) * progress);
         
-        heroL1.style.opacity = Math.max(0, 1 - (progress * 2));
-        heroL1.style.transform = `translateY(-${progress * 60}px)`;
-
-        heroL3.style.opacity = Math.max(0, 1 - (progress * 2));
-        heroL3.style.transform = `translateY(${progress * 60}px)`;
-
-        dynamicHero.style.transform = `translateY(-${moveDist * progress}px)`;
-        heroL2.style.transform = `scale(${currentScale})`;
-
-        capsule.style.transform = `translateY(${(1 - progress) * 100}vh)`;
-        capsule.style.opacity = progress;
-        
-        if (progress === 1) {
-            capsule.style.pointerEvents = 'auto';
-            if(structuralIndex) structuralIndex.classList.add('visible');
-            cursorTrail.style.display = 'none'; 
-        } else {
-            capsule.style.pointerEvents = 'none';
-            if(structuralIndex) structuralIndex.classList.remove('visible');
-            cursorTrail.style.display = 'block'; 
+        if(heroL1) {
+            heroL1.style.opacity = Math.max(0, 1 - (progress * 2));
+            heroL1.style.transform = `translateY(-${progress * 60}px)`;
+        }
+        if(heroL3) {
+            heroL3.style.opacity = Math.max(0, 1 - (progress * 2));
+            heroL3.style.transform = `translateY(${progress * 60}px)`;
+        }
+        if(dynamicHero && heroL2) {
+            dynamicHero.style.transform = `translateY(-${moveDist * progress}px)`;
+            heroL2.style.transform = `scale(${currentScale})`;
+        }
+        if(capsule) {
+            capsule.style.transform = `translateY(${(1 - progress) * 100}vh)`;
+            capsule.style.opacity = progress;
+            if (progress === 1) {
+                capsule.style.pointerEvents = 'auto';
+                cursorTrail.style.display = 'none'; 
+            } else {
+                capsule.style.pointerEvents = 'none';
+                cursorTrail.style.display = 'block'; 
+            }
         }
         requestAnimationFrame(onWindowScroll);
     }
-
     window.addEventListener('scroll', () => { requestAnimationFrame(onWindowScroll); });
     onWindowScroll(); 
 
+    // ==========================================
+    // 4. CAPSULE SCROLL PHYSICS & SCRUBBING ENGINE
+    // ==========================================
+    const scrollProgress = document.getElementById('scroll-progress');
+    const manifestoTextEl = document.getElementById('about-manifesto-text');
+    const scrollTrack = document.getElementById('about-scroll-track');
+    let wordSpans = [];
+
+    // Prepare text for scrubbing
+    if (manifestoTextEl) {
+        const words = manifestoTextEl.innerText.trim().split(/\s+/);
+        manifestoTextEl.innerHTML = ''; 
+        words.forEach(word => {
+            const span = document.createElement('span');
+            span.innerText = word;
+            manifestoTextEl.appendChild(span);
+            manifestoTextEl.appendChild(document.createTextNode(' '));
+            wordSpans.push(span);
+        });
+    }
+
+    // Isolated scrubbing maths
+    function calculateScrubbing() {
+        if (!manifestoTextEl || wordSpans.length === 0 || !scrollTrack) return;
+        
+        const scrollY = capsule.scrollTop;
+        const capsuleHeight = capsule.clientHeight;
+        
+        let trackTop = 0;
+        let currentEl = scrollTrack;
+        while (currentEl && currentEl !== capsule) {
+            trackTop += currentEl.offsetTop;
+            currentEl = currentEl.offsetParent;
+        }
+        
+        const trackHeight = scrollTrack.offsetHeight;
+        const maxScrollDistance = trackHeight - capsuleHeight;
+        
+        let progress = 0;
+        if (scrollY > trackTop) {
+            progress = (scrollY - trackTop) / maxScrollDistance;
+        }
+        
+        // 20% buffer before starting, finishes at 80%
+        let mappedProgress = (progress - 0.20) / 0.60;
+        mappedProgress = Math.max(0, Math.min(1, mappedProgress));
+        
+        const activeCount = Math.floor(mappedProgress * wordSpans.length);
+        
+        wordSpans.forEach((span, index) => {
+            if (index < activeCount) {
+                span.classList.add('active-word');
+            } else {
+                span.classList.remove('active-word');
+            }
+        });
+    }
+
+    // Initialize state
+    calculateScrubbing();
+
+    if(capsule) {
+        capsule.addEventListener('scroll', () => {
+            if (scrollProgress) {
+                const maxCapsuleScroll = capsule.scrollHeight - capsule.clientHeight;
+                const progressPercentage = maxCapsuleScroll > 0 ? (capsule.scrollTop / maxCapsuleScroll) * 100 : 0;
+                scrollProgress.style.width = `${progressPercentage}%`;
+            }
+            calculateScrubbing();
+        });
+    }
 
     // ==========================================
-    // 6. SPOTLIGHT SEARCH ENGINE & ROUTING
+    // 5. ACADEMIC GLASSMORPHISM MODAL
+    // ==========================================
+    const academicModalOverlay = document.getElementById('academic-modal');
+    const academicModalBody = document.getElementById('academic-modal-body');
+    const academicModalClose = document.getElementById('close-academic-modal');
+    
+    const bachelorsCard = document.getElementById('card-bachelors');
+    const mastersCard = document.getElementById('card-masters');
+
+    const degreeData = {
+        bachelors: `
+            <span class="modal-degree-title">Bachelors of Technology<br>(Mechanical and Automation Engineering)</span>
+            <span class="modal-degree-duration">2015 &ndash; 2019</span>
+            <span class="modal-degree-location">India</span>
+        `,
+        masters: `
+            <span class="modal-degree-title">Masters of Business Administration</span>
+            <span class="modal-degree-duration">2022 &ndash; 2023</span>
+            <span class="modal-degree-location">United Kingdom</span>
+        `
+    };
+
+    function openAcademicModal(degreeKey) {
+        if(academicModalBody && academicModalOverlay) {
+            academicModalBody.innerHTML = degreeData[degreeKey];
+            academicModalOverlay.classList.add('active');
+        }
+    }
+
+    if (bachelorsCard) bachelorsCard.addEventListener('click', () => openAcademicModal('bachelors'));
+    if (mastersCard) mastersCard.addEventListener('click', () => openAcademicModal('masters'));
+    
+    if (academicModalClose) {
+        academicModalClose.addEventListener('click', () => {
+            academicModalOverlay.classList.remove('active');
+        });
+    }
+
+    if (academicModalOverlay) {
+        academicModalOverlay.addEventListener('click', (e) => {
+            if (e.target === academicModalOverlay) academicModalOverlay.classList.remove('active');
+        });
+    }
+
+    // ==========================================
+    // 6. SPOTLIGHT SEARCH ENGINE
     // ==========================================
     const searchBtnNode = document.querySelector('.search-btn');
     const searchOverlay = document.getElementById('search-overlay');
@@ -272,13 +249,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const searchableSections = [
         { id: 'about-section', title: 'Overview' },
-        { id: 'philosophy-section', title: 'Methodology' },
-        { id: 'journey-section', title: 'Timeline' },
-        { id: 'workshop-section', title: 'Workshop' }
+        { id: 'education-section', title: 'Foundation' }
     ];
 
     let searchIndex = [];
-    
     setTimeout(() => {
         searchIndex = searchableSections.map(sec => {
             const el = document.getElementById(sec.id);
@@ -291,34 +265,41 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 500);
 
     function openSearch() {
-        searchOverlay.classList.add('active');
-        setTimeout(() => searchInput.focus(), 50); 
-        renderDefaultResults();
+        if(searchOverlay) {
+            searchOverlay.classList.add('active');
+            setTimeout(() => searchInput.focus(), 50); 
+            renderDefaultResults();
+        }
     }
 
     function closeSearch() {
-        searchOverlay.classList.remove('active');
-        searchInput.value = ''; 
+        if(searchOverlay) {
+            searchOverlay.classList.remove('active');
+            searchInput.value = ''; 
+        }
     }
 
     if (searchBtnNode) searchBtnNode.addEventListener('click', openSearch);
     if (closeSearchBtn) closeSearchBtn.addEventListener('click', closeSearch);
     
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && searchOverlay.classList.contains('active')) closeSearch();
+        if (e.key === 'Escape') {
+            if(searchOverlay && searchOverlay.classList.contains('active')) closeSearch();
+            if(academicModalOverlay && academicModalOverlay.classList.contains('active')) academicModalOverlay.classList.remove('active');
+        }
     });
     
-    searchOverlay.addEventListener('click', (e) => {
-        if (e.target === searchOverlay) closeSearch();
-    });
+    if(searchOverlay) {
+        searchOverlay.addEventListener('click', (e) => {
+            if (e.target === searchOverlay) closeSearch();
+        });
+    }
 
     function routeToSection(targetId) {
         closeSearch();
-        
         if (window.scrollY < 500) {
             window.scrollTo({ top: 600, behavior: 'instant' });
         }
-
         setTimeout(() => {
             const targetSec = document.getElementById(targetId);
             if (targetSec && capsule) {
@@ -328,6 +309,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderDefaultResults() {
+        if(!searchResults) return;
         searchResults.innerHTML = '';
         
         const quickLinksHeading = document.createElement('li');
@@ -351,19 +333,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const printLi = document.createElement('li');
         printLi.className = 'result-item interactive-element';
-        printLi.innerHTML = `
-            <span class="result-title">Print Dossier</span>
-            <span class="result-snippet">Generate a physical copy of this document</span>
-        `;
+        printLi.innerHTML = `<span class="result-title">Print Dossier</span><span class="result-snippet">Generate a physical copy</span>`;
         printLi.addEventListener('click', () => { closeSearch(); window.print(); });
         searchResults.appendChild(printLi);
 
         const themeLi = document.createElement('li');
         themeLi.className = 'result-item interactive-element';
-        themeLi.innerHTML = `
-            <span class="result-title">Toggle Interface Theme</span>
-            <span class="result-snippet">Switch between light and dark modes</span>
-        `;
+        themeLi.innerHTML = `<span class="result-title">Toggle Theme</span><span class="result-snippet">Switch visual mode</span>`;
         themeLi.addEventListener('click', () => { 
             closeSearch(); 
             document.body.classList.toggle('dark-mode');
@@ -372,60 +348,53 @@ document.addEventListener('DOMContentLoaded', () => {
         searchResults.appendChild(themeLi);
     }
 
-    searchInput.addEventListener('input', (e) => {
-        const query = e.target.value.toLowerCase().trim();
-        searchResults.innerHTML = '';
+    if(searchInput) {
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase().trim();
+            searchResults.innerHTML = '';
 
-        if (!query) {
-            renderDefaultResults();
-            return;
-        }
-
-        const matches = searchIndex.filter(item => 
-            item.text.toLowerCase().includes(query) || item.title.toLowerCase().includes(query)
-        );
-
-        if (matches.length === 0) {
-            searchResults.innerHTML = `
-                <li class="results-group-heading">RESULTS</li>
-                <li class="result-item" style="pointer-events: none;">
-                    <span class="result-title">No matches found for "${query}"</span>
-                </li>`;
-            return;
-        }
-
-        const hitsHeading = document.createElement('li');
-        hitsHeading.className = 'results-group-heading';
-        hitsHeading.textContent = 'TOP HITS';
-        searchResults.appendChild(hitsHeading);
-
-        matches.forEach(match => {
-            const li = document.createElement('li');
-            li.className = 'result-item interactive-element';
-            
-            let snippet = '';
-            const matchIndex = match.text.toLowerCase().indexOf(query);
-            if (matchIndex > -1) {
-                const start = Math.max(0, matchIndex - 40);
-                const end = Math.min(match.text.length, matchIndex + query.length + 40);
-                snippet = match.text.substring(start, end);
-                if (start > 0) snippet = '...' + snippet;
-                if (end < match.text.length) snippet = snippet + '...';
-                
-                const regex = new RegExp(`(${query})`, 'gi');
-                snippet = snippet.replace(regex, '<span class="snippet-highlight">$1</span>');
+            if (!query) {
+                renderDefaultResults();
+                return;
             }
 
-            li.innerHTML = `
-                <span class="result-title">${match.title}</span>
-                ${snippet ? `<span class="result-snippet">${snippet}</span>` : ''}
-            `;
-            
-            li.addEventListener('click', () => routeToSection(match.id));
-            searchResults.appendChild(li);
-        });
-    });
+            const matches = searchIndex.filter(item => 
+                item.text.toLowerCase().includes(query) || item.title.toLowerCase().includes(query)
+            );
 
+            if (matches.length === 0) {
+                searchResults.innerHTML = `<li class="results-group-heading">RESULTS</li><li class="result-item" style="pointer-events: none;"><span class="result-title">No matches found</span></li>`;
+                return;
+            }
+
+            const hitsHeading = document.createElement('li');
+            hitsHeading.className = 'results-group-heading';
+            hitsHeading.textContent = 'TOP HITS';
+            searchResults.appendChild(hitsHeading);
+
+            matches.forEach(match => {
+                const li = document.createElement('li');
+                li.className = 'result-item interactive-element';
+                
+                let snippet = '';
+                const matchIndex = match.text.toLowerCase().indexOf(query);
+                if (matchIndex > -1) {
+                    const start = Math.max(0, matchIndex - 40);
+                    const end = Math.min(match.text.length, matchIndex + query.length + 40);
+                    snippet = match.text.substring(start, end);
+                    if (start > 0) snippet = '...' + snippet;
+                    if (end < match.text.length) snippet = snippet + '...';
+                    
+                    const regex = new RegExp(`(${query})`, 'gi');
+                    snippet = snippet.replace(regex, '<span class="snippet-highlight">$1</span>');
+                }
+
+                li.innerHTML = `<span class="result-title">${match.title}</span>${snippet ? `<span class="result-snippet">${snippet}</span>` : ''}`;
+                li.addEventListener('click', () => routeToSection(match.id));
+                searchResults.appendChild(li);
+            });
+        });
+    }
 
     // ==========================================
     // 7. LIVE HEX SCANNER ENGINE
@@ -437,16 +406,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const scannerHud = document.createElement('div');
         scannerHud.id = 'scanner-hud';
         scannerHud.innerHTML = `
-            <div class="scan-row">
-                <span class="scan-label">FG</span>
-                <div class="scan-box" id="scan-fg-box"></div>
-                <span class="scan-hex" id="scan-fg-hex">-</span>
-            </div>
-            <div class="scan-row">
-                <span class="scan-label">BG</span>
-                <div class="scan-box" id="scan-bg-box"></div>
-                <span class="scan-hex" id="scan-bg-hex">-</span>
-            </div>
+            <div class="scan-row"><span class="scan-label">FG</span><div class="scan-box" id="scan-fg-box"></div><span class="scan-hex" id="scan-fg-hex">-</span></div>
+            <div class="scan-row"><span class="scan-label">BG</span><div class="scan-box" id="scan-bg-box"></div><span class="scan-hex" id="scan-bg-hex">-</span></div>
         `;
         document.body.appendChild(scannerHud);
 
@@ -481,29 +442,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
         document.addEventListener('mousemove', (e) => {
             if (!isScannerActive) return;
-
             scannerHud.style.left = `${e.clientX}px`;
             scannerHud.style.top = `${e.clientY}px`;
 
             const target = document.elementFromPoint(e.clientX, e.clientY);
-
             if (target && target.id !== 'scanner-hud' && !scannerHud.contains(target)) {
                 const computed = window.getComputedStyle(target);
-                
                 const fgColorRaw = computed.color;
                 const bgColorRaw = computed.backgroundColor;
-                
                 const fgHexVal = rgbToHex(fgColorRaw);
                 const bgHexVal = rgbToHex(bgColorRaw);
 
                 fgBox.style.backgroundColor = fgHexVal === 'CLEAR' ? 'transparent' : fgHexVal;
                 fgHex.textContent = fgHexVal;
-                
                 bgBox.style.backgroundColor = bgHexVal === 'CLEAR' ? 'transparent' : bgHexVal;
                 bgHex.textContent = bgHexVal;
 
                 currentData = `FG: ${fgHexVal} | BG: ${bgHexVal}`;
-                
                 scannerHud.style.opacity = '1';
             } else {
                 scannerHud.style.opacity = '0';
@@ -513,13 +468,11 @@ document.addEventListener('DOMContentLoaded', () => {
         document.addEventListener('click', (e) => {
             if (isScannerActive && e.target !== scannerBtn) {
                 navigator.clipboard.writeText(currentData).then(() => {
-                    scannerBtn.textContent = '[ COPIED TO CLIPBOARD ]';
+                    scannerBtn.textContent = '[ COPIED ]';
                     scannerBtn.classList.add('flash-copied');
-                    
                     isScannerActive = false;
                     document.body.classList.remove('scanner-active');
                     scannerHud.style.opacity = '0';
-                    
                     setTimeout(() => {
                         scannerBtn.textContent = '[ HEX.SCANNER ]';
                         scannerBtn.style.color = '';
@@ -527,53 +480,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     }, 2000);
                 });
             }
-        });
-    }
-
-    // ==========================================
-    // 8. ACADEMIC GLASSMORPHISM MODAL
-    // ==========================================
-    const academicModalOverlay = document.getElementById('academic-modal');
-    const academicModalBody = document.getElementById('academic-modal-body');
-    const academicModalClose = document.getElementById('close-academic-modal');
-    
-    const bachelorsCard = document.getElementById('card-bachelors');
-    const mastersCard = document.getElementById('card-masters');
-
-    const degreeData = {
-        bachelors: `
-            <span class="modal-degree-title">Bachelors of Technology<br>(Mechanical and Automation Engineering)</span>
-            <span class="modal-degree-duration">2015 – 2019</span>
-            <span class="modal-degree-location">India</span>
-        `,
-        masters: `
-            <span class="modal-degree-title">Masters of Business Administration</span>
-            <span class="modal-degree-duration">2022 – 2023</span>
-            <span class="modal-degree-location">United Kingdom</span>
-        `
-    };
-
-    function openAcademicModal(degreeKey) {
-        if(academicModalBody && academicModalOverlay) {
-            academicModalBody.innerHTML = degreeData[degreeKey];
-            academicModalOverlay.classList.add('active');
-        }
-    }
-
-    if (bachelorsCard) bachelorsCard.addEventListener('click', () => openAcademicModal('bachelors'));
-    if (mastersCard) mastersCard.addEventListener('click', () => openAcademicModal('masters'));
-    
-    // Close via button
-    if (academicModalClose) {
-        academicModalClose.addEventListener('click', () => {
-            academicModalOverlay.classList.remove('active');
-        });
-    }
-
-    // Close on clicking the dark background
-    if (academicModalOverlay) {
-        academicModalOverlay.addEventListener('click', (e) => {
-            if (e.target === academicModalOverlay) academicModalOverlay.classList.remove('active');
         });
     }
 });
