@@ -576,4 +576,42 @@ document.addEventListener('DOMContentLoaded', () => {
             if (e.target === academicModalOverlay) academicModalOverlay.classList.remove('active');
         });
     }
+// ==========================================
+        // E. 3D STICKY STACK ENGINE (WORKSHOP)
+        // ==========================================
+        const stackCards = document.querySelectorAll('.glass-stack-card');
+        const stickyTop = window.innerHeight * 0.15; // Matches the top: 15vh in CSS
+
+        stackCards.forEach((card, index) => {
+            const rect = card.getBoundingClientRect();
+            let scale = 1;
+            let opacity = 1;
+
+            // If there is a card below this one, calculate distance to it
+            if (index < stackCards.length - 1) {
+                const nextCard = stackCards[index + 1];
+                const nextRect = nextCard.getBoundingClientRect();
+
+                // If this card is currently locked at the top of the screen
+                if (rect.top <= stickyTop + 5) {
+                    const distanceToNext = nextRect.top - stickyTop;
+                    const triggerDistance = window.innerHeight * 0.7; // Start shrinking early
+
+                    if (distanceToNext < triggerDistance) {
+                        const progress = 1 - (distanceToNext / triggerDistance);
+                        
+                        // Shrink to 90% size and fade to 30% opacity
+                        scale = 1 - (progress * 0.1); 
+                        opacity = 1 - (progress * 0.7);
+                    }
+                }
+            }
+
+            // Clamp values
+            scale = Math.max(0.9, Math.min(1, scale));
+            opacity = Math.max(0.3, Math.min(1, opacity));
+
+            card.style.transform = `scale(${scale})`;
+            card.style.opacity = `${opacity}`;
+        });
 });
