@@ -868,3 +868,100 @@ body.scanner-active, body.scanner-active * {
     .academic-square { width: 300px; height: 300px; }
     .academic-modal-content { margin: 20px; padding: 30px; }
 }
+/* ========================================================== */
+/* THE WORKSHOP: STICKY GLASS STACK                           */
+/* ========================================================== */
+
+.workshop-section {
+    padding-bottom: 250px; /* Gives you plenty of room to scroll through the stack */
+}
+
+.workshop-stack-container {
+    display: flex;
+    flex-direction: column;
+    gap: 40px; /* The initial gap before they stack */
+    max-width: 900px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.glass-stack-card {
+    /* THIS IS THE MAGIC: It locks them to the screen as you scroll past */
+    position: sticky;
+    width: 100%;
+    /* Massive vertical height for maximum glass overlap */
+    min-height: 45vh; 
+    
+    /* Perfect Apple Glassmorphism */
+    background: rgba(25, 25, 28, 0.45);
+    backdrop-filter: blur(60px) saturate(200%);
+    -webkit-backdrop-filter: blur(60px) saturate(200%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 32px;
+    box-shadow: 0 -20px 40px rgba(0, 0, 0, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.15); 
+    
+    padding: 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+    transition: transform 0.4s ease;
+}
+
+/* Light mode overrides for the glass */
+.light-mode .glass-stack-card {
+    background: rgba(255, 255, 255, 0.55);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    box-shadow: 0 -20px 40px rgba(0, 0, 0, 0.05), inset 0 1px 1px rgba(255, 255, 255, 0.8); 
+}
+
+/* THE STAGGERED LOCKING POSITIONS */
+#stack-card-1 { top: 15vh; z-index: 1; }
+#stack-card-2 { top: 18vh; z-index: 2; }
+#stack-card-3 { top: 21vh; z-index: 3; }
+
+/* Inner Content Typography */
+.stack-meta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.stack-num {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--accent);
+}
+
+.stack-tag {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    letter-spacing: 0.15em;
+}
+
+.stack-title {
+    font-size: clamp(32px, 4vw, 48px);
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 24px;
+    letter-spacing: -0.02em;
+}
+
+.stack-description {
+    font-size: 18px;
+    line-height: 1.6;
+    color: var(--powder-grey);
+    max-width: 700px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .glass-stack-card { padding: 40px 30px; min-height: 50vh; }
+    #stack-card-1 { top: 10vh; }
+    #stack-card-2 { top: 12vh; }
+    #stack-card-3 { top: 14vh; }
+}
