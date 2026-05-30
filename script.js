@@ -532,7 +532,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ==========================================
     // 8. ACADEMIC TELEMETRY TOGGLE
     // ==========================================
-    document.querySelectorAll('.uni-card').forEach(card => {
+    document.querySelectorAll('.academic-card').forEach(card => {
         card.addEventListener('click', () => {
             card.classList.toggle('deployed');
             
