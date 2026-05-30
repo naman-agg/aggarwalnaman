@@ -510,24 +510,23 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        document.addEventListener('click', (e) => {
-            if (isScannerActive && e.target !== scannerBtn) {
-                navigator.clipboard.writeText(currentData).then(() => {
-                    scannerBtn.textContent = '[ COPIED TO CLIPBOARD ]';
-                    scannerBtn.classList.add('flash-copied');
-                    
-                    isScannerActive = false;
-                    document.body.classList.remove('scanner-active');
-                    scannerHud.style.opacity = '0';
-                    
-                    setTimeout(() => {
-                        scannerBtn.textContent = '[ HEX.SCANNER ]';
-                        scannerBtn.style.color = '';
-                        scannerBtn.classList.remove('flash-copied');
-                    }, 2000);
-                });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            // 1. Force close the Academic Modal
+            const activeAcademicModal = document.getElementById('academic-modal');
+            if (activeAcademicModal && activeAcademicModal.classList.contains('active')) {
+                activeAcademicModal.classList.remove('active');
             }
-        });
+            
+            // 2. Force close the Search Modal
+            const activeSearchModal = document.getElementById('search-overlay');
+            if (activeSearchModal && activeSearchModal.classList.contains('active')) {
+                activeSearchModal.classList.remove('active');
+                document.getElementById('search-input').value = ''; // clears the text
+            }
+        }
+    });
     }
 
    // ==========================================
