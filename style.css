@@ -763,8 +763,14 @@ body.scanner-active, body.scanner-active * {
 }
 
 /* ========================================================== */
-/* FOUNDATION: SQUARE LOGOS                                   */
+/* 8. FOUNDATION: SQUARE LOGOS & MODAL                        */
 /* ========================================================== */
+
+/* Greys out the Foundation heading */
+#education-section .section-heading {
+    color: var(--powder-grey);
+}
+
 .foundation-grid {
     display: flex; 
     justify-content: center;
@@ -773,12 +779,11 @@ body.scanner-active, body.scanner-active * {
 }
 
 .academic-square {
-    /* 3. Made squares significantly bigger */
-    width: 320px; 
-    height: 320px; 
-    /* 4. Pure white background for transparent logos */
-    background-color: #ffffff; 
-    background-image: none; /* Removes the dark grain */
+    /* Made massive as requested */
+    width: 350px; 
+    height: 350px; 
+    background-color: #ffffff; /* Pure white background */
+    background-image: none; /* Removes the dark metal grain */
     border: 1px solid var(--border-color);
     border-radius: 32px; 
     display: flex;
@@ -790,35 +795,19 @@ body.scanner-active, body.scanner-active * {
     overflow: hidden;
 }
 
+.academic-square:hover {
+    transform: scale(1.05); 
+    border-color: var(--accent);
+}
+
 .academic-square img {
-    /* Scales the image nicely inside the larger white box */
     width: 70%; 
     height: auto;
     object-fit: contain;
 }
 
-.academic-square:hover {
-    transform: scale(1.05); /* Simple, elegant lift */
-    border-color: var(--accent);
-}
-
-/* Image formatting for when you add your logos */
-.academic-square img {
-    width: 60%; /* Adjust this if your logo needs to be larger/smaller inside the box */
-    height: auto;
-    object-fit: contain;
-}
-
-/* Text formatting while you wait to upload logos */
-.placeholder-logo-text {
-    font-family: var(--font-mono);
-    font-size: 32px;
-    font-weight: 700;
-    color: var(--text-primary);
-}
-
 /* ========================================================== */
-/* ACADEMIC GLASSMORPHISM MODAL                               */
+/* THE GLASS MODAL (Crucial for the pop-up to work)           */
 /* ========================================================== */
 .academic-modal-overlay {
     position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
@@ -848,6 +837,7 @@ body.scanner-active, body.scanner-active * {
     text-align: center;
 }
 
+/* Light mode specific modal formatting */
 .light-mode .academic-modal-content {
     background: rgba(255, 255, 255, 0.55);
     border: 1px solid rgba(0, 0, 0, 0.05);
@@ -870,7 +860,9 @@ body.scanner-active, body.scanner-active * {
 .modal-degree-duration { font-family: var(--font-mono); font-size: 12px; color: var(--accent); margin-bottom: 16px; display: block; letter-spacing: 0.1em; }
 .modal-degree-location { font-size: 14px; color: var(--text-secondary); font-weight: 500; display: block; }
 
+/* Responsive grid for mobile */
 @media (max-width: 768px) {
     .foundation-grid { flex-direction: column; align-items: center; gap: 40px; }
+    .academic-square { width: 300px; height: 300px; }
     .academic-modal-content { margin: 20px; padding: 30px; }
 }
