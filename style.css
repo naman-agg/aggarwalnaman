@@ -887,7 +887,7 @@ body.scanner-active, body.scanner-active * {
 .perfect-glass-card {
     position: relative;
     /* Reduced gap to accommodate 5 layers seamlessly */
-    top: calc(var(--card-index) * 5px); 
+    top: calc(var(--card-index) * 1px); 
     
     display: flex;
     flex-direction: column;
