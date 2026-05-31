@@ -612,7 +612,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const scale = Math.max(0.75, 1 - scaleDrop); // Caps at 75% size
                     
                     // 2. Push up by 35px per viewport height to slide under the next card
-                    const yPush = (distancePastTop / window.innerHeight) * 25; // 20px per vh
+                    const yPush = (distancePastTop / window.innerHeight) * 20; // 20px per vh
                     const translateY = -yPush;
 
                     // Apply physics (Opacity is 1 so the glass stays crisp)
