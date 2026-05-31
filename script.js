@@ -604,5 +604,5 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
         });
-    }
+    };
 });
