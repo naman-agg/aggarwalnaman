@@ -578,53 +578,41 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 // ==========================================
-    // PERFECT GLASS STACK ENGINE (SHRINK & UP)
+    // PERFECT GLASS STACK ENGINE (CONTINUOUS CASCADE)
     // ==========================================
     const stickyWrappers = document.querySelectorAll('.sticky-wrapper');
     const glassCards = document.querySelectorAll('.perfect-glass-card');
 
     if (capsule && stickyWrappers.length > 0 && glassCards.length > 0) {
-        
         capsule.addEventListener('scroll', () => {
-            // Get the exact position of the scroll container's ceiling
             const capsuleTop = capsule.getBoundingClientRect().top;
 
             stickyWrappers.forEach((wrapper, index) => {
                 const rect = wrapper.getBoundingClientRect();
                 const card = glassCards[index];
 
-                // If this wrapper has hit the top of the capsule (meaning it is pinned)
-                if (rect.top <= capsuleTop + 1) { 
+                // Calculate how far the wrapper has scrolled PAST the locking point
+                const distancePastTop = capsuleTop - rect.top;
+
+                if (distancePastTop > 0) {
+                    // Shrink by 4% for every full screen height scrolled past
+                    const scaleDrop = (distancePastTop / window.innerHeight) * 0.04;
+                    const scale = Math.max(0.75, 1 - scaleDrop); // Caps at 75% size
                     
-                    if (index < stickyWrappers.length - 1) {
-                        const nextWrapper = stickyWrappers[index + 1];
-                        const nextRect = nextWrapper.getBoundingClientRect();
+                    // Push upward by 25px for every full screen height scrolled past
+                    const yPush = (distancePastTop / window.innerHeight) * 25;
+                    const translateY = -yPush;
 
-                        // Measure how close the next card is to pinning
-                        const distanceToPin = nextRect.top - capsuleTop;
-                        
-                        // Convert that distance to a 0 to 1 progress ratio
-                        let progress = 1 - (distanceToPin / wrapper.offsetHeight);
-                        progress = Math.max(0, Math.min(1, progress));
-
-                        // 1. Scale down to 95%
-                        const scale = 1 - (progress * 0.05); 
-                        // 2. Push it UP by 30px to create depth
-                        const translateY = -(progress * 30); 
-                        // 3. Dim it by 40% so the top card pops
-                        const opacity = 1 - (progress * 0.4); 
-
-                        // Apply the physics instantly
-                        card.style.transform = `scale(${scale}) translateY(${translateY}px)`;
-                        card.style.opacity = opacity;
-                    }
+                    // Apply physics (Notice: Opacity is strictly 1, keeping glass sharp)
+                    card.style.transform = `scale(${scale}) translateY(${translateY}px)`;
+                    card.style.opacity = 1; 
                 } else {
-                    // Reset if we scroll back up
+                    // Reset to default when scrolling back up
                     card.style.transform = `scale(1) translateY(0px)`;
                     card.style.opacity = 1;
                 }
             });
         });
     }
-
+    
 });
