@@ -578,38 +578,48 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 // ==========================================
-    // PERFECT GLASS STACK ENGINE (CONTINUOUS CASCADE)
-    // ==========================================
+// PERFECT GLASS STACK ENGINE (FOOLPROOF MATH)
+// ==========================================
     const stickyWrappers = document.querySelectorAll('.sticky-wrapper');
     const glassCards = document.querySelectorAll('.perfect-glass-card');
 
     if (capsule && stickyWrappers.length > 0 && glassCards.length > 0) {
+        
+        // Find the parent container holding all the wrappers
+        const stackContainer = stickyWrappers[0].parentElement;
+
         capsule.addEventListener('scroll', () => {
+            // Measure the exact fixed ceiling of your scroll area
             const capsuleTop = capsule.getBoundingClientRect().top;
+            
+            // Measure where the entire stack container is, independent of sticky quirks
+            const containerTop = stackContainer.getBoundingClientRect().top;
 
             stickyWrappers.forEach((wrapper, index) => {
-                const rect = wrapper.getBoundingClientRect();
                 const card = glassCards[index];
 
-                // Calculate how far the wrapper has scrolled PAST the locking point
-                const distancePastTop = capsuleTop - rect.top;
+                // Since each wrapper is 100vh tall, Card 1 locks at containerTop = 0,
+                // Card 2 locks at containerTop = -100vh, Card 3 at -200vh, etc.
+                const lockPoint = capsuleTop - (index * window.innerHeight);
+
+                // How far have we scrolled PAST this specific card's locking point?
+                const distancePastTop = lockPoint - containerTop;
 
                 if (distancePastTop > 0) {
-                    // Shrink by 4% for every full screen height scrolled past
+                    // Card has locked and user is still scrolling down
+                    // 1. Shrink by 4% per viewport height scrolled
                     const scaleDrop = (distancePastTop / window.innerHeight) * 0.04;
                     const scale = Math.max(0.75, 1 - scaleDrop); // Caps at 75% size
                     
-                    // Push upward by 25px for every full screen height scrolled past
-                    const yPush = (distancePastTop / window.innerHeight) * 25;
+                    // 2. Push up by 35px per viewport height to slide under the next card
+                    const yPush = (distancePastTop / window.innerHeight) * 35;
                     const translateY = -yPush;
 
-                    // Apply physics (Notice: Opacity is strictly 1, keeping glass sharp)
+                    // Apply physics (Opacity is 1 so the glass stays crisp)
                     card.style.transform = `scale(${scale}) translateY(${translateY}px)`;
-                    card.style.opacity = 1; 
                 } else {
-                    // Reset to default when scrolling back up
+                    // Card hasn't reached the top yet, keep it at default
                     card.style.transform = `scale(1) translateY(0px)`;
-                    card.style.opacity = 1;
                 }
             });
         });
