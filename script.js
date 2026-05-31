@@ -577,32 +577,61 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 // ==========================================
-    // PERFECT GLASS STACK ENGINE
+    // PERFECT GLASS STACK ENGINE (SHRINK & UP)
     // ==========================================
     const stickyWrappers = document.querySelectorAll('.sticky-wrapper');
     const glassCards = document.querySelectorAll('.perfect-glass-card');
 
     if (stickyWrappers.length > 0 && glassCards.length > 0) {
-        window.addEventListener('scroll', () => {
-            stickyWrappers.forEach((wrapper, index) => {
-                const rect = wrapper.getBoundingClientRect();
-                const card = glassCards[index];
+        
+        if (capsule) {
+            capsule.addEventListener('scroll', () => {
+                
+                stickyWrappers.forEach((wrapper, index) => {
+                    const rect = wrapper.getBoundingClientRect();
+                    const card = glassCards[index];
 
-                // If the wrapper hits the top of the viewport
-                if (rect.top <= 0) {
-                    // Calculate how far we've scrolled past it
-                    const scrollDistance = Math.abs(rect.top);
-                    
-                    // Shrink it down gently, maxing out at 90% scale
-                    const scale = Math.max(0.90, 1 - (scrollDistance / window.innerHeight) * 0.1);
-                    
-                    // Apply the scale mathematically
-                    card.style.transform = `scale(${scale})`;
-                } else {
-                    // Reset if we scroll back up
-                    card.style.transform = `scale(1)`;
-                }
+                    // If this wrapper has hit the top of the screen and is locked
+                    if (rect.top <= 0) {
+                        
+                        // Check the exact position of the NEXT wrapper
+                        if (index < stickyWrappers.length - 1) {
+                            const nextWrapper = stickyWrappers[index + 1];
+                            const nextRect = nextWrapper.getBoundingClientRect();
+
+                            // Calculate how much the next card is overlapping the screen
+                            const overlap = window.innerHeight - nextRect.top;
+
+                            if (overlap > 0) {
+                                // Progress goes from 0 (just touching bottom) to 1 (fully covered)
+                                let progress = overlap / window.innerHeight;
+                                progress = Math.min(Math.max(progress, 0), 1);
+
+                                // 1. Scale down to 90%
+                                const scale = 1 - (progress * 0.1);
+                                
+                                // 2. Push it UP by 5vh
+                                const translateY = -(progress * 5); 
+                                
+                                // 3. Dim it slightly so the top card pops more
+                                const opacity = 1 - (progress * 0.4);
+
+                                // Apply instantly with no lag
+                                card.style.transform = `scale(${scale}) translateY(${translateY}vh)`;
+                                card.style.opacity = opacity;
+                            } else {
+                                // Next card hasn't reached the screen yet
+                                card.style.transform = `scale(1) translateY(0)`;
+                                card.style.opacity = 1;
+                            }
+                        }
+                    } else {
+                        // Card hasn't locked to the top yet
+                        card.style.transform = `scale(1) translateY(0)`;
+                        card.style.opacity = 1;
+                    }
+                });
             });
-        });
-    };
+        }
+    }
 });
