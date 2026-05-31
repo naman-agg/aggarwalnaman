@@ -897,7 +897,7 @@ body.scanner-active, body.scanner-active * {
     /* Reduced from 80vh to 70vh */
     height: 80vh;
     border-radius: 32px;
-    padding: 1.5rem; 
+    padding: 3.5rem; 
     transform-origin: top center;
     
     background: rgba(255, 255, 255, 0.05);
