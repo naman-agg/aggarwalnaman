@@ -887,13 +887,13 @@ body.scanner-active, body.scanner-active * {
 .perfect-glass-card {
     position: relative;
     /* Reduced gap to accommodate 5 layers seamlessly */
-    top: calc(var(--card-index) * 1px); 
+    top: calc(var(--card-index) * 5px); 
     
     display: flex;
     flex-direction: column;
-    width: 95vw;
+    width: 90vw;
     /* Reduced from 1400px to 1100px */
-    max-width: 1500px;
+    max-width: 1200px;
     /* Reduced from 80vh to 70vh */
     height: 70vh;
     border-radius: 32px;
