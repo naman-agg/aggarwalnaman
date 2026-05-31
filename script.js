@@ -576,62 +576,55 @@ document.addEventListener('DOMContentLoaded', () => {
             if (e.target === academicModalOverlay) academicModalOverlay.classList.remove('active');
         });
     }
+
 // ==========================================
     // PERFECT GLASS STACK ENGINE (SHRINK & UP)
     // ==========================================
     const stickyWrappers = document.querySelectorAll('.sticky-wrapper');
     const glassCards = document.querySelectorAll('.perfect-glass-card');
 
-    if (stickyWrappers.length > 0 && glassCards.length > 0) {
+    if (capsule && stickyWrappers.length > 0 && glassCards.length > 0) {
         
-        if (capsule) {
-            capsule.addEventListener('scroll', () => {
-                
-                stickyWrappers.forEach((wrapper, index) => {
-                    const rect = wrapper.getBoundingClientRect();
-                    const card = glassCards[index];
+        capsule.addEventListener('scroll', () => {
+            // Get the exact position of the scroll container's ceiling
+            const capsuleTop = capsule.getBoundingClientRect().top;
 
-                    // If this wrapper has hit the top of the screen and is locked
-                    if (rect.top <= 0) {
+            stickyWrappers.forEach((wrapper, index) => {
+                const rect = wrapper.getBoundingClientRect();
+                const card = glassCards[index];
+
+                // If this wrapper has hit the top of the capsule (meaning it is pinned)
+                if (rect.top <= capsuleTop + 1) { 
+                    
+                    if (index < stickyWrappers.length - 1) {
+                        const nextWrapper = stickyWrappers[index + 1];
+                        const nextRect = nextWrapper.getBoundingClientRect();
+
+                        // Measure how close the next card is to pinning
+                        const distanceToPin = nextRect.top - capsuleTop;
                         
-                        // Check the exact position of the NEXT wrapper
-                        if (index < stickyWrappers.length - 1) {
-                            const nextWrapper = stickyWrappers[index + 1];
-                            const nextRect = nextWrapper.getBoundingClientRect();
+                        // Convert that distance to a 0 to 1 progress ratio
+                        let progress = 1 - (distanceToPin / wrapper.offsetHeight);
+                        progress = Math.max(0, Math.min(1, progress));
 
-                            // Calculate how much the next card is overlapping the screen
-                            const overlap = window.innerHeight - nextRect.top;
+                        // 1. Scale down to 95%
+                        const scale = 1 - (progress * 0.05); 
+                        // 2. Push it UP by 30px to create depth
+                        const translateY = -(progress * 30); 
+                        // 3. Dim it by 40% so the top card pops
+                        const opacity = 1 - (progress * 0.4); 
 
-                            if (overlap > 0) {
-                                // Progress goes from 0 (just touching bottom) to 1 (fully covered)
-                                let progress = overlap / window.innerHeight;
-                                progress = Math.min(Math.max(progress, 0), 1);
-
-                                // 1. Scale down to 90%
-                                const scale = 1 - (progress * 0.1);
-                                
-                                // 2. Push it UP by 5vh
-                                const translateY = -(progress * 5); 
-                                
-                                // 3. Dim it slightly so the top card pops more
-                                const opacity = 1 - (progress * 0.4);
-
-                                // Apply instantly with no lag
-                                card.style.transform = `scale(${scale}) translateY(${translateY}vh)`;
-                                card.style.opacity = opacity;
-                            } else {
-                                // Next card hasn't reached the screen yet
-                                card.style.transform = `scale(1) translateY(0)`;
-                                card.style.opacity = 1;
-                            }
-                        }
-                    } else {
-                        // Card hasn't locked to the top yet
-                        card.style.transform = `scale(1) translateY(0)`;
-                        card.style.opacity = 1;
+                        // Apply the physics instantly
+                        card.style.transform = `scale(${scale}) translateY(${translateY}px)`;
+                        card.style.opacity = opacity;
                     }
-                });
+                } else {
+                    // Reset if we scroll back up
+                    card.style.transform = `scale(1) translateY(0px)`;
+                    card.style.opacity = 1;
+                }
             });
-        }
+        });
     }
+
 });

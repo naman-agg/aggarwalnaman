@@ -886,16 +886,19 @@ body.scanner-active, body.scanner-active * {
 
 .perfect-glass-card {
     position: relative;
+    /* THIS CREATES THE GAP: Each subsequent card sits 40px lower */
+    top: calc(var(--card-index) * 40px); 
+    
     display: flex;
     flex-direction: column;
     width: 95vw;
     max-width: 1400px;
     height: 80vh;
     border-radius: 32px;
-    padding: 3.5rem; /* Equivalent to p-14 */
-    transform-origin: top;
+    padding: 3.5rem; 
+    transform-origin: top center;
     
-    /* The Exact Glass Specs from the Reference */
+    /* The Exact Glass Specs */
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(40px);
@@ -903,7 +906,7 @@ body.scanner-active, body.scanner-active * {
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
     
     overflow: hidden;
-    will-change: transform;
+    will-change: transform, opacity;
 }
 
 .light-mode .perfect-glass-card {
