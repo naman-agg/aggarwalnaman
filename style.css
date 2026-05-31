@@ -895,7 +895,7 @@ body.scanner-active, body.scanner-active * {
     /* Reduced from 1400px to 1100px */
     max-width: 1500px;
     /* Reduced from 80vh to 70vh */
-    height: 65vh;
+    height: 80vh;
     border-radius: 32px;
     padding: 1.5rem; 
     transform-origin: top center;
