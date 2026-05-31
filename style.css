@@ -893,9 +893,9 @@ body.scanner-active, body.scanner-active * {
     flex-direction: column;
     width: 95vw;
     /* Reduced from 1400px to 1100px */
-    max-width: 1300px;
+    max-width: 1500px;
     /* Reduced from 80vh to 70vh */
-    height: 70vh;
+    height: 60vh;
     border-radius: 32px;
     padding: 3.5rem; 
     transform-origin: top center;
