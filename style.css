@@ -868,117 +868,99 @@ body.scanner-active, body.scanner-active * {
     .academic-square { width: 300px; height: 300px; }
     .academic-modal-content { margin: 20px; padding: 30px; }
 }
+
+
 /* ========================================================== */
-/* THE WORKSHOP: TRUE PHYSICAL GLASS LAYERING                 */
+/* 9. THE WORKSHOP: PERFECT CENTRED GLASS STACK               */
 /* ========================================================== */
 
-.workshop-stack-container {
-    position: relative;
-    max-width: 1100px; 
-    margin: 0 auto;
-    padding-bottom: 20vh; 
-}
-
-.glass-stack-card {
+.sticky-wrapper {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     position: sticky;
-    top: 15vh; 
-    height: 65vh; 
-    width: 100%;
-    margin-bottom: 8vh; 
-    border-radius: 40px;
-    transform-origin: top center; 
-    will-change: transform; 
-    overflow: hidden; /* Crucial: Keeps layers trapped inside the card */
-    
-    /* NO BACKGROUND OR BLUR HERE - IT GOES ON THE PANE */
+    top: 0;
+    perspective: 1000px; /* Gives the 3D depth when shrinking */
 }
 
-/* --- LAYER 1: THE RAW LIGHT SOURCES --- */
-.raw-shape {
-    position: absolute;
-    z-index: 1; /* Sits at the very back */
-    /* Notice there is no filter: blur() here. The glass does the work. */
-}
-
-/* --- LAYER 2: THE SHEET OF GLASS --- */
-.glass-pane {
-    position: absolute;
-    inset: 0;
-    z-index: 2; /* Sits over the raw shapes */
-    
-    /* The Matte Dark Glass Specs */
-    background: rgba(25, 25, 28, 0.45);
-    backdrop-filter: blur(80px) saturate(200%);
-    -webkit-backdrop-filter: blur(80px) saturate(200%);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 -20px 40px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.15); 
-}
-
-.light-mode .glass-pane {
-    background: rgba(255, 255, 255, 0.55);
-    border: 1px solid rgba(0, 0, 0, 0.05);
-    box-shadow: 0 -20px 40px rgba(0, 0, 0, 0.05), inset 0 1px 1px rgba(255, 255, 255, 0.8); 
-}
-
-/* --- LAYER 3: THE SHARP CONTENT --- */
-.stack-card-content {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    height: 100%;
-    padding: 60px 80px;
+.perfect-glass-card {
     position: relative;
-    z-index: 3; /* Sits perfectly sharp on top of the glass */
-}
-
-.stack-text-side {
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    padding-right: 40px;
+    width: 95vw;
+    max-width: 1400px;
+    height: 80vh;
+    border-radius: 32px;
+    padding: 3.5rem; /* Equivalent to p-14 */
+    transform-origin: top;
+    
+    /* The Exact Glass Specs from the Reference */
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    
+    overflow: hidden;
+    will-change: transform;
 }
 
-.stack-meta { 
-    font-family: var(--font-mono); font-size: 12px; font-weight: 700; 
-    color: var(--text-secondary); letter-spacing: 0.15em; margin-bottom: 20px; 
+.light-mode .perfect-glass-card {
+    background: rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
 }
+
+/* --- INNER LAYOUT GRID --- */
+.relative.z-10.flex { width: 100%; height: 100%; display: flex; }
+.md-flex-row { flex-direction: column; gap: 2.5rem; }
+
+.stack-text-side {
+    display: flex; flex-direction: column; justify-content: space-between; padding: 1rem 0;
+}
+
+.space-y-6 { display: flex; flex-direction: column; gap: 1.5rem; }
+
+.stack-meta { 
+    display: flex; align-items: center; gap: 0.75rem; 
+    color: rgba(255, 255, 255, 0.5); font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; 
+}
+.light-mode .stack-meta { color: rgba(0, 0, 0, 0.5); }
+
 .stack-title { 
-    font-size: clamp(40px, 5vw, 64px); font-weight: 900; 
-    color: #ffffff; margin-bottom: 20px; line-height: 1; letter-spacing: -0.02em; 
-    text-transform: uppercase;
+    font-size: clamp(36px, 5vw, 72px); font-weight: 500; color: #ffffff; line-height: 0.95; letter-spacing: -0.02em; 
 }
 .light-mode .stack-title { color: #111; }
 
 .stack-description { 
-    font-size: 16px; line-height: 1.6; color: rgba(255,255,255,0.7); margin-bottom: 40px; 
-    max-width: 90%; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; 
+    color: rgba(255, 255, 255, 0.7); font-size: 1.125rem; line-height: 1.625; max-width: 28rem; 
 }
 .light-mode .stack-description { color: var(--text-secondary); }
 
-/* Buttons matching the image */
-.stack-actions { display: flex; gap: 16px; align-items: center; }
+/* Buttons */
+.stack-actions { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 2rem; }
 .btn-primary, .btn-secondary {
-    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-    padding: 14px 28px; border-radius: 100px; font-size: 14px; font-weight: 600; text-decoration: none;
-    transition: transform 0.2s ease, opacity 0.2s ease;
+    display: flex; align-items: center; gap: 0.5rem; padding: 1rem 2rem; border-radius: 9999px;
+    font-size: 1.125rem; font-weight: 600; text-decoration: none; transition: all 0.2s;
 }
-.btn-primary { background: #ffffff; color: #000000; }
-.btn-primary:hover { transform: scale(1.05); }
-.btn-secondary { background: transparent; color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.2); }
-.btn-secondary:hover { background: rgba(255,255,255,0.05); }
-.light-mode .btn-secondary { color: #111; border-color: rgba(0,0,0,0.2); }
+.btn-primary { background: #ffffff; color: #000; }
+.btn-primary:hover { background: rgba(255,255,255,0.9); transform: scale(1.05); }
+.btn-secondary { background: transparent; color: #ffffff; border: 1px solid rgba(255,255,255,0.2); }
+.btn-secondary:hover { background: rgba(255,255,255,0.1); transform: scale(1.05); }
 
-/* The Right Side Grid Container */
+/* Image Side */
 .stack-image-side {
-    position: relative; width: 100%; height: 100%;
-    display: flex; align-items: center; justify-content: center;
+    flex: 1; position: relative; width: 100%; height: 100%; border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.05); box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+    overflow: hidden; display: flex; align-items: center; justify-content: center;
 }
-/* If you place an image here, it will sit sharp on top of the glass. If you leave it empty, you just see the blurred shapes underneath */
-.stack-image-side img { width: 100%; height: 100%; object-fit: contain; border-radius: 16px; }
-.placeholder-img-text { font-family: var(--font-mono); color: var(--text-secondary); letter-spacing: 0.1em; font-size: 12px; }
+.stack-image-side img { width: 100%; height: 100%; object-fit: contain; opacity: 0.9; transition: opacity 0.3s; }
+.stack-image-side img:hover { opacity: 1; }
 
-@media (max-width: 768px) {
-    .stack-card-content { grid-template-columns: 1fr; padding: 40px 30px; }
-    .glass-stack-card { height: 85vh; }
-    .stack-text-side { padding-right: 0; }
-    .stack-image-side { height: 250px; margin-top: 20px; }
+/* Desktop Media Query */
+@media (min-width: 768px) {
+    .md-flex-row { flex-direction: row; gap: 4rem; }
+    .stack-text-side { width: 35%; }
+    .stack-actions { margin-top: 0; }
 }

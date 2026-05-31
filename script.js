@@ -577,41 +577,32 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 // ==========================================
-// E. 3D STICKY STACK ENGINE (WORKSHOP)
-// ==========================================
-        const stackCards = document.querySelectorAll('.glass-stack-card');
-        const stickyTop = window.innerHeight * 0.15; // Matches the top: 15vh in CSS
+    // PERFECT GLASS STACK ENGINE
+    // ==========================================
+    const stickyWrappers = document.querySelectorAll('.sticky-wrapper');
+    const glassCards = document.querySelectorAll('.perfect-glass-card');
 
-        stackCards.forEach((card, index) => {
-            const rect = card.getBoundingClientRect();
-            let scale = 1;
-            let opacity = 1;
+    if (stickyWrappers.length > 0 && glassCards.length > 0) {
+        window.addEventListener('scroll', () => {
+            stickyWrappers.forEach((wrapper, index) => {
+                const rect = wrapper.getBoundingClientRect();
+                const card = glassCards[index];
 
-            // If there is a card below this one, calculate distance to it
-            if (index < stackCards.length - 1) {
-                const nextCard = stackCards[index + 1];
-                const nextRect = nextCard.getBoundingClientRect();
-
-                // If this card is currently locked at the top of the screen
-                if (rect.top <= stickyTop + 5) {
-                    const distanceToNext = nextRect.top - stickyTop;
-                    const triggerDistance = window.innerHeight * 0.7; // Start shrinking early
-
-                    if (distanceToNext < triggerDistance) {
-                        const progress = 1 - (distanceToNext / triggerDistance);
-                        
-                        // Shrink to 90% size and fade to 30% opacity
-                        scale = 1 - (progress * 0.1); 
-                        opacity = 1 - (progress * 0.7);
-                    }
+                // If the wrapper hits the top of the viewport
+                if (rect.top <= 0) {
+                    // Calculate how far we've scrolled past it
+                    const scrollDistance = Math.abs(rect.top);
+                    
+                    // Shrink it down gently, maxing out at 90% scale
+                    const scale = Math.max(0.90, 1 - (scrollDistance / window.innerHeight) * 0.1);
+                    
+                    // Apply the scale mathematically
+                    card.style.transform = `scale(${scale})`;
+                } else {
+                    // Reset if we scroll back up
+                    card.style.transform = `scale(1)`;
                 }
-            }
-
-            // Clamp values
-            scale = Math.max(0.9, Math.min(1, scale));
-            opacity = Math.max(0.3, Math.min(1, opacity));
-
-            card.style.transform = `scale(${scale})`;
-            card.style.opacity = `${opacity}`;
+            });
         });
+    }
 });
