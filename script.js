@@ -272,9 +272,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const searchableSections = [
         { id: 'about-section', title: 'Overview' },
-        { id: 'philosophy-section', title: 'Methodology' },
-        { id: 'journey-section', title: 'Timeline' },
-        { id: 'workshop-section', title: 'Workshop' }
+        { id: 'education-section', title: 'Education' },
+        { id: 'lab-section', title: 'The Lab' },
+        { id: 'food-section', title: 'Food Journey' }
     ];
 
     let searchIndex = [];
@@ -624,5 +624,38 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
     }
-    
+    // ==========================================
+    // FOOD GALLERY HORIZONTAL SCROLL ENGINE
+    // ==========================================
+    const foodWrapper = document.getElementById('food-horizontal-wrapper');
+    const foodTrack = document.getElementById('food-cards-track');
+
+    if (capsule && foodWrapper && foodTrack) {
+        capsule.addEventListener('scroll', () => {
+            const rect = foodWrapper.getBoundingClientRect();
+            const capsuleTop = capsule.getBoundingClientRect().top;
+            
+            // When the wrapper hits the ceiling, start moving the track
+            if (rect.top <= capsuleTop) {
+                // How far down the wrapper have we scrolled?
+                const scrollDistance = capsuleTop - rect.top;
+                
+                // Total distance the wrapper is allowed to scroll vertically
+                const maxVerticalScroll = foodWrapper.offsetHeight - window.innerHeight;
+                
+                // Progress percentage (0 to 1)
+                let progress = scrollDistance / maxVerticalScroll;
+                progress = Math.max(0, Math.min(1, progress));
+                
+                // Total distance the track needs to slide horizontally to show the last card
+                // Added a 10vw buffer so the last card doesn't sit hard against the screen edge
+                const maxHorizontalTranslate = foodTrack.scrollWidth - window.innerWidth + (window.innerWidth * 0.1);
+                
+                // Apply the slide
+                foodTrack.style.transform = `translateX(-${progress * maxHorizontalTranslate}px)`;
+            } else {
+                foodTrack.style.transform = `translateX(0px)`;
+            }
+        });
+    }
 });
