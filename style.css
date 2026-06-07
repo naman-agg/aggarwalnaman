@@ -1001,9 +1001,9 @@ body.scanner-active, body.scanner-active * {
     flex-direction: column;
     align-items: center;
     /* TIGHTER GAP: Pulls the buttons closer to the heading */
-    gap: 0.5rem; 
+    gap: 2vh; 
     /* BIGGER GAP: Pushes the image cards further down away from the buttons */
-    margin-bottom: 4vh; 
+    margin-bottom: 2vh; 
     z-index: 10;
 }
 
