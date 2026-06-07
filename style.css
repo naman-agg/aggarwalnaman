@@ -1003,7 +1003,7 @@ body.scanner-active, body.scanner-active * {
     /* TIGHTER GAP: Pulls the buttons closer to the heading */
     gap: 0.5rem; 
     /* BIGGER GAP: Pushes the image cards further down away from the buttons */
-    margin-bottom: 8vh; 
+    margin-bottom: 4vh; 
     z-index: 10;
 }
 
