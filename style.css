@@ -994,16 +994,22 @@ body.scanner-active, body.scanner-active * {
 /* 10. FOOD BLOG: HORIZONTAL SQUARE GALLERY                   */
 /* ========================================================== */
 
+/* Fix 2 & 3: Vertical Flow & Spacing */
 .food-header-container {
-    position: absolute;
-    top: 15vh;
-    left: 0;
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 1.5rem;
+    /* TIGHTER GAP: Pulls the buttons closer to the heading */
+    gap: 0.5rem; 
+    /* BIGGER GAP: Pushes the image cards further down away from the buttons */
+    margin-bottom: 8vh; 
     z-index: 10;
+}
+
+.food-heading {
+    /* Kills any global spacing that was pushing the text and buttons apart */
+    margin-bottom: 0 !important; 
 }
 
 .food-actions {
