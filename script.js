@@ -271,7 +271,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const searchResults = document.getElementById('search-results');
 
     const searchableSections = [
-        { id: 'about-section', title: 'Overview' },
+        { id: 'motto-section', title: 'My Motto' },
         { id: 'education-section', title: 'Education' },
         { id: 'lab-section', title: 'The Lab' },
         { id: 'food-section', title: 'Food Journey' }
