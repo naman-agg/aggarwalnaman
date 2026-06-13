@@ -1088,7 +1088,8 @@ body.scanner-active, body.scanner-active * {
 .bento-container {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(2, minmax(380px, auto)); 
+    /* Removed the hardcoded 380px rows. Let the cards dictate their own height. */
+    grid-auto-rows: max-content; 
     gap: 1.5rem;
     width: 90vw;
     max-width: 1200px;
@@ -1137,21 +1138,41 @@ body.scanner-active, body.scanner-active * {
     transition: opacity 0.3s ease, filter 0.3s ease;
 }
 
-.bento-static { filter: grayscale(30%) brightness(0.8); }
-
-.bento-pixel {
-    opacity: 0;
-    image-rendering: pixelated; 
-    image-rendering: crisp-edges;
-    transform: scale(1.1); 
-}
 
 .bento-card:hover .bento-pixel {
     opacity: 1;
     filter: grayscale(0%) brightness(1); 
 }
 
-.bento-card:hover .bento-static { opacity: 0; }
+/* --- Direct GIF Styling --- */
+.bento-gif {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    /* Because the container matches the GIF ratio perfectly, this will never crop */
+    object-fit: cover; 
+    /* Keeps the 8-bit pixels chunky and sharp */
+    image-rendering: pixelated; 
+    image-rendering: crisp-edges;
+    z-index: 1;
+}
+
+/* --- Container Ratio Enforcement --- */
+.bento-swimming { 
+    grid-column: span 2; 
+    /* Forces the physical glass card to be exactly 4:3 */
+    aspect-ratio: 4 / 3; 
+    height: auto;
+}
+
+.bento-tennis { 
+    grid-column: span 1; 
+    /* Forces the physical glass card to be exactly 1:1 */
+    aspect-ratio: 1 / 1; 
+    height: auto;
+    /* We removed grid-row: span 2 so the math doesn't stretch and break the square */
+}
 
 .bento-overlay {
     position: relative;
