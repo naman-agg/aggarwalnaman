@@ -252,28 +252,76 @@
                     </div>
                 </div>
 
-                <!-- Item 3: The Watchlist (Wide Rectangle) -->
+                <!-- Item 3: The Watchlist (Wide Rectangle with Stats) -->
                 <div class="bento-card bento-watchlist perfect-glass-card">
-                    <div class="watchlist-content">
-                        <h3 class="bento-title" style="margin-bottom: 1.5rem;">The Watchlist</h3>
+                    <div class="watchlist-split-grid">
                         
-                        <!-- The Current Narrative Show -->
-                        <div style="margin-bottom: 1.5rem;">
-                            <p class="bento-subtitle" style="margin-bottom: 0.75rem;">Currently Bingeing</p>
-                            <ul class="shows-list">
-                                <li><span class="material-symbols-outlined show-icon" style="color: #ffffff;">play_circle</span> The Good Doctor</li>
-                            </ul>
+                        <!-- LEFT SIDE: Viewing Habits -->
+                        <div class="watchlist-content">
+                            <h3 class="bento-title" style="margin-bottom: 1.5rem;">The Watchlist</h3>
+                            
+                            <div style="margin-bottom: 1.5rem;">
+                                <p class="bento-subtitle" style="margin-bottom: 0.75rem;">Currently Bingeing</p>
+                                <ul class="shows-list">
+                                    <li><span class="material-symbols-outlined show-icon" style="color: #ffffff;">play_circle</span> The Good Doctor</li>
+                                </ul>
+                            </div>
+
+                            <div>
+                                <p class="bento-subtitle" style="margin-bottom: 0.75rem;">The Comfort Loop</p>
+                                <ul class="shows-list">
+                                    <li><span class="material-symbols-outlined show-icon">sync</span> Friends</li>
+                                    <li><span class="material-symbols-outlined show-icon">sync</span> The Big Bang Theory</li>
+                                    <li><span class="material-symbols-outlined show-icon">sync</span> How I Met Your Mother</li>
+                                </ul>
+                            </div>
                         </div>
 
-                        <!-- The Sitcom Triangle -->
-                        <div>
-                            <p class="bento-subtitle" style="margin-bottom: 0.75rem;">The Comfort Loop</p>
-                            <ul class="shows-list">
-                                <li><span class="material-symbols-outlined show-icon">sync</span> Friends</li>
-                                <li><span class="material-symbols-outlined show-icon">sync</span> The Big Bang Theory</li>
-                                <li><span class="material-symbols-outlined show-icon">sync</span> How I Met Your Mother</li>
-                            </ul>
+                        <!-- RIGHT SIDE: TV Time Analytics -->
+                        <div class="watchlist-analytics">
+                            <div class="analytics-header">
+                                <div class="stat-block">
+                                    <p class="bento-subtitle">Total Shows</p>
+                                    <h4 class="stat-highlight counter-stat" data-target="118" data-suffix="">0</h4>
+                                </div>
+                                <div class="stat-block">
+                                    <p class="bento-subtitle">Time Spent</p>
+                                    <h4 class="stat-highlight">6<span class="time-unit">M</span> 21<span class="time-unit">D</span> 8<span class="time-unit">H</span></h4>
+                                </div>
+                            </div>
+                            
+                            <!-- Animated CSS Bar Chart -->
+                            <div class="genre-chart">
+                                <p class="bento-subtitle" style="margin-bottom: 1rem;">Top Genres</p>
+                                
+                                <div class="bar-row">
+                                    <span class="bar-label">Drama</span>
+                                    <div class="bar-track"><div class="bar-fill animate-bar" data-width="100%"></div></div>
+                                    <span class="bar-value counter-stat" data-target="82" data-suffix="">0</span>
+                                </div>
+                                <div class="bar-row">
+                                    <span class="bar-label">Comedy</span>
+                                    <div class="bar-track"><div class="bar-fill animate-bar" data-width="69%"></div></div>
+                                    <span class="bar-value counter-stat" data-target="57" data-suffix="">0</span>
+                                </div>
+                                <div class="bar-row">
+                                    <span class="bar-label">Thriller</span>
+                                    <div class="bar-track"><div class="bar-fill animate-bar" data-width="39%"></div></div>
+                                    <span class="bar-value counter-stat" data-target="32" data-suffix="">0</span>
+                                </div>
+                                <div class="bar-row">
+                                    <span class="bar-label">Action</span>
+                                    <div class="bar-track"><div class="bar-fill animate-bar" data-width="39%"></div></div>
+                                    <span class="bar-value counter-stat" data-target="32" data-suffix="">0</span>
+                                </div>
+                                <div class="bar-row">
+                                    <span class="bar-label">Crime</span>
+                                    <div class="bar-track"><div class="bar-fill animate-bar" data-width="38%"></div></div>
+                                    <span class="bar-value counter-stat" data-target="31" data-suffix="">0</span>
+                                </div>
+                            </div>
                         </div>
+
                     </div>
                 </div>
         </section>

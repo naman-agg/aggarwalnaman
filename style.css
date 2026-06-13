@@ -1213,3 +1213,88 @@ body.scanner-active, body.scanner-active * {
         height: 350px;
     }
 }
+/* Watchlist Split Grid */
+.watchlist-split-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    height: 100%;
+}
+
+@media (max-width: 768px) {
+    .watchlist-split-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+}
+
+/* TV Time Analytics */
+.analytics-header {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stat-highlight {
+    font-family: var(--font-display);
+    font-size: 2.5rem;
+    font-weight: 500;
+    color: #fff;
+    line-height: 1.1;
+    margin-top: 0.25rem;
+}
+
+.time-unit {
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.5);
+    margin-left: 2px;
+    margin-right: 6px;
+}
+
+/* Animated Bar Chart */
+.genre-chart {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.bar-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.bar-label {
+    width: 60px;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.bar-track {
+    flex: 1;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 99px;
+    overflow: hidden;
+}
+
+.bar-fill {
+    height: 100%;
+    width: 0%; /* Starts at 0 for the animation */
+    background: var(--powder-grey); /* Or any accent colour you prefer */
+    border-radius: 99px;
+    transition: width 1.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.bar-value {
+    width: 30px;
+    text-align: right;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: #fff;
+    font-weight: 600;
+}

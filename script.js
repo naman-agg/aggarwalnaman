@@ -702,5 +702,25 @@ document.addEventListener('DOMContentLoaded', () => {
     counters.forEach(counter => {
         counterObserver.observe(counter);
     });
-    
+    // ==========================================
+    // WATCHLIST BAR CHART ENGINE
+    // ==========================================
+    const animatedBars = document.querySelectorAll('.animate-bar');
+
+    const barObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                // Pull the target width from the HTML data attribute and apply it
+                const targetWidth = entry.target.getAttribute('data-width');
+                entry.target.style.width = targetWidth;
+                
+                // Stop observing once animated
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.5 });
+
+    animatedBars.forEach(bar => {
+        barObserver.observe(bar);
+    });
 });
