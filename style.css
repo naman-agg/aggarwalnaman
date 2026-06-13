@@ -1082,26 +1082,20 @@ body.scanner-active, body.scanner-active * {
 }
 
 /* ========================================================== */
-/* 11. OFF-DUTY: BENTO BOX GRID                               */
+/* 11. OFF-DUTY: BENTO BOX GRID & DASHBOARD                   */
 /* ========================================================== */
 
 .bento-container {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    
-    /* FIX: Changed from exactly 300px to minmax. 
-       This ensures cards are at least 380px tall, but will expand 
-       automatically if your content (like the TV chart) needs more room. */
     grid-template-rows: repeat(2, minmax(380px, auto)); 
-    
     gap: 1.5rem;
     width: 90vw;
     max-width: 1200px;
     margin: 0 auto;
 }
 
-/* The Base Card Styling (Inherits your glassmorphism look) */
-/* The Base Card Styling (Independent of the Workshop cards) */
+/* Base Glass Card Styling */
 .bento-card {
     position: relative;
     border-radius: 24px;
@@ -1109,43 +1103,27 @@ body.scanner-active, body.scanner-active * {
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    
-    /* Native Glassmorphism applied directly to the bento grid */
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(40px);
     -webkit-backdrop-filter: blur(40px);
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-    
     transition: transform 0.3s ease;
 }
 
-.bento-card:hover {
-    transform: translateY(-5px);
-}
+.bento-card:hover { transform: translateY(-5px); }
 
 /* Grid Placements */
-.bento-swimming {
-    grid-column: span 2;
-    grid-row: span 1;
-}
-
-.bento-tennis {
-    grid-column: span 1;
-    grid-row: span 2;
-}
-
+.bento-swimming { grid-column: span 2; grid-row: span 1; }
+.bento-tennis { grid-column: span 1; grid-row: span 2; }
 .bento-watchlist {
     grid-column: span 2;
     grid-row: span 1;
-    
-    /* FIX: Centers the content vertically and slightly reduces padding 
-       to give your data more breathing room inside the glass */
-    justify-content: center; 
-    padding: 2rem; 
+    justify-content: center;
+    padding: 2rem;
 }
 
-/* Images & Overlays */
+/* --- Pixel Art Hover Physics --- */
 .bento-bg {
     position: absolute;
     inset: 0;
@@ -1153,13 +1131,27 @@ body.scanner-active, body.scanner-active * {
     height: 100%;
     object-fit: cover;
     z-index: 1;
-    filter: grayscale(30%) brightness(0.8);
-    transition: filter 0.3s ease;
 }
 
-.bento-card:hover .bento-bg {
-    filter: grayscale(0%) brightness(1);
+.bento-static, .bento-pixel {
+    transition: opacity 0.3s ease, filter 0.3s ease;
 }
+
+.bento-static { filter: grayscale(30%) brightness(0.8); }
+
+.bento-pixel {
+    opacity: 0;
+    image-rendering: pixelated; 
+    image-rendering: crisp-edges;
+    transform: scale(1.1); 
+}
+
+.bento-card:hover .bento-pixel {
+    opacity: 1;
+    filter: grayscale(0%) brightness(1); 
+}
+
+.bento-card:hover .bento-static { opacity: 0; }
 
 .bento-overlay {
     position: relative;
@@ -1183,13 +1175,21 @@ body.scanner-active, body.scanner-active * {
     letter-spacing: 0.05em;
 }
 
-/* Watchlist Specifics */
+/* --- Watchlist Split Grid & Typography --- */
+.watchlist-split-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+}
+
 .watchlist-content {
     position: relative;
     z-index: 2;
     display: flex;
     flex-direction: column;
-    height: 100%;
 }
 
 .shows-list {
@@ -1210,43 +1210,14 @@ body.scanner-active, body.scanner-active * {
     color: rgba(255, 255, 255, 0.8);
 }
 
-.show-icon {
-    color: var(--powder-grey);
-    font-size: 1.25rem;
+.show-icon { color: var(--powder-grey); font-size: 1.25rem; }
+
+/* --- TV Time Analytics Chart --- */
+.watchlist-analytics {
+    position: relative;
+    z-index: 2;
 }
 
-/* Mobile Responsiveness */
-@media (max-width: 768px) {
-    .bento-container {
-        grid-template-columns: 1fr;
-        grid-template-rows: auto;
-    }
-    
-    .bento-swimming, .bento-tennis, .bento-watchlist {
-        grid-column: span 1;
-        height: 350px;
-    }
-}
-/* Watchlist Split Grid */
-.watchlist-split-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    
-    /* FIX: Tightened the gap slightly so the text doesn't hit the edges */
-    gap: 2rem; 
-    align-items: center; 
-    height: 100%;
-    width: 100%;
-}
-
-@media (max-width: 768px) {
-    .watchlist-split-grid {
-        grid-template-columns: 1fr;
-        gap: 2rem;
-    }
-}
-
-/* TV Time Analytics */
 .analytics-header {
     display: flex;
     gap: 2rem;
@@ -1272,7 +1243,6 @@ body.scanner-active, body.scanner-active * {
     margin-right: 6px;
 }
 
-/* Animated Bar Chart */
 .genre-chart {
     display: flex;
     flex-direction: column;
@@ -1302,8 +1272,8 @@ body.scanner-active, body.scanner-active * {
 
 .bar-fill {
     height: 100%;
-    width: 0%; /* Starts at 0 for the animation */
-    background: var(--powder-grey); /* Or any accent colour you prefer */
+    width: 0%; 
+    background: var(--powder-grey);
     border-radius: 99px;
     transition: width 1.5s cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -1315,4 +1285,20 @@ body.scanner-active, body.scanner-active * {
     font-size: 0.85rem;
     color: #fff;
     font-weight: 600;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .bento-container {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+    }
+    .bento-swimming, .bento-tennis, .bento-watchlist {
+        grid-column: span 1;
+        min-height: 350px;
+    }
+    .watchlist-split-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
 }

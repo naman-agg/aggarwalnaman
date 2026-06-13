@@ -658,21 +658,18 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-    // ==========================================
-    // LIVE COUNTER ENGINE
+// ==========================================
+    // 1. LIVE COUNTER ENGINE
     // ==========================================
     const counters = document.querySelectorAll('.counter-stat');
 
-    // Set up the observer to watch when cards come into view
     const counterObserver = new IntersectionObserver((entries, observer) => {
         entries.forEach(entry => {
-            // When the card is at least 50% visible on screen
             if (entry.isIntersecting) {
                 const target = +entry.target.getAttribute('data-target');
                 const suffix = entry.target.getAttribute('data-suffix');
                 
                 let currentCount = 0;
-                // Controls the speed of the count (higher number = slower animation)
                 const speed = 40; 
                 const increment = target / speed;
 
@@ -680,41 +677,32 @@ document.addEventListener('DOMContentLoaded', () => {
                     currentCount += increment;
                     if (currentCount < target) {
                         entry.target.innerText = Math.ceil(currentCount) + suffix;
-                        // requestAnimationFrame makes the animation buttery smooth (60fps)
                         requestAnimationFrame(updateCount); 
                     } else {
-                        // Ensure it lands exactly on the target number
                         entry.target.innerText = target + suffix;
                     }
                 };
 
                 updateCount();
-                // Stop watching this specific counter once it has fired
                 observer.unobserve(entry.target); 
             }
         });
-    }, { 
-        threshold: 0.5, // Triggers when half the card is on screen
-        root: null
-    });
+    }, { threshold: 0.5, root: null });
 
-    // Attach the observer to all counters
     counters.forEach(counter => {
         counterObserver.observe(counter);
     });
+
     // ==========================================
-    // WATCHLIST BAR CHART ENGINE
+    // 2. WATCHLIST BAR CHART ENGINE
     // ==========================================
     const animatedBars = document.querySelectorAll('.animate-bar');
 
     const barObserver = new IntersectionObserver((entries, observer) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                // Pull the target width from the HTML data attribute and apply it
                 const targetWidth = entry.target.getAttribute('data-width');
                 entry.target.style.width = targetWidth;
-                
-                // Stop observing once animated
                 observer.unobserve(entry.target);
             }
         });
@@ -723,4 +711,5 @@ document.addEventListener('DOMContentLoaded', () => {
     animatedBars.forEach(bar => {
         barObserver.observe(bar);
     });
+    
 });
