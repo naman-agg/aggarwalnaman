@@ -1096,6 +1096,7 @@ body.scanner-active, body.scanner-active * {
 }
 
 /* The Base Card Styling (Inherits your glassmorphism look) */
+/* The Base Card Styling (Independent of the Workshop cards) */
 .bento-card {
     position: relative;
     border-radius: 24px;
@@ -1103,9 +1104,14 @@ body.scanner-active, body.scanner-active * {
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    /* Reusing your glass effect */
+    
+    /* Native Glassmorphism applied directly to the bento grid */
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    
     transition: transform 0.3s ease;
 }
 
