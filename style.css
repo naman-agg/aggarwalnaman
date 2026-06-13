@@ -1088,7 +1088,12 @@ body.scanner-active, body.scanner-active * {
 .bento-container {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(2, 300px);
+    
+    /* FIX: Changed from exactly 300px to minmax. 
+       This ensures cards are at least 380px tall, but will expand 
+       automatically if your content (like the TV chart) needs more room. */
+    grid-template-rows: repeat(2, minmax(380px, auto)); 
+    
     gap: 1.5rem;
     width: 90vw;
     max-width: 1200px;
@@ -1133,8 +1138,11 @@ body.scanner-active, body.scanner-active * {
 .bento-watchlist {
     grid-column: span 2;
     grid-row: span 1;
-    justify-content: flex-start; /* Aligns text to the top */
-    padding: 2.5rem;
+    
+    /* FIX: Centers the content vertically and slightly reduces padding 
+       to give your data more breathing room inside the glass */
+    justify-content: center; 
+    padding: 2rem; 
 }
 
 /* Images & Overlays */
@@ -1223,8 +1231,12 @@ body.scanner-active, body.scanner-active * {
 .watchlist-split-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 3rem;
+    
+    /* FIX: Tightened the gap slightly so the text doesn't hit the edges */
+    gap: 2rem; 
+    align-items: center; 
     height: 100%;
+    width: 100%;
 }
 
 @media (max-width: 768px) {
