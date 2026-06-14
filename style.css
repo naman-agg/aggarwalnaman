@@ -1087,9 +1087,8 @@ body.scanner-active, body.scanner-active * {
 
 .bento-container {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    /* Removed the hardcoded 380px rows. Let the cards dictate their own height. */
-    grid-auto-rows: max-content; 
+    /* Top row split: Swimming gets 2 parts, Tennis gets 1 part */
+    grid-template-columns: 2fr 1fr; 
     gap: 1.5rem;
     width: 90vw;
     max-width: 1200px;
@@ -1109,20 +1108,9 @@ body.scanner-active, body.scanner-active * {
     backdrop-filter: blur(40px);
     -webkit-backdrop-filter: blur(40px);
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-    transition: transform 0.3s ease;
 }
 
 .bento-card:hover { transform: translateY(-5px); }
-
-/* Grid Placements */
-.bento-swimming { grid-column: span 2; grid-row: span 1; }
-.bento-tennis { grid-column: span 1; grid-row: span 2; }
-.bento-watchlist {
-    grid-column: span 2;
-    grid-row: span 1;
-    justify-content: center;
-    padding: 2rem;
-}
 
 /* --- Pixel Art Hover Physics --- */
 .bento-bg {
@@ -1144,36 +1132,36 @@ body.scanner-active, body.scanner-active * {
     filter: grayscale(0%) brightness(1); 
 }
 
-/* --- Direct GIF Styling --- */
 .bento-gif {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
-    /* Because the container matches the GIF ratio perfectly, this will never crop */
+    /* 'cover' will crop Swimming to fit, but will perfectly preserve the 1:1 Tennis square */
     object-fit: cover; 
-    /* Keeps the 8-bit pixels chunky and sharp */
     image-rendering: pixelated; 
     image-rendering: crisp-edges;
     z-index: 1;
 }
 
-/* --- Container Ratio Enforcement --- */
+/* Grid Placements & Physics */
 .bento-swimming { 
-    grid-column: span 2; 
-    /* Forces the physical glass card to be exactly 4:3 */
-    aspect-ratio: 4 / 3; 
-    height: auto;
+    grid-column: 1 / 2; 
+    /* No height defined here; it automatically stretches to match the Tennis card */
 }
 
 .bento-tennis { 
-    grid-column: span 1; 
-    /* Forces the physical glass card to be exactly 1:1 */
+    grid-column: 2 / 3; 
+    /* Forces the card to be perfectly square, which dictates the row height */
     aspect-ratio: 1 / 1; 
-    height: auto;
-    /* We removed grid-row: span 2 so the math doesn't stretch and break the square */
 }
 
+.bento-watchlist {
+    /* Spans the entire width of the container, sitting below both */
+    grid-column: 1 / 3; 
+    justify-content: center;
+    padding: 2rem;
+}
 .bento-overlay {
     position: relative;
     z-index: 2;
@@ -1312,14 +1300,12 @@ body.scanner-active, body.scanner-active * {
 @media (max-width: 768px) {
     .bento-container {
         grid-template-columns: 1fr;
-        grid-template-rows: auto;
     }
     .bento-swimming, .bento-tennis, .bento-watchlist {
-        grid-column: span 1;
-        min-height: 350px;
+        grid-column: 1 / -1;
     }
-    .watchlist-split-grid {
-        grid-template-columns: 1fr;
-        gap: 2rem;
+    .bento-swimming {
+        /* Gives Swimming a safe height when stacked on mobile */
+        min-height: 350px; 
     }
 }
