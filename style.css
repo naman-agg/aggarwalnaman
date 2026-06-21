@@ -1376,17 +1376,24 @@ body.scanner-active, body.scanner-active * {
 }
 
 /* --- The 1:1 Glass Tiles --- */
+/* --- Base Tile (Hidden by default for the animation engine) --- */
 .tool-tile {
     position: relative;
     aspect-ratio: 1 / 1;
     border-radius: 16px;
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.08);
-    display: flex;
+    display: flex; /* We will toggle this to 'none' in JS to filter */
     justify-content: center;
     align-items: center;
     padding: 1rem;
     cursor: pointer;
+    
+    /* Start scaled down and invisible */
+    opacity: 0;
+    transform: scale(0.8);
+    
+    /* Hardware-accelerated transition */
     transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s ease, filter 0.4s ease;
 }
 
@@ -1426,14 +1433,11 @@ body.scanner-active, body.scanner-active * {
     opacity: 1;
     transform: translateY(0);
 }
-
-/* --- Filtering Animation Class --- */
-.tool-tile.hidden {
-    opacity: 0;
-    transform: scale(0.8);
-    pointer-events: none;
-    position: absolute; /* Pulls hidden items out of the grid flow entirely */
+.tool-tile.visible-tile {
+    opacity: 1;
+    transform: scale(1);
 }
+
 
 /* Mobile Responsiveness */
 @media (max-width: 768px) {

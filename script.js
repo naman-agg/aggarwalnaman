@@ -711,31 +711,50 @@ document.addEventListener('DOMContentLoaded', () => {
     animatedBars.forEach(bar => {
         barObserver.observe(bar);
     });
+    
     // ==========================================
-    // 3. TOOL STACK FILTERING ENGINE (WITH CASCADE)
+    // 3. TOOL STACK FILTERING ENGINE (GLITCH-FREE CASCADE)
     // ==========================================
     const filterBtns = document.querySelectorAll('.stack-btn');
     const toolTiles = document.querySelectorAll('.tool-tile');
 
+    // Run this once on page load so all tools are visible initially
+    toolTiles.forEach((tile, index) => {
+        setTimeout(() => {
+            tile.classList.add('visible-tile');
+        }, index * 40);
+    });
+
     filterBtns.forEach(btn => {
         btn.addEventListener('click', () => {
+            // Update button styles
             filterBtns.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
 
             const targetCategory = btn.getAttribute('data-category');
-            let visibleIndex = 0; // Tracks the order for the cascade
+            let visibleIndex = 0;
 
+            // Phase 1: Instantly reset the grid layout
+            toolTiles.forEach(tile => {
+                tile.classList.remove('visible-tile');
+                tile.style.display = 'none'; 
+            });
+
+            // Phase 2: Rebuild the grid and trigger the cascade
             toolTiles.forEach(tile => {
                 if (targetCategory === 'all' || tile.classList.contains(targetCategory)) {
-                    // Stagger the reveal by 50ms per item
+                    // Put the item back into the grid math
+                    tile.style.display = 'flex';
+                    
+                    // Force the browser to register the display change before animating
+                    void tile.offsetWidth;
+
+                    // Stagger the fade-in animation
                     setTimeout(() => {
-                        tile.style.position = 'relative';
-                        tile.classList.remove('hidden');
-                    }, visibleIndex * 50); 
+                        tile.classList.add('visible-tile');
+                    }, visibleIndex * 50);
+                    
                     visibleIndex++;
-                } else {
-                    tile.classList.add('hidden');
-                    setTimeout(() => { tile.style.position = 'absolute'; }, 400);
                 }
             });
         });
