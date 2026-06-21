@@ -1359,8 +1359,10 @@ body.scanner-active, body.scanner-active * {
 }
 
 .stack-btn.active {
-    color: #000;
-    background: var(--powder-grey);
+    color: #fff; /* Crisp white text */
+    background: rgba(255, 255, 255, 0.1); /* Frosted background */
+    border: 1px solid rgba(255, 255, 255, 0.2); /* Gives it a physical edge */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Lifts it off the page */
     font-weight: 600;
 }
 

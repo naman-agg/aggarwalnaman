@@ -712,29 +712,29 @@ document.addEventListener('DOMContentLoaded', () => {
         barObserver.observe(bar);
     });
     // ==========================================
-    // 3. TOOL STACK FILTERING ENGINE
+    // 3. TOOL STACK FILTERING ENGINE (WITH CASCADE)
     // ==========================================
     const filterBtns = document.querySelectorAll('.stack-btn');
     const toolTiles = document.querySelectorAll('.tool-tile');
 
     filterBtns.forEach(btn => {
         btn.addEventListener('click', () => {
-            // Remove active class from all buttons
             filterBtns.forEach(b => b.classList.remove('active'));
-            // Add active class to clicked button
             btn.classList.add('active');
 
             const targetCategory = btn.getAttribute('data-category');
+            let visibleIndex = 0; // Tracks the order for the cascade
 
             toolTiles.forEach(tile => {
-                // If the target is 'all' OR the tile has the target category class
                 if (targetCategory === 'all' || tile.classList.contains(targetCategory)) {
-                    tile.classList.remove('hidden');
-                    // Briefly delay removing absolute positioning for a smooth layout snap
-                    setTimeout(() => { tile.style.position = 'relative'; }, 50);
+                    // Stagger the reveal by 50ms per item
+                    setTimeout(() => {
+                        tile.style.position = 'relative';
+                        tile.classList.remove('hidden');
+                    }, visibleIndex * 50); 
+                    visibleIndex++;
                 } else {
                     tile.classList.add('hidden');
-                    // Change to absolute so it doesn't leave a blank hole in the grid
                     setTimeout(() => { tile.style.position = 'absolute'; }, 400);
                 }
             });
