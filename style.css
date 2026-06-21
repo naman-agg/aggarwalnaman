@@ -1420,7 +1420,13 @@ body.scanner-active, body.scanner-active * {
 /* --- Tooltip Physics --- */
 .tool-tooltip {
     position: absolute;
-    bottom: -35px;
+    
+    /* FIX: Moved from 'bottom: -35px' to 'top: -40px' so it sits above the tile */
+    top: -40px; 
+    
+    /* FIX: This precisely centres the tooltip horizontally relative to the tile */
+    left: 50%;
+    
     background: #000;
     color: #fff;
     padding: 6px 12px;
@@ -1429,21 +1435,24 @@ body.scanner-active, body.scanner-active * {
     font-size: 0.75rem;
     white-space: nowrap;
     opacity: 0;
-    transform: translateY(-10px);
-    transition: all 0.3s ease;
     pointer-events: none;
-    z-index: 10;
     border: 1px solid rgba(255, 255, 255, 0.2);
+    
+    /* FIX: Combines the centring math with a slight downward offset for the animation */
+    transform: translateX(-50%) translateY(10px);
+    transition: all 0.3s ease;
 }
 
 .tool-tile:hover .tool-tooltip {
     opacity: 1;
-    transform: translateY(0);
+    /* Slides up into its perfect top-centred position */
+    transform: translateX(-50%) translateY(0);
 }
 
 .tool-tile:hover {
-    /* Gives the white tile a subtle glowing lift when hovered */
     box-shadow: 0 10px 30px rgba(255, 255, 255, 0.15);
+    /* FIX: Forces the hovered tile to sit above all other grid items */
+    z-index: 50; 
 }
 
 .tool-tile.visible-tile {
