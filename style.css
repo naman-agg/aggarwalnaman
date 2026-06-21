@@ -1381,31 +1381,38 @@ body.scanner-active, body.scanner-active * {
     position: relative;
     aspect-ratio: 1 / 1;
     border-radius: 16px;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    display: flex; /* We will toggle this to 'none' in JS to filter */
+    
+    /* FIX: Changed from dark frosted glass to solid white */
+    background: #ffffff; 
+    
+    /* Optional: Adds a subtle inner shadow so it feels like a premium physical key */
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    
+    display: flex;
     justify-content: center;
     align-items: center;
-    padding: 1rem;
+    padding: 1.25rem; /* Increased padding slightly so logos don't hit the edges */
     cursor: pointer;
     
-    /* Start scaled down and invisible */
+    /* Starting states for the JavaScript cascade animation */
     opacity: 0;
     transform: scale(0.8);
-    
-    /* Hardware-accelerated transition */
-    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s ease, filter 0.4s ease;
+    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s ease, box-shadow 0.3s ease;
 }
 
+/* --- The Logo Images --- */
 .tool-tile img {
     width: 100%;
     height: 100%;
     object-fit: contain;
-    filter: grayscale(100%) opacity(0.6);
+    /* Keeps them looking uniform and muted against the white background initially */
+    filter: grayscale(100%) opacity(0.4);
     transition: filter 0.3s ease, transform 0.3s ease;
 }
 
 .tool-tile:hover img {
+    /* Instantly snaps back to full, vibrant brand colours on hover */
     filter: grayscale(0%) opacity(1);
     transform: scale(1.1);
 }
@@ -1433,6 +1440,12 @@ body.scanner-active, body.scanner-active * {
     opacity: 1;
     transform: translateY(0);
 }
+
+.tool-tile:hover {
+    /* Gives the white tile a subtle glowing lift when hovered */
+    box-shadow: 0 10px 30px rgba(255, 255, 255, 0.15);
+}
+
 .tool-tile.visible-tile {
     opacity: 1;
     transform: scale(1);
