@@ -1407,7 +1407,7 @@ body.scanner-active, body.scanner-active * {
     height: 100%;
     object-fit: contain;
     /* Keeps them looking uniform and muted against the white background initially */
-    filter: grayscale(100%) opacity(0.4);
+    filter: grayscale(65%) opacity(0.8);
     transition: filter 0.3s ease, transform 0.3s ease;
 }
 
