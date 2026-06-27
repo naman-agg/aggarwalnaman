@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const zones = [
         { id: 'time-lon', tz: 'Europe/London' },
         { id: 'time-del', tz: 'Asia/Kolkata' },
-        { id: 'time-dxb', tz: 'Asia/Dubai' },
+        { id: 'time-tyo', tz: 'Asia/Tokyo' },
         { id: 'time-nyc', tz: 'America/New_York' }
     ];
 
@@ -711,7 +711,7 @@ document.addEventListener('DOMContentLoaded', () => {
     animatedBars.forEach(bar => {
         barObserver.observe(bar);
     });
-    
+
     // ==========================================
     // 3. TOOL STACK FILTERING ENGINE (GLITCH-FREE CASCADE)
     // ==========================================
