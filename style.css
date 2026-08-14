@@ -85,12 +85,6 @@ body { font-family: var(--font-main); color: var(--text-primary); height: calc(1
     opacity: 1; transition: opacity 0.2s linear;
 }
 
-.cursor-trail {
-    position: fixed; top: 0; left: 0; width: 50px; height: 50px; background: #ffffff; border-radius: 50%; pointer-events: none; z-index: 9999;
-    filter: blur(4px); mix-blend-mode: difference; transform: translate(-50%, -50%); transition: width 0.3s ease, height 0.3s ease;
-}
-.cursor-trail.hovering { width: 20px; height: 20px; filter: blur(2px); }
-
 .global-controls {
     position: fixed; top: var(--v-gap); left: 0; width: 100%; height: var(--ui-height); display: flex; justify-content: space-between; align-items: center;
     padding: 0 var(--edge-pad); z-index: 105; pointer-events: none;
@@ -265,7 +259,6 @@ body.light-mode .light-icon { color: #ffffff; }
 /* ========================================================== */
 /* MONOLITHIC SCROLL PLANE & NAVIGATION                       */
 /* ========================================================== */
-/* 1. REPLACE THIS BLOCK (Removes the mask causing the lag) */
 .capsule-container { 
     position: fixed; 
     left: 0; 
@@ -298,7 +291,6 @@ body.light-mode .light-icon { color: #ffffff; }
 .standard-section { padding: 120px calc(var(--edge-pad) * 2); max-width: 1200px; margin: 0 auto; clear: both; }
 
 .section-heading { font-size: clamp(32px, 5vw, 48px); font-weight: 900; letter-spacing: -0.02em; margin-bottom: 60px; color: var(--text-primary); }
-
 
 .philosophy-section { padding-top: 150px; }
 .philosophy-header { max-width: 800px; margin-bottom: 80px; }
@@ -438,8 +430,8 @@ body.light-mode .light-icon { color: #ffffff; }
     bottom: 0;
     left: 0;
     width: 100vw;
-    height: 4px; /* Thin, precision milled line */
-    background-color: rgba(0, 0, 0, 0.6); /* Dark recessed track */
+    height: 4px; 
+    background-color: rgba(0, 0, 0, 0.6); 
     z-index: 9999;
     pointer-events: none;
 }
@@ -450,11 +442,9 @@ body.light-mode .light-icon { color: #ffffff; }
 
 .scroll-progress-fill {
     height: 100%;
-    width: 0%; /* Starts empty */
+    width: 0%; 
     background-color: var(--accent);
-    /* Creates a subtle optical glow against the dark metal */
     box-shadow: 0 0 8px rgba(250, 91, 28, 0.6); 
-    /* Extremely fast linear transition for real-time 60fps tracking */
     transition: width 0.05s linear; 
 }
 /* ========================================================== */
@@ -484,7 +474,6 @@ body.light-mode .light-icon { color: #ffffff; }
     margin-bottom: 20px; 
 }
 
-/* The Specification Panel */
 .about-specs { 
     padding: 40px; 
     display: flex; 
@@ -537,7 +526,6 @@ body.light-mode .light-icon { color: #ffffff; }
     color: var(--text-primary); 
 }
 
-/* Responsive collapse for laptops and mobile */
 @media (max-width: 1024px) {
     .about-grid { gap: 40px; }
 }
@@ -551,73 +539,12 @@ body.light-mode .light-icon { color: #ffffff; }
         padding: 30px; 
     }
 }
-/* ========================================================== */
-/* ========================================================== */
-/* LIVE HEX SCANNER TELEMETRY                                 */
-/* ========================================================== */
-body.scanner-active, body.scanner-active * {
-    cursor: crosshair !important;
-}
 
-#scanner-hud {
-    position: fixed;
-    top: 0; left: 0;
-    background: var(--surface-recessed);
-    border: 1px solid var(--border-color);
-    padding: 8px 12px;
-    pointer-events: none; /* Crucial: stops HUD from blocking the scan */
-    z-index: 10000;
-    opacity: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-    /* Offset so it doesn't sit exactly under the crosshair */
-    transform: translate(15px, 15px);
-    transition: opacity 0.15s ease;
-    
-    font-family: var(--font-mono);
-    font-size: 10px;
-    letter-spacing: 0.1em;
-}
-
-.scan-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.scan-label {
-    color: var(--text-secondary);
-    width: 20px;
-}
-
-.scan-box {
-    width: 12px;
-    height: 12px;
-    border: 1px solid rgba(255,255,255,0.2);
-    border-radius: 2px;
-}
-.light-mode .scan-box { border: 1px solid rgba(0,0,0,0.2); }
-
-.scan-hex {
-    color: var(--text-primary);
-    font-weight: 700;
-    width: 65px;
-}
-
-/* Optional: Click-to-copy notification animation */
-@keyframes copiedFlash {
-    0% { background-color: var(--accent); color: #000; }
-    100% { background-color: transparent; color: var(--text-primary); }
-}
-.flash-copied { animation: copiedFlash 0.5s ease; }
 /* ========================================================== */
 /* SPOTLIGHT SEARCH (APPLE GLASSMORPHISM)                     */
 /* ========================================================== */
 .spotlight-overlay {
     position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-    /* Slightly lighter backdrop to let the glass modal pop */
     background: rgba(0, 0, 0, 0.3); 
     z-index: 9000;
     display: flex; align-items: flex-start; justify-content: center;
@@ -630,11 +557,8 @@ body.scanner-active, body.scanner-active * {
     opacity: 1; pointer-events: auto;
 }
 
-/* 1. THE ENHANCED GLASSMORPHISM PANEL */
 .spotlight-modal {
     width: 100%; max-width: 680px;
-    
-    /* Dark Mode: High transparency, extreme blur, edge rim light */
     background: rgba(25, 25, 28, 0.45);
     backdrop-filter: blur(60px) saturate(200%);
     -webkit-backdrop-filter: blur(60px) saturate(200%);
@@ -642,7 +566,7 @@ body.scanner-active, body.scanner-active * {
     border-radius: 16px;
     box-shadow: 
         0 30px 60px rgba(0, 0, 0, 0.5), 
-        inset 0 1px 1px rgba(255, 255, 255, 0.15); /* The glass edge */
+        inset 0 1px 1px rgba(255, 255, 255, 0.15); 
         
     overflow: hidden;
     transform: scale(0.98);
@@ -650,13 +574,12 @@ body.scanner-active, body.scanner-active * {
 }
 .spotlight-overlay.active .spotlight-modal { transform: scale(1); }
 
-/* Light Mode Glass */
 .light-mode .spotlight-modal {
     background: rgba(255, 255, 255, 0.55);
     border: 1px solid rgba(0, 0, 0, 0.05);
     box-shadow: 
         0 30px 60px rgba(0, 0, 0, 0.1), 
-        inset 0 1px 1px rgba(255, 255, 255, 0.8); /* Bright rim light */
+        inset 0 1px 1px rgba(255, 255, 255, 0.8); 
 }
 
 .spotlight-header {
@@ -699,21 +622,17 @@ body.scanner-active, body.scanner-active * {
     transition: background 0.2s ease;
 }
 
-/* 2. THE SUBTLE HOVER STATE */
 .result-item:hover, .result-item.selected { 
-    background: rgba(255, 255, 255, 0.06); /* Soft white wash */
+    background: rgba(255, 255, 255, 0.06); 
 }
 .light-mode .result-item:hover, .light-mode .result-item.selected {
-    background: rgba(0, 0, 0, 0.04); /* Soft dark wash */
+    background: rgba(0, 0, 0, 0.04); 
 }
 
 .result-title { font-size: 14px; font-weight: 600; color: var(--text-primary); }
 .result-snippet { font-size: 12px; color: var(--text-secondary); line-height: 1.4; }
-
-/* The searched keyword takes the accent colour for a precise, technical pop */
 .snippet-highlight { font-weight: 800; color: var(--accent); }
 
-/* Spotlight Category Headings */
 .results-group-heading {
     font-family: var(--font-mono);
     font-size: 10px;
@@ -722,8 +641,9 @@ body.scanner-active, body.scanner-active * {
     letter-spacing: 0.15em;
     padding: 12px 16px 4px 16px;
     text-transform: uppercase;
-    pointer-events: none; /* Prevents hovering */
+    pointer-events: none; 
 }
+
 /* ========================================================== */
 /* ANTI-JITTER GPU FIX                                        */
 /* ========================================================== */
@@ -738,7 +658,6 @@ body.scanner-active, body.scanner-active * {
 /* ABOUT ME: STICKY SCROLL TIMELINE                           */
 /* ========================================================== */
 .about-section { padding: 0; } 
-
 .about-scroll-track { height: 250vh; position: relative; width: 100%; }
 
 .about-sticky-wrapper {
@@ -746,9 +665,9 @@ body.scanner-active, body.scanner-active * {
 }
 
 .about-container {
-    width: 90vw; /* Takes up 90% of the screen width */
-    max-width: 1200px; /* Prevents it from stretching infinitely on massive ultra-wide monitors */
-    margin: 0 auto; /* Perfectly centres the block */
+    width: 90vw; 
+    max-width: 1200px; 
+    margin: 0 auto; 
     padding: 0 1rem;
     display: flex;
     justify-content: center;
@@ -756,16 +675,13 @@ body.scanner-active, body.scanner-active * {
 }
 
 .about-manifesto-text {
-    /* Ensures the paragraph uses the full width of the new container */
     width: 100%; 
-    max-width: 1000px; /* Keeps the line length comfortable for reading */
-    
-    font-size: 2rem; /* Nice, punchy readable size */
-    line-height: 1.6; /* Gives the multiple lines plenty of breathing room */
-    color: var(--powder-grey); /* Or whichever variable you use for your crisp white/grey */
-    text-align: center; /* Or change to 'left' if you prefer a more editorial look */
+    max-width: 1000px; 
+    font-size: 2rem; 
+    line-height: 1.6; 
+    color: var(--powder-grey); 
+    text-align: center; 
 }
-
 
 .about-manifesto-text span {
     display: inline-block; color: var(--text-secondary); opacity: 0.15; transform: translateY(15px);
@@ -780,8 +696,6 @@ body.scanner-active, body.scanner-active * {
 /* ========================================================== */
 /* 8. FOUNDATION: SQUARE LOGOS & MODAL                        */
 /* ========================================================== */
-
-/* Greys out the Foundation heading */
 #education-section .section-heading {
     color: var(--powder-grey);
 }
@@ -794,11 +708,10 @@ body.scanner-active, body.scanner-active * {
 }
 
 .academic-square {
-    /* Made massive as requested */
     width: 350px; 
     height: 350px; 
-    background-color: #ffffff; /* Pure white background */
-    background-image: none; /* Removes the dark metal grain */
+    background-color: #ffffff; 
+    background-image: none; 
     border: 1px solid var(--border-color);
     border-radius: 32px; 
     display: flex;
@@ -826,7 +739,6 @@ body.scanner-active, body.scanner-active * {
 /* ========================================================== */
 .academic-modal-overlay {
     position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-    /* Matched the exact 0.3 backdrop dimming of the Search modal */
     background: rgba(0, 0, 0, 0.3); 
     z-index: 9500;
     display: flex; align-items: center; justify-content: center;
@@ -840,8 +752,8 @@ body.scanner-active, body.scanner-active * {
 
 .academic-modal-content {
     width: 100%; 
-    max-width: 680px; /* Made significantly wider */
-    padding: 50px; /* Increased internal breathing room */
+    max-width: 680px; 
+    padding: 50px; 
     
     background: rgba(25, 25, 28, 0.45);
     backdrop-filter: blur(60px) saturate(200%);
@@ -877,7 +789,6 @@ body.scanner-active, body.scanner-active * {
 .modal-degree-duration { font-family: var(--font-mono); font-size: 12px; color: var(--accent); margin-bottom: 16px; display: block; letter-spacing: 0.1em; }
 .modal-degree-location { font-size: 14px; color: var(--text-secondary); font-weight: 500; display: block; }
 
-/* Responsive grid for mobile */
 @media (max-width: 768px) {
     .foundation-grid { flex-direction: column; align-items: center; gap: 40px; }
     .academic-square { width: 300px; height: 300px; }
@@ -896,20 +807,17 @@ body.scanner-active, body.scanner-active * {
     justify-content: center;
     position: sticky;
     top: 0;
-    perspective: 1000px; /* Gives the 3D depth when shrinking */
+    perspective: 1000px; 
 }
 
 .perfect-glass-card {
     position: relative;
-    /* Reduced gap to accommodate 5 layers seamlessly */
     top: calc(var(--card-index) * 5px); 
     
     display: flex;
     flex-direction: column;
     width: 90vw;
-    /* Reduced from 1400px to 1100px */
     max-width: 1400px;
-    /* Reduced from 80vh to 70vh */
     height: 80vh;
     border-radius: 32px;
     padding: 3rem; 
@@ -922,7 +830,6 @@ body.scanner-active, body.scanner-active * {
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
     
     overflow: hidden;
-    /* Opacity removed from will-change as it is no longer dimming */
     will-change: transform;
 }
 
@@ -969,7 +876,7 @@ body.scanner-active, body.scanner-active * {
 .btn-secondary { background: transparent; color: #ffffff; border: 1px solid rgba(255,255,255,0.2); }
 .btn-secondary:hover { background: rgba(255,255,255,0.1); transform: scale(1.05); }
 
-/* Image Side Container (Stripped of borders) */
+/* Image Side Container */
 .stack-image-side {
     flex: 1; 
     position: relative; 
@@ -980,16 +887,14 @@ body.scanner-active, body.scanner-active * {
     justify-content: center;
 }
 
-/* The Image itself (Now acts as the frame) */
 .stack-image-side img { 
     width: 100%; 
-    height: auto; /* Lets the image calculate its natural height */
+    height: auto; 
     max-height: 100%; 
     object-fit: contain; 
     opacity: 0.9; 
     transition: opacity 0.3s; 
     
-    /* Moved the frame styling directly onto the image */
     border-radius: 20px;
     border: 1px solid rgba(255, 255, 255, 0.05); 
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
@@ -999,7 +904,6 @@ body.scanner-active, body.scanner-active * {
     opacity: 1; 
 }
 
-/* Desktop Media Query */
 @media (min-width: 768px) {
     .md-flex-row { flex-direction: row; gap: 4rem; }
     .stack-text-side { width: 35%; }
@@ -1009,21 +913,17 @@ body.scanner-active, body.scanner-active * {
 /* 10. FOOD BLOG: HORIZONTAL SQUARE GALLERY                   */
 /* ========================================================== */
 
-/* Fix 2 & 3: Vertical Flow & Spacing */
 .food-header-container {
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
-    /* TIGHTER GAP: Pulls the buttons closer to the heading */
     gap: 2vh; 
-    /* BIGGER GAP: Pushes the image cards further down away from the buttons */
     margin-bottom: 2vh; 
     z-index: 10;
 }
 
 .food-heading {
-    /* Kills any global spacing that was pushing the text and buttons apart */
     margin-bottom: 0 !important; 
 }
 
@@ -1032,23 +932,20 @@ body.scanner-active, body.scanner-active * {
     gap: 1rem;
 }
 
-/* The 1:1 Square Card */
 .food-square-card {
     position: relative;
-    width: 45vh; /* Scales beautifully with screen height */
+    width: 45vh; 
     min-width: 300px;
     max-width: 500px;
-    aspect-ratio: 1 / 1; /* Forces the perfect square */
+    aspect-ratio: 1 / 1; 
     border-radius: 24px;
     overflow: hidden;
     
-    /* Stripped styling - just a faint border */
     border: 1px solid rgba(255, 255, 255, 0.1);
     background: transparent;
     flex-shrink: 0; 
 }
 
-/* The Background Image */
 .food-bg-image {
     position: absolute;
     inset: 0;
@@ -1060,10 +957,9 @@ body.scanner-active, body.scanner-active * {
 }
 
 .food-square-card:hover .food-bg-image {
-    transform: scale(1.05); /* Slight zoom on hover */
+    transform: scale(1.05); 
 }
 
-/* The Glass Text Overlay */
 .food-card-overlay {
     position: absolute;
     bottom: 0;
@@ -1071,8 +967,6 @@ body.scanner-active, body.scanner-active * {
     width: 100%;
     padding: 2rem;
     z-index: 2;
-    
-    /* Frosty glass gradient protecting the text from the image */
     background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 100%);
     display: flex;
     flex-direction: column;
@@ -1102,7 +996,6 @@ body.scanner-active, body.scanner-active * {
 
 .bento-container {
     display: grid;
-    /* Top row split: Swimming gets 2 parts, Tennis gets 1 part */
     grid-template-columns: 2fr 1fr; 
     gap: 1.5rem;
     width: 90vw;
@@ -1110,7 +1003,6 @@ body.scanner-active, body.scanner-active * {
     margin: 0 auto;
 }
 
-/* Base Glass Card Styling */
 .bento-card {
     position: relative;
     border-radius: 24px;
@@ -1127,7 +1019,6 @@ body.scanner-active, body.scanner-active * {
 
 .bento-card:hover { transform: translateY(-5px); }
 
-/* --- Pixel Art Hover Physics --- */
 .bento-bg {
     position: absolute;
     inset: 0;
@@ -1141,7 +1032,6 @@ body.scanner-active, body.scanner-active * {
     transition: opacity 0.3s ease, filter 0.3s ease;
 }
 
-
 .bento-card:hover .bento-pixel {
     opacity: 1;
     filter: grayscale(0%) brightness(1); 
@@ -1152,27 +1042,22 @@ body.scanner-active, body.scanner-active * {
     inset: 0;
     width: 100%;
     height: 100%;
-    /* 'cover' will crop Swimming to fit, but will perfectly preserve the 1:1 Tennis square */
     object-fit: cover; 
     image-rendering: pixelated; 
     image-rendering: crisp-edges;
     z-index: 1;
 }
 
-/* Grid Placements & Physics */
 .bento-swimming { 
     grid-column: 1 / 2; 
-    /* No height defined here; it automatically stretches to match the Tennis card */
 }
 
 .bento-tennis { 
     grid-column: 2 / 3; 
-    /* Forces the card to be perfectly square, which dictates the row height */
     aspect-ratio: 1 / 1; 
 }
 
 .bento-watchlist {
-    /* Spans the entire width of the container, sitting below both */
     grid-column: 1 / 3; 
     justify-content: center;
     padding: 2rem;
@@ -1199,7 +1084,6 @@ body.scanner-active, body.scanner-active * {
     letter-spacing: 0.05em;
 }
 
-/* --- Watchlist Split Grid & Typography --- */
 .watchlist-split-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -1236,7 +1120,6 @@ body.scanner-active, body.scanner-active * {
 
 .show-icon { color: var(--powder-grey); font-size: 1.25rem; }
 
-/* --- TV Time Analytics Chart --- */
 .watchlist-analytics {
     position: relative;
     z-index: 2;
@@ -1311,7 +1194,6 @@ body.scanner-active, body.scanner-active * {
     font-weight: 600;
 }
 
-/* Mobile Responsiveness */
 @media (max-width: 768px) {
     .bento-container {
         grid-template-columns: 1fr;
@@ -1320,7 +1202,6 @@ body.scanner-active, body.scanner-active * {
         grid-column: 1 / -1;
     }
     .bento-swimming {
-        /* Gives Swimming a safe height when stacked on mobile */
         min-height: 350px; 
     }
 }
@@ -1346,7 +1227,6 @@ body.scanner-active, body.scanner-active * {
     -webkit-backdrop-filter: blur(40px);
 }
 
-/* --- Left Sidebar: Navigation --- */
 .stack-sidebar {
     display: flex;
     flex-direction: column;
@@ -1376,74 +1256,56 @@ body.scanner-active, body.scanner-active * {
 }
 
 .stack-btn.active {
-    color: #fff; /* Crisp white text */
-    background: rgba(255, 255, 255, 0.1); /* Frosted background */
-    border: 1px solid rgba(255, 255, 255, 0.2); /* Gives it a physical edge */
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Lifts it off the page */
+    color: #fff;
+    background: rgba(255, 255, 255, 0.1); 
+    border: 1px solid rgba(255, 255, 255, 0.2); 
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); 
     font-weight: 600;
 }
 
-/* --- Right Side: The Grid --- */
 .stack-grid {
     display: grid;
-    /* Automatically fits as many 80px squares as possible into the row */
     grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
     gap: 1.5rem;
     align-content: start;
 }
 
-/* --- The 1:1 Glass Tiles --- */
-/* --- Base Tile (Hidden by default for the animation engine) --- */
 .tool-tile {
     position: relative;
     aspect-ratio: 1 / 1;
     border-radius: 16px;
-    
-    /* FIX: Changed from dark frosted glass to solid white */
     background: #ffffff; 
-    
-    /* Optional: Adds a subtle inner shadow so it feels like a premium physical key */
     box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.8);
     
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 1.25rem; /* Increased padding slightly so logos don't hit the edges */
+    padding: 1.25rem; 
     cursor: pointer;
     
-    /* Starting states for the JavaScript cascade animation */
     opacity: 0;
     transform: scale(0.8);
     transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s ease, box-shadow 0.3s ease;
 }
 
-/* --- The Logo Images --- */
 .tool-tile img {
     width: 100%;
     height: 100%;
     object-fit: contain;
-    /* Keeps them looking uniform and muted against the white background initially */
     filter: grayscale(65%) opacity(0.8);
     transition: filter 0.3s ease, transform 0.3s ease;
 }
 
 .tool-tile:hover img {
-    /* Instantly snaps back to full, vibrant brand colours on hover */
     filter: grayscale(0%) opacity(1);
     transform: scale(1.1);
 }
 
-/* --- Tooltip Physics --- */
 .tool-tooltip {
     position: absolute;
-    
-    /* FIX: Moved from 'bottom: -35px' to 'top: -40px' so it sits above the tile */
     top: -40px; 
-    
-    /* FIX: This precisely centres the tooltip horizontally relative to the tile */
     left: 50%;
-    
     background: #000;
     color: #fff;
     padding: 6px 12px;
@@ -1455,20 +1317,17 @@ body.scanner-active, body.scanner-active * {
     pointer-events: none;
     border: 1px solid rgba(255, 255, 255, 0.2);
     
-    /* FIX: Combines the centring math with a slight downward offset for the animation */
     transform: translateX(-50%) translateY(10px);
     transition: all 0.3s ease;
 }
 
 .tool-tile:hover .tool-tooltip {
     opacity: 1;
-    /* Slides up into its perfect top-centred position */
     transform: translateX(-50%) translateY(0);
 }
 
 .tool-tile:hover {
     box-shadow: 0 10px 30px rgba(255, 255, 255, 0.15);
-    /* FIX: Forces the hovered tile to sit above all other grid items */
     z-index: 50; 
 }
 
@@ -1477,8 +1336,6 @@ body.scanner-active, body.scanner-active * {
     transform: scale(1);
 }
 
-
-/* Mobile Responsiveness */
 @media (max-width: 768px) {
     .command-centre-card {
         grid-template-columns: 1fr;

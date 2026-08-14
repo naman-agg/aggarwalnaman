@@ -15,18 +15,20 @@
 <body class="dark-mode material-base">
     <div class="static-background"></div>
     <div class="architectural-grid" id="arch-grid"></div>
-    <div class="cursor-trail" id="cursor-trail"></div>
+    
+    <!-- Cursor Trail Removed Safely -->
 
     <div class="global-controls">
         <button class="search-btn interactive-element" aria-label="Search">
             <span class="material-symbols-outlined">search</span>
         </button>
         
-<div class="theme-toggle interactive-element" id="themeToggle" role="button" aria-label="Toggle Theme">
+        <div class="theme-toggle interactive-element" id="themeToggle" role="button" aria-label="Toggle Theme">
             <span class="material-symbols-outlined dark-icon">dark_mode</span>
             <span class="material-symbols-outlined light-icon">light_mode</span>
             <div class="toggle-slider"></div>
         </div>
+    </div>
 
     <div class="dynamic-hero" id="dynamic-hero">
         <div class="hero-wrapper" id="hero-wrapper">
@@ -45,30 +47,26 @@
             <li class="index-item active interactive-element" data-target="current profile-section">
                 <span class="index-num">01</span> Current Profile
             </li>
-
             <li class="index-item interactive-element" data-target="projects-section">
                 <span class="index-num">02</span> My Projects
             </li>
-
             <li class="index-item interactive-element" data-target="skills-section">
                 <span class="index-num">03</span> My Skills
             </li>
-
             <li class="index-item interactive-element" data-target="education-section">
                 <span class="index-num">04</span> My Education
             </li>
-            
             <li class="index-item interactive-element" data-target="food-section">
                 <span class="index-num">05</span> FOOD
             </li>
             <li class="index-item interactive-element" data-target="off-duty-section">
                 <span class="index-num">06</span> OFF DUTY
             </li>
-            
         </ul>
     </nav>
 
     <main class="capsule-container" id="capsule-container">
+        
         <section class="standard-section about-section scroll-spy-section" id="current profile-section">
             <div class="about-scroll-track" id="about-scroll-track">
                 <div class="about-sticky-wrapper">
@@ -210,7 +208,7 @@
                     <div class="tool-tile strategy">
                         <img src="images/jira.png" alt="Jira">
                         <span class="tool-tooltip">Jira</span>
-                    </div>                                       
+                    </div>                                      
 
                     <div class="tool-tile hardware">
                         <img src="images/fusion360.png" alt="Fusion 360">
@@ -237,7 +235,6 @@
                         <span class="tool-tooltip">ANSYS</span>
                     </div>
                     
-
                     <div class="tool-tile design">
                         <img src="images/figma.png" alt="Figma">
                         <span class="tool-tooltip">Figma</span>
@@ -288,13 +285,11 @@
                         <img src="images/javascript.png" alt="JavaScript">
                         <span class="tool-tooltip">JavaScript</span>
                     </div>
-
                 </div>
             </div>
         </section>
         
        <section class="standard-section foundation-section scroll-spy-section" id="education-section">
-           
             <div class="foundation-grid">
                 <div class="academic-square interactive-element" id="card-bachelors">
                     <img src="images/btech.png" alt="B.Tech Logo">
@@ -306,14 +301,9 @@
             </div>
         </section>
 
-
-        
-
         <section class="food-section scroll-spy-section" id="food-section">
             <div class="horizontal-scroll-wrapper" id="food-horizontal-wrapper" style="height: 300vh; position: relative;">
-                
                 <div class="sticky-view" id="food-sticky-view" style="height: 100vh; position: sticky; top: 0; display: flex; flex-direction: column; justify-content: center; overflow: hidden;">
-                    
                     <div class="food-header-container">
                         <div class="food-actions">
                             <a href="https://www.instagram.com/bhukkadbros/" target="_blank" class="btn-secondary">Instagram <span class="material-symbols-outlined" style="font-size: 16px;">arrow_outward</span></a>
@@ -322,7 +312,6 @@
                     </div>
 
                     <div class="cards-track" id="food-cards-track" style="display: flex; gap: 40px; padding-left: 40vw; padding-right: 15vw; width: max-content; will-change: transform;">
-                        
                         <div class="food-square-card">
                             <img src="images/insta.png" alt="Food Photography" class="food-bg-image">
                             <div class="food-card-overlay">
@@ -370,7 +359,6 @@
                                 <p class="food-label">Japanese Cuisine</p>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -378,10 +366,7 @@
 
         <!-- 6. OFF-DUTY (The Bento Box) -->
         <section class="standard-section bento-section scroll-spy-section" id="off-duty-section">
-           
             <div class="bento-container">
-                
-                <!-- TOP ROW LEFT: Swimming (Dynamic width, matches Tennis height) -->
                 <div class="bento-card bento-swimming">
                     <img src="images/swim.gif" alt="Swimming" class="bento-gif">
                     <div class="bento-overlay">
@@ -389,7 +374,6 @@
                     </div>
                 </div>
 
-                <!-- TOP ROW RIGHT: Tennis (Strict 1:1 Square) -->
                 <div class="bento-card bento-tennis">
                     <img src="images/tennis.gif" alt="Tennis" class="bento-gif">
                     <div class="bento-overlay">
@@ -397,21 +381,16 @@
                     </div>
                 </div>
 
-                <!-- BOTTOM ROW: Watchlist (Full Width) -->
                 <div class="bento-card bento-watchlist">
                     <div class="watchlist-split-grid">
-                        
-                        <!-- LEFT SIDE: Viewing Habits -->
                         <div class="watchlist-content">
                             <h3 class="bento-title" style="margin-bottom: 1.5rem;">The Watchlist</h3>
-                            
                             <div style="margin-bottom: 1.5rem;">
                                 <p class="bento-subtitle" style="margin-bottom: 0.75rem;">Currently Bingeing</p>
                                 <ul class="shows-list">
                                     <li><span class="material-symbols-outlined show-icon" style="color: #ffffff;">play_circle</span> The Good Doctor</li>
                                 </ul>
                             </div>
-
                             <div>
                                 <p class="bento-subtitle" style="margin-bottom: 0.75rem;">The Comfort Loop</p>
                                 <ul class="shows-list">
@@ -422,7 +401,6 @@
                             </div>
                         </div>
 
-                        <!-- RIGHT SIDE: TV Time Analytics -->
                         <div class="watchlist-analytics">
                             <div class="analytics-header">
                                 <div class="stat-block">
@@ -435,10 +413,8 @@
                                 </div>
                             </div>
                             
-                            <!-- Animated CSS Bar Chart -->
                             <div class="genre-chart">
                                 <p class="bento-subtitle" style="margin-bottom: 1rem;">Top Genres</p>
-                                
                                 <div class="bar-row">
                                     <span class="bar-label">Drama</span>
                                     <div class="bar-track"><div class="bar-fill animate-bar" data-width="100%"></div></div>
@@ -468,11 +444,9 @@
                         </div>
                     </div>
                 </div>
-
             </div>
         </section>
 
-        
         <div class="footer-spacer"></div>
     </main>
 
@@ -508,10 +482,9 @@
                 <svg viewBox="0 0 24 24" fill="currentColor" width="28" height="28"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zm0 2v.51l8 4.5 8-4.5V6H4zm0 2.49V18h16V8.49l-8 4.5-8-4.5z"/></svg>
             </a>
         </div>
-        <button class="action-link interactive-element" id="hex-scanner-btn" aria-label="Activate Colour Scanner">
-                [ HEX.SCANNER ]
-        </button>
+        <!-- Hex Scanner Button Removed Safely -->
     </footer>
+    
     <div class="scroll-progress-track">
         <div class="scroll-progress-fill" id="scroll-progress"></div>
     </div>
@@ -525,7 +498,7 @@
             
             <div class="spotlight-results-container">
                 <ul class="spotlight-results" id="search-results">
-                    </ul>
+                </ul>
             </div>
         </div>
     </div>
@@ -534,10 +507,9 @@
             <div class="academic-modal-content">
                 <button class="modal-close interactive-element" id="close-academic-modal">[ ESC ]</button>
                 <div class="academic-modal-body" id="academic-modal-body">
-                    </div>
+                </div>
             </div>
     </div>
-
 
 </body>
 </html>

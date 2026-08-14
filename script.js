@@ -1,33 +1,19 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     // ==========================================
-    // 1. CURSOR ENGINE
+    // 1. INTERACTIVE GRID ENGINE
     // ==========================================
-    const cursorTrail = document.getElementById('cursor-trail');
     const archGrid = document.getElementById('arch-grid');
     
     let mouseX = window.innerWidth / 2, mouseY = window.innerHeight / 2;
-    let trailX = mouseX, trailY = mouseY;
     
     window.addEventListener('mousemove', (e) => {
         mouseX = e.clientX; mouseY = e.clientY;
-        archGrid.style.webkitMaskImage = `radial-gradient(circle 400px at ${mouseX}px ${mouseY}px, black 0%, transparent 100%)`;
-        archGrid.style.maskImage = `radial-gradient(circle 400px at ${mouseX}px ${mouseY}px, black 0%, transparent 100%)`;
+        if (archGrid) {
+            archGrid.style.webkitMaskImage = `radial-gradient(circle 400px at ${mouseX}px ${mouseY}px, black 0%, transparent 100%)`;
+            archGrid.style.maskImage = `radial-gradient(circle 400px at ${mouseX}px ${mouseY}px, black 0%, transparent 100%)`;
+        }
     });
-
-    function renderCursor() {
-        trailX += (mouseX - trailX) * 0.15; 
-        trailY += (mouseY - trailY) * 0.15;
-        cursorTrail.style.transform = `translate3d(calc(${trailX}px - 50%), calc(${trailY}px - 50%), 0)`;
-        requestAnimationFrame(renderCursor);
-    }
-    renderCursor();
-
-    document.querySelectorAll('.interactive-element').forEach(el => {
-        el.addEventListener('mouseenter', () => { cursorTrail.classList.add('hovering'); });
-        el.addEventListener('mouseleave', () => { cursorTrail.classList.remove('hovering'); });
-    });
-
 
     // ==========================================
     // 2. THEME & CLOCKS
@@ -67,6 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let greetIndex = 0;
 
     setInterval(() => {
+        if (!slideTextEl) return;
         slideTextEl.classList.add('sliding-out');
         setTimeout(() => {
             greetIndex = (greetIndex + 1) % greetings.length;
@@ -90,9 +77,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const indexItems = document.querySelectorAll('.structural-index .index-item');
     const spySections = document.querySelectorAll('.scroll-spy-section');
     
-    const hWrapper = document.getElementById('horizontal-wrapper');
-    const stickyView = document.getElementById('sticky-view');
-    const cardsTrack = document.getElementById('cards-track');
+    const hWrapper = document.getElementById('food-horizontal-wrapper');
+    const stickyView = document.getElementById('food-sticky-view');
+    const cardsTrack = document.getElementById('food-cards-track');
     const scrollProgress = document.getElementById('scroll-progress');
 
     // --- SETUP: WORD-BY-WORD SCRUBBING ENGINE ---
@@ -107,96 +94,77 @@ document.addEventListener('DOMContentLoaded', () => {
             const span = document.createElement('span');
             span.innerText = word;
             manifestoTextEl.appendChild(span);
-            // Add a space after each word (outside the span so the space doesn't animate)
             manifestoTextEl.appendChild(document.createTextNode(' '));
             wordSpans.push(span);
         });
     }
     // --------------------------------------------
 
-    capsule.addEventListener('scroll', () => {
-        const scrollY = capsule.scrollTop;
-        const capsuleHeight = capsule.clientHeight;
-
-        // A. HARDWARE PROGRESS BAR LOGIC
-        if (scrollProgress) {
-            const maxCapsuleScroll = capsule.scrollHeight - capsule.clientHeight;
-            const progressPercentage = maxCapsuleScroll > 0 ? (scrollY / maxCapsuleScroll) * 100 : 0;
-            scrollProgress.style.width = `${progressPercentage}%`;
-        }
-
-        // B. HORIZONTAL SCROLL TIMELINE LOGIC
-        if (hWrapper && stickyView && cardsTrack) {
-            const startHScroll = hWrapper.offsetTop - (capsuleHeight * 0.1); 
-            const maxScroll = hWrapper.offsetHeight - stickyView.offsetHeight;
-            const endHScroll = startHScroll + maxScroll;
-
-            if (scrollY >= startHScroll && scrollY <= endHScroll) {
-                const progress = (scrollY - startHScroll) / maxScroll;
-                const maxTranslate = cardsTrack.scrollWidth - stickyView.clientWidth; 
-                cardsTrack.style.transform = `translate3d(-${progress * maxTranslate}px, 0, 0)`;
-            } else if (scrollY < startHScroll) {
-                cardsTrack.style.transform = `translate3d(0px, 0, 0)`;
-            } else if (scrollY > endHScroll) {
-                const maxTranslate = cardsTrack.scrollWidth - stickyView.clientWidth; 
-                cardsTrack.style.transform = `translate3d(-${maxTranslate}px, 0, 0)`;
-            }
-        }
-
-        // C. STRUCTURAL INDEX SCROLL SPY LOGIC
-        spySections.forEach((sec, index) => {
-            const secTop = sec.offsetTop - 100;
-            const secBottom = secTop + sec.offsetHeight;
-            if (scrollY >= secTop && scrollY < secBottom) {
-                indexItems.forEach(item => item.classList.remove('active'));
-                if(indexItems[index]) indexItems[index].classList.add('active');
-            }
-        });
-
-        // D. EXECUTE STICKY SCRUBBING
-        const scrollTrack = document.getElementById('about-scroll-track');
-        if (manifestoTextEl && wordSpans.length > 0 && scrollTrack) {
-            
+    if (capsule) {
+        capsule.addEventListener('scroll', () => {
             const scrollY = capsule.scrollTop;
             const capsuleHeight = capsule.clientHeight;
-            
-            let trackTop = 0;
-            let currentEl = scrollTrack;
-            while (currentEl && currentEl !== capsule) {
-                trackTop += currentEl.offsetTop;
-                currentEl = currentEl.offsetParent;
+
+            // A. HARDWARE PROGRESS BAR LOGIC
+            if (scrollProgress) {
+                const maxCapsuleScroll = capsule.scrollHeight - capsule.clientHeight;
+                const progressPercentage = maxCapsuleScroll > 0 ? (scrollY / maxCapsuleScroll) * 100 : 0;
+                scrollProgress.style.width = `${progressPercentage}%`;
             }
-            
-            const trackHeight = scrollTrack.offsetHeight;
-            const maxScrollDistance = trackHeight - capsuleHeight;
-            
-            let progress = 0;
-            if (scrollY > trackTop) {
-                progress = (scrollY - trackTop) / maxScrollDistance;
-            }
-            
-            // Starts illuminating 20% in, ends at 80% to give a beautiful padded experience
-            let mappedProgress = (progress - 0.20) / 0.60;
-            mappedProgress = Math.max(0, Math.min(1, mappedProgress));
-            
-            const activeCount = Math.floor(mappedProgress * wordSpans.length);
-            
-            wordSpans.forEach((span, index) => {
-                if (index < activeCount) {
-                    span.classList.add('active-word');
-                } else {
-                    span.classList.remove('active-word');
+
+            // C. STRUCTURAL INDEX SCROLL SPY LOGIC
+            spySections.forEach((sec, index) => {
+                const secTop = sec.offsetTop - 100;
+                const secBottom = secTop + sec.offsetHeight;
+                if (scrollY >= secTop && scrollY < secBottom) {
+                    indexItems.forEach(item => item.classList.remove('active'));
+                    if(indexItems[index]) indexItems[index].classList.add('active');
                 }
             });
-        }
-    });
+
+            // D. EXECUTE STICKY SCRUBBING
+            const scrollTrack = document.getElementById('about-scroll-track');
+            if (manifestoTextEl && wordSpans.length > 0 && scrollTrack) {
+                
+                let trackTop = 0;
+                let currentEl = scrollTrack;
+                while (currentEl && currentEl !== capsule) {
+                    trackTop += currentEl.offsetTop;
+                    currentEl = currentEl.offsetParent;
+                }
+                
+                const trackHeight = scrollTrack.offsetHeight;
+                const maxScrollDistance = trackHeight - capsuleHeight;
+                
+                let progress = 0;
+                if (scrollY > trackTop) {
+                    progress = (scrollY - trackTop) / maxScrollDistance;
+                }
+                
+                let mappedProgress = (progress - 0.20) / 0.60;
+                mappedProgress = Math.max(0, Math.min(1, mappedProgress));
+                
+                const activeCount = Math.floor(mappedProgress * wordSpans.length);
+                
+                wordSpans.forEach((span, index) => {
+                    if (index < activeCount) {
+                        span.classList.add('active-word');
+                    } else {
+                        span.classList.remove('active-word');
+                    }
+                });
+            }
+        });
+    }
 
     // Click to navigate via Structural Index
     indexItems.forEach(item => {
         item.addEventListener('click', () => {
             const targetId = item.getAttribute('data-target');
             const targetSec = document.getElementById(targetId);
-            capsule.scrollTo({ top: targetSec.offsetTop, behavior: 'smooth' });
+            if(targetSec && capsule) {
+                capsule.scrollTo({ top: targetSec.offsetTop, behavior: 'smooth' });
+            }
         });
     });
 
@@ -211,6 +179,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     let moveDist = 0;
     function calculateHeroMath() {
+        if (!heroL2) return;
         const l2Rect = heroL2.getBoundingClientRect();
         const l2CenterY = l2Rect.top + (l2Rect.height / 2); 
         const isMobile = window.innerWidth <= 768;
@@ -227,32 +196,36 @@ document.addEventListener('DOMContentLoaded', () => {
         const transitionDistance = 500; 
         const progress = Math.max(0, Math.min(scrollY / transitionDistance, 1));
 
-        archGrid.style.opacity = 1 - progress; 
+        if (archGrid) archGrid.style.opacity = 1 - progress; 
 
         const isMobile = window.innerWidth <= 768;
         const endScale = isMobile ? 0.35 : 0.25; 
         const currentScale = 1 - ((1 - endScale) * progress);
         
-        heroL1.style.opacity = Math.max(0, 1 - (progress * 2));
-        heroL1.style.transform = `translateY(-${progress * 60}px)`;
+        if (heroL1) {
+            heroL1.style.opacity = Math.max(0, 1 - (progress * 2));
+            heroL1.style.transform = `translateY(-${progress * 60}px)`;
+        }
 
-        heroL3.style.opacity = Math.max(0, 1 - (progress * 2));
-        heroL3.style.transform = `translateY(${progress * 60}px)`;
+        if (heroL3) {
+            heroL3.style.opacity = Math.max(0, 1 - (progress * 2));
+            heroL3.style.transform = `translateY(${progress * 60}px)`;
+        }
 
-        dynamicHero.style.transform = `translateY(-${moveDist * progress}px)`;
-        heroL2.style.transform = `scale(${currentScale})`;
+        if (dynamicHero) dynamicHero.style.transform = `translateY(-${moveDist * progress}px)`;
+        if (heroL2) heroL2.style.transform = `scale(${currentScale})`;
 
-        capsule.style.transform = `translateY(${(1 - progress) * 100}vh)`;
-        capsule.style.opacity = progress;
-        
-        if (progress === 1) {
-            capsule.style.pointerEvents = 'auto';
-            if(structuralIndex) structuralIndex.classList.add('visible');
-            cursorTrail.style.display = 'none'; 
-        } else {
-            capsule.style.pointerEvents = 'none';
-            if(structuralIndex) structuralIndex.classList.remove('visible');
-            cursorTrail.style.display = 'block'; 
+        if (capsule) {
+            capsule.style.transform = `translateY(${(1 - progress) * 100}vh)`;
+            capsule.style.opacity = progress;
+            
+            if (progress === 1) {
+                capsule.style.pointerEvents = 'auto';
+                if(structuralIndex) structuralIndex.classList.add('visible');
+            } else {
+                capsule.style.pointerEvents = 'none';
+                if(structuralIndex) structuralIndex.classList.remove('visible');
+            }
         }
         requestAnimationFrame(onWindowScroll);
     }
@@ -291,26 +264,26 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 500);
 
     function openSearch() {
+        if (!searchOverlay) return;
         searchOverlay.classList.add('active');
         setTimeout(() => searchInput.focus(), 50); 
         renderDefaultResults();
     }
 
     function closeSearch() {
+        if (!searchOverlay) return;
         searchOverlay.classList.remove('active');
-        searchInput.value = ''; 
+        if (searchInput) searchInput.value = ''; 
     }
 
     if (searchBtnNode) searchBtnNode.addEventListener('click', openSearch);
     if (closeSearchBtn) closeSearchBtn.addEventListener('click', closeSearch);
     
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && searchOverlay.classList.contains('active')) closeSearch();
-    });
-    
-    searchOverlay.addEventListener('click', (e) => {
-        if (e.target === searchOverlay) closeSearch();
-    });
+    if (searchOverlay) {
+        searchOverlay.addEventListener('click', (e) => {
+            if (e.target === searchOverlay) closeSearch();
+        });
+    }
 
     function routeToSection(targetId) {
         closeSearch();
@@ -328,6 +301,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderDefaultResults() {
+        if (!searchResults) return;
         searchResults.innerHTML = '';
         
         const quickLinksHeading = document.createElement('li');
@@ -372,165 +346,84 @@ document.addEventListener('DOMContentLoaded', () => {
         searchResults.appendChild(themeLi);
     }
 
-    searchInput.addEventListener('input', (e) => {
-        const query = e.target.value.toLowerCase().trim();
-        searchResults.innerHTML = '';
+    if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase().trim();
+            searchResults.innerHTML = '';
 
-        if (!query) {
-            renderDefaultResults();
-            return;
-        }
-
-        const matches = searchIndex.filter(item => 
-            item.text.toLowerCase().includes(query) || item.title.toLowerCase().includes(query)
-        );
-
-        if (matches.length === 0) {
-            searchResults.innerHTML = `
-                <li class="results-group-heading">RESULTS</li>
-                <li class="result-item" style="pointer-events: none;">
-                    <span class="result-title">No matches found for "${query}"</span>
-                </li>`;
-            return;
-        }
-
-        const hitsHeading = document.createElement('li');
-        hitsHeading.className = 'results-group-heading';
-        hitsHeading.textContent = 'TOP HITS';
-        searchResults.appendChild(hitsHeading);
-
-        matches.forEach(match => {
-            const li = document.createElement('li');
-            li.className = 'result-item interactive-element';
-            
-            let snippet = '';
-            const matchIndex = match.text.toLowerCase().indexOf(query);
-            if (matchIndex > -1) {
-                const start = Math.max(0, matchIndex - 40);
-                const end = Math.min(match.text.length, matchIndex + query.length + 40);
-                snippet = match.text.substring(start, end);
-                if (start > 0) snippet = '...' + snippet;
-                if (end < match.text.length) snippet = snippet + '...';
-                
-                const regex = new RegExp(`(${query})`, 'gi');
-                snippet = snippet.replace(regex, '<span class="snippet-highlight">$1</span>');
+            if (!query) {
+                renderDefaultResults();
+                return;
             }
 
-            li.innerHTML = `
-                <span class="result-title">${match.title}</span>
-                ${snippet ? `<span class="result-snippet">${snippet}</span>` : ''}
-            `;
-            
-            li.addEventListener('click', () => routeToSection(match.id));
-            searchResults.appendChild(li);
-        });
-    });
+            const matches = searchIndex.filter(item => 
+                item.text.toLowerCase().includes(query) || item.title.toLowerCase().includes(query)
+            );
 
+            if (matches.length === 0) {
+                searchResults.innerHTML = `
+                    <li class="results-group-heading">RESULTS</li>
+                    <li class="result-item" style="pointer-events: none;">
+                        <span class="result-title">No matches found for "${query}"</span>
+                    </li>`;
+                return;
+            }
+
+            const hitsHeading = document.createElement('li');
+            hitsHeading.className = 'results-group-heading';
+            hitsHeading.textContent = 'TOP HITS';
+            searchResults.appendChild(hitsHeading);
+
+            matches.forEach(match => {
+                const li = document.createElement('li');
+                li.className = 'result-item interactive-element';
+                
+                let snippet = '';
+                const matchIndex = match.text.toLowerCase().indexOf(query);
+                if (matchIndex > -1) {
+                    const start = Math.max(0, matchIndex - 40);
+                    const end = Math.min(match.text.length, matchIndex + query.length + 40);
+                    snippet = match.text.substring(start, end);
+                    if (start > 0) snippet = '...' + snippet;
+                    if (end < match.text.length) snippet = snippet + '...';
+                    
+                    const regex = new RegExp(`(${query})`, 'gi');
+                    snippet = snippet.replace(regex, '<span class="snippet-highlight">$1</span>');
+                }
+
+                li.innerHTML = `
+                    <span class="result-title">${match.title}</span>
+                    ${snippet ? `<span class="result-snippet">${snippet}</span>` : ''}
+                `;
+                
+                li.addEventListener('click', () => routeToSection(match.id));
+                searchResults.appendChild(li);
+            });
+        });
+    }
 
     // ==========================================
-    // 7. LIVE HEX SCANNER ENGINE
+    // ESCAPE KEY HANDLER (Global Modals)
     // ==========================================
-    const scannerBtn = document.getElementById('hex-scanner-btn');
-    let isScannerActive = false;
-
-    if (scannerBtn) {
-        const scannerHud = document.createElement('div');
-        scannerHud.id = 'scanner-hud';
-        scannerHud.innerHTML = `
-            <div class="scan-row">
-                <span class="scan-label">FG</span>
-                <div class="scan-box" id="scan-fg-box"></div>
-                <span class="scan-hex" id="scan-fg-hex">-</span>
-            </div>
-            <div class="scan-row">
-                <span class="scan-label">BG</span>
-                <div class="scan-box" id="scan-bg-box"></div>
-                <span class="scan-hex" id="scan-bg-hex">-</span>
-            </div>
-        `;
-        document.body.appendChild(scannerHud);
-
-        const fgBox = document.getElementById('scan-fg-box');
-        const fgHex = document.getElementById('scan-fg-hex');
-        const bgBox = document.getElementById('scan-bg-box');
-        const bgHex = document.getElementById('scan-bg-hex');
-        
-        let currentData = '';
-
-        function rgbToHex(rgb) {
-            if (rgb === 'rgba(0, 0, 0, 0)' || rgb === 'transparent') return 'CLEAR';
-            const match = rgb.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)/);
-            if (!match) return rgb;
-            return "#" + (1 << 24 | match[1] << 16 | match[2] << 8 | match[3]).toString(16).slice(1).toUpperCase();
-        }
-
-        scannerBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            isScannerActive = !isScannerActive;
-            document.body.classList.toggle('scanner-active', isScannerActive);
-            
-            if (isScannerActive) {
-                scannerBtn.style.color = 'var(--accent)';
-                scannerBtn.textContent = '[ SCANNING... ]';
-            } else {
-                scannerBtn.style.color = '';
-                scannerBtn.textContent = '[ HEX.SCANNER ]';
-                scannerHud.style.opacity = '0';
-            }
-        });
-
-        document.addEventListener('mousemove', (e) => {
-            if (!isScannerActive) return;
-
-            scannerHud.style.left = `${e.clientX}px`;
-            scannerHud.style.top = `${e.clientY}px`;
-
-            const target = document.elementFromPoint(e.clientX, e.clientY);
-
-            if (target && target.id !== 'scanner-hud' && !scannerHud.contains(target)) {
-                const computed = window.getComputedStyle(target);
-                
-                const fgColorRaw = computed.color;
-                const bgColorRaw = computed.backgroundColor;
-                
-                const fgHexVal = rgbToHex(fgColorRaw);
-                const bgHexVal = rgbToHex(bgColorRaw);
-
-                fgBox.style.backgroundColor = fgHexVal === 'CLEAR' ? 'transparent' : fgHexVal;
-                fgHex.textContent = fgHexVal;
-                
-                bgBox.style.backgroundColor = bgHexVal === 'CLEAR' ? 'transparent' : bgHexVal;
-                bgHex.textContent = bgHexVal;
-
-                currentData = `FG: ${fgHexVal} | BG: ${bgHexVal}`;
-                
-                scannerHud.style.opacity = '1';
-            } else {
-                scannerHud.style.opacity = '0';
-            }
-        });
-
-
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
-            // 1. Force close the Academic Modal
+            // Force close the Academic Modal
             const activeAcademicModal = document.getElementById('academic-modal');
             if (activeAcademicModal && activeAcademicModal.classList.contains('active')) {
                 activeAcademicModal.classList.remove('active');
             }
             
-            // 2. Force close the Search Modal
+            // Force close the Search Modal
             const activeSearchModal = document.getElementById('search-overlay');
             if (activeSearchModal && activeSearchModal.classList.contains('active')) {
                 activeSearchModal.classList.remove('active');
-                document.getElementById('search-input').value = ''; // clears the text
+                if(document.getElementById('search-input')) document.getElementById('search-input').value = '';
             }
         }
     });
-    }
 
-   // ==========================================
-    // ACADEMIC GLASSMORPHISM MODAL LOGIC
+    // ==========================================
+    // 8. ACADEMIC GLASSMORPHISM MODAL LOGIC
     // ==========================================
     const academicModalOverlay = document.getElementById('academic-modal');
     const academicModalBody = document.getElementById('academic-modal-body');
@@ -559,73 +452,54 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Listens for clicks on the squares
     if (bachelorsCard) bachelorsCard.addEventListener('click', () => openAcademicModal('bachelors'));
     if (mastersCard) mastersCard.addEventListener('click', () => openAcademicModal('masters'));
     
-    // Close via the ESC button
     if (academicModalClose) {
         academicModalClose.addEventListener('click', () => {
             academicModalOverlay.classList.remove('active');
         });
     }
 
-    // Close on clicking the dark background overlay
     if (academicModalOverlay) {
         academicModalOverlay.addEventListener('click', (e) => {
             if (e.target === academicModalOverlay) academicModalOverlay.classList.remove('active');
         });
     }
 
-// ==========================================
-// PERFECT GLASS STACK ENGINE (FOOLPROOF MATH)
-// ==========================================
+    // ==========================================
+    // 9. PERFECT GLASS STACK ENGINE 
+    // ==========================================
     const stickyWrappers = document.querySelectorAll('.sticky-wrapper');
     const glassCards = document.querySelectorAll('.perfect-glass-card');
 
     if (capsule && stickyWrappers.length > 0 && glassCards.length > 0) {
-        
-        // Find the parent container holding all the wrappers
         const stackContainer = stickyWrappers[0].parentElement;
 
         capsule.addEventListener('scroll', () => {
-            // Measure the exact fixed ceiling of your scroll area
             const capsuleTop = capsule.getBoundingClientRect().top;
-            
-            // Measure where the entire stack container is, independent of sticky quirks
             const containerTop = stackContainer.getBoundingClientRect().top;
 
             stickyWrappers.forEach((wrapper, index) => {
                 const card = glassCards[index];
-
-                // Since each wrapper is 100vh tall, Card 1 locks at containerTop = 0,
-                // Card 2 locks at containerTop = -100vh, Card 3 at -200vh, etc.
                 const lockPoint = capsuleTop - (index * window.innerHeight);
-
-                // How far have we scrolled PAST this specific card's locking point?
                 const distancePastTop = lockPoint - containerTop;
 
                 if (distancePastTop > 0) {
-                    // Card has locked and user is still scrolling down
-                    // 1. Shrink by 4% per viewport height scrolled
                     const scaleDrop = (distancePastTop / window.innerHeight) * 0.04;
-                    const scale = Math.max(0.75, 1 - scaleDrop); // Caps at 75% size
-                    
-                    // 2. Push up by 35px per viewport height to slide under the next card
-                    const yPush = (distancePastTop / window.innerHeight) * 20; // 20px per vh
+                    const scale = Math.max(0.75, 1 - scaleDrop);
+                    const yPush = (distancePastTop / window.innerHeight) * 20;
                     const translateY = -yPush;
-
-                    // Apply physics (Opacity is 1 so the glass stays crisp)
                     card.style.transform = `scale(${scale}) translateY(${translateY}px)`;
                 } else {
-                    // Card hasn't reached the top yet, keep it at default
                     card.style.transform = `scale(1) translateY(0px)`;
                 }
             });
         });
     }
+
     // ==========================================
-    // FOOD GALLERY HORIZONTAL SCROLL ENGINE
+    // 10. FOOD GALLERY HORIZONTAL SCROLL ENGINE
     // ==========================================
     const foodWrapper = document.getElementById('food-horizontal-wrapper');
     const foodTrack = document.getElementById('food-cards-track');
@@ -635,31 +509,23 @@ document.addEventListener('DOMContentLoaded', () => {
             const rect = foodWrapper.getBoundingClientRect();
             const capsuleTop = capsule.getBoundingClientRect().top;
             
-            // When the wrapper hits the ceiling, start moving the track
             if (rect.top <= capsuleTop) {
-                // How far down the wrapper have we scrolled?
                 const scrollDistance = capsuleTop - rect.top;
-                
-                // Total distance the wrapper is allowed to scroll vertically
                 const maxVerticalScroll = foodWrapper.offsetHeight - window.innerHeight;
                 
-                // Progress percentage (0 to 1)
                 let progress = scrollDistance / maxVerticalScroll;
                 progress = Math.max(0, Math.min(1, progress));
                 
-                // Total distance the track needs to slide horizontally to show the last card
-                // Added a 10vw buffer so the last card doesn't sit hard against the screen edge
                 const maxHorizontalTranslate = foodTrack.scrollWidth - window.innerWidth + (window.innerWidth * 0.1);
-                
-                // Apply the slide
                 foodTrack.style.transform = `translateX(-${progress * maxHorizontalTranslate}px)`;
             } else {
                 foodTrack.style.transform = `translateX(0px)`;
             }
         });
     }
-// ==========================================
-    // 1. LIVE COUNTER ENGINE
+
+    // ==========================================
+    // 11. LIVE COUNTER ENGINE
     // ==========================================
     const counters = document.querySelectorAll('.counter-stat');
 
@@ -694,7 +560,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ==========================================
-    // 2. WATCHLIST BAR CHART ENGINE
+    // 12. WATCHLIST BAR CHART ENGINE
     // ==========================================
     const animatedBars = document.querySelectorAll('.animate-bar');
 
@@ -713,12 +579,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ==========================================
-    // 3. TOOL STACK FILTERING ENGINE (GLITCH-FREE CASCADE)
+    // 13. TOOL STACK FILTERING ENGINE 
     // ==========================================
     const filterBtns = document.querySelectorAll('.stack-btn');
     const toolTiles = document.querySelectorAll('.tool-tile');
 
-    // Run this once on page load so all tools are visible initially
     toolTiles.forEach((tile, index) => {
         setTimeout(() => {
             tile.classList.add('visible-tile');
@@ -727,29 +592,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     filterBtns.forEach(btn => {
         btn.addEventListener('click', () => {
-            // Update button styles
             filterBtns.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
 
             const targetCategory = btn.getAttribute('data-category');
             let visibleIndex = 0;
 
-            // Phase 1: Instantly reset the grid layout
             toolTiles.forEach(tile => {
                 tile.classList.remove('visible-tile');
                 tile.style.display = 'none'; 
             });
 
-            // Phase 2: Rebuild the grid and trigger the cascade
             toolTiles.forEach(tile => {
                 if (targetCategory === 'all' || tile.classList.contains(targetCategory)) {
-                    // Put the item back into the grid math
                     tile.style.display = 'flex';
-                    
-                    // Force the browser to register the display change before animating
                     void tile.offsetWidth;
 
-                    // Stagger the fade-in animation
                     setTimeout(() => {
                         tile.classList.add('visible-tile');
                     }, visibleIndex * 50);
