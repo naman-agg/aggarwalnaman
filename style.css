@@ -85,6 +85,11 @@ body { font-family: var(--font-main); color: var(--text-primary); height: calc(1
     opacity: 1; transition: opacity 0.2s linear;
 }
 
+.cursor-trail {
+    position: fixed; top: 0; left: 0; width: 50px; height: 50px; background: #ffffff; border-radius: 50%; pointer-events: none; z-index: 9999;
+    filter: blur(4px); mix-blend-mode: difference; transform: translate(-50%, -50%); transition: width 0.3s ease, height 0.3s ease;
+}
+.cursor-trail.hovering { width: 20px; height: 20px; filter: blur(2px); }
 
 .global-controls {
     position: fixed; top: var(--v-gap); left: 0; width: 100%; height: var(--ui-height); display: flex; justify-content: space-between; align-items: center;
@@ -546,7 +551,67 @@ body.light-mode .light-icon { color: #ffffff; }
         padding: 30px; 
     }
 }
+/* ========================================================== */
+/* ========================================================== */
+/* LIVE HEX SCANNER TELEMETRY                                 */
+/* ========================================================== */
+body.scanner-active, body.scanner-active * {
+    cursor: crosshair !important;
+}
 
+#scanner-hud {
+    position: fixed;
+    top: 0; left: 0;
+    background: var(--surface-recessed);
+    border: 1px solid var(--border-color);
+    padding: 8px 12px;
+    pointer-events: none; /* Crucial: stops HUD from blocking the scan */
+    z-index: 10000;
+    opacity: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    /* Offset so it doesn't sit exactly under the crosshair */
+    transform: translate(15px, 15px);
+    transition: opacity 0.15s ease;
+    
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+}
+
+.scan-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.scan-label {
+    color: var(--text-secondary);
+    width: 20px;
+}
+
+.scan-box {
+    width: 12px;
+    height: 12px;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 2px;
+}
+.light-mode .scan-box { border: 1px solid rgba(0,0,0,0.2); }
+
+.scan-hex {
+    color: var(--text-primary);
+    font-weight: 700;
+    width: 65px;
+}
+
+/* Optional: Click-to-copy notification animation */
+@keyframes copiedFlash {
+    0% { background-color: var(--accent); color: #000; }
+    100% { background-color: transparent; color: var(--text-primary); }
+}
+.flash-copied { animation: copiedFlash 0.5s ease; }
 /* ========================================================== */
 /* SPOTLIGHT SEARCH (APPLE GLASSMORPHISM)                     */
 /* ========================================================== */
