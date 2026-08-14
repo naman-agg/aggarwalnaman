@@ -745,13 +745,35 @@ body.scanner-active, body.scanner-active * {
     position: sticky; top: 0; height: 100vh; display: flex; align-items: center; justify-content: center; width: 100%;
 }
 
-.about-container { max-width: 1100px; margin: 0 auto; text-align: center; padding: 0 40px; }
-
-.about-manifesto-text {
-    font-size: clamp(24px, 3.5vw, 48px); font-weight: 600; line-height: 1.4; letter-spacing: -0.02em; margin: 0;
-    color: transparent !important; /* Kills the global flash */
+.about-container {
+    width: 90vw; /* Takes up 90% of the screen width */
+    max-width: 1200px; /* Prevents it from stretching infinitely on massive ultra-wide monitors */
+    margin: 0 auto; /* Perfectly centres the block */
+    padding: 0 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
+.about-manifesto-text {
+    /* Ensures the paragraph uses the full width of the new container */
+    width: 100%; 
+    max-width: 1000px; /* Keeps the line length comfortable for reading */
+    
+    font-size: 2rem; /* Nice, punchy readable size */
+    line-height: 1.6; /* Gives the multiple lines plenty of breathing room */
+    color: var(--powder-grey); /* Or whichever variable you use for your crisp white/grey */
+    text-align: center; /* Or change to 'left' if you prefer a more editorial look */
+}
+
+/* Mobile Responsiveness for the longer paragraph */
+@media (max-width: 768px) {
+    .about-manifesto-text {
+        font-size: 1.25rem;
+        line-height: 1.5;
+        text-align: left; /* Usually easier to read long paragraphs left-aligned on mobile */
+    }
+}
 .about-manifesto-text span {
     display: inline-block; color: var(--text-secondary); opacity: 0.15; transform: translateY(15px);
     transition: color 0.4s ease, opacity 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
