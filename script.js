@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ==========================================
     // 1. CURSOR ENGINE
     // ==========================================
-    const cursorTrail = document.getElementById('cursor-trail');
+
     const archGrid = document.getElementById('arch-grid');
     
     let mouseX = window.innerWidth / 2, mouseY = window.innerHeight / 2;
@@ -427,107 +427,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
-    // ==========================================
-    // 7. LIVE HEX SCANNER ENGINE
-    // ==========================================
-    const scannerBtn = document.getElementById('hex-scanner-btn');
-    let isScannerActive = false;
-
-    if (scannerBtn) {
-        const scannerHud = document.createElement('div');
-        scannerHud.id = 'scanner-hud';
-        scannerHud.innerHTML = `
-            <div class="scan-row">
-                <span class="scan-label">FG</span>
-                <div class="scan-box" id="scan-fg-box"></div>
-                <span class="scan-hex" id="scan-fg-hex">-</span>
-            </div>
-            <div class="scan-row">
-                <span class="scan-label">BG</span>
-                <div class="scan-box" id="scan-bg-box"></div>
-                <span class="scan-hex" id="scan-bg-hex">-</span>
-            </div>
-        `;
-        document.body.appendChild(scannerHud);
-
-        const fgBox = document.getElementById('scan-fg-box');
-        const fgHex = document.getElementById('scan-fg-hex');
-        const bgBox = document.getElementById('scan-bg-box');
-        const bgHex = document.getElementById('scan-bg-hex');
-        
-        let currentData = '';
-
-        function rgbToHex(rgb) {
-            if (rgb === 'rgba(0, 0, 0, 0)' || rgb === 'transparent') return 'CLEAR';
-            const match = rgb.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)/);
-            if (!match) return rgb;
-            return "#" + (1 << 24 | match[1] << 16 | match[2] << 8 | match[3]).toString(16).slice(1).toUpperCase();
-        }
-
-        scannerBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            isScannerActive = !isScannerActive;
-            document.body.classList.toggle('scanner-active', isScannerActive);
-            
-            if (isScannerActive) {
-                scannerBtn.style.color = 'var(--accent)';
-                scannerBtn.textContent = '[ SCANNING... ]';
-            } else {
-                scannerBtn.style.color = '';
-                scannerBtn.textContent = '[ HEX.SCANNER ]';
-                scannerHud.style.opacity = '0';
-            }
-        });
-
-        document.addEventListener('mousemove', (e) => {
-            if (!isScannerActive) return;
-
-            scannerHud.style.left = `${e.clientX}px`;
-            scannerHud.style.top = `${e.clientY}px`;
-
-            const target = document.elementFromPoint(e.clientX, e.clientY);
-
-            if (target && target.id !== 'scanner-hud' && !scannerHud.contains(target)) {
-                const computed = window.getComputedStyle(target);
-                
-                const fgColorRaw = computed.color;
-                const bgColorRaw = computed.backgroundColor;
-                
-                const fgHexVal = rgbToHex(fgColorRaw);
-                const bgHexVal = rgbToHex(bgColorRaw);
-
-                fgBox.style.backgroundColor = fgHexVal === 'CLEAR' ? 'transparent' : fgHexVal;
-                fgHex.textContent = fgHexVal;
-                
-                bgBox.style.backgroundColor = bgHexVal === 'CLEAR' ? 'transparent' : bgHexVal;
-                bgHex.textContent = bgHexVal;
-
-                currentData = `FG: ${fgHexVal} | BG: ${bgHexVal}`;
-                
-                scannerHud.style.opacity = '1';
-            } else {
-                scannerHud.style.opacity = '0';
-            }
-        });
-
-
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-            // 1. Force close the Academic Modal
-            const activeAcademicModal = document.getElementById('academic-modal');
-            if (activeAcademicModal && activeAcademicModal.classList.contains('active')) {
-                activeAcademicModal.classList.remove('active');
-            }
-            
-            // 2. Force close the Search Modal
-            const activeSearchModal = document.getElementById('search-overlay');
-            if (activeSearchModal && activeSearchModal.classList.contains('active')) {
-                activeSearchModal.classList.remove('active');
-                document.getElementById('search-input').value = ''; // clears the text
-            }
-        }
+    
+// Keep this! This makes the grid glow follow the mouse
+    document.addEventListener('mousemove', (e) => {
+        document.documentElement.style.setProperty('--x', e.clientX + 'px');
+        document.documentElement.style.setProperty('--y', e.clientY + 'px');
     });
-    }
+
 
    // ==========================================
     // ACADEMIC GLASSMORPHISM MODAL LOGIC
